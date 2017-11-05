@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+  div.container {
+      width: 100%;
+      background: lightgray;
+      /*border: 1px solid gray;*/
+  }
+
+  body {
+    margin: 0;
+    background: lightgray;
+    font-size: large;
+  }
+
+  header {
+      padding: 0.1em 1em 0.1em 2em;
+      color: darkgray;
+      background-color: white;
+      clear: left;
+      text-align: left;
+  }
+
+  article {
+      /*margin-left: 170px;*/
+      /*border-left: 1px solid gray;*/
+      padding: 1em;
+      overflow: auto;
+      background: lightgray;
+      height: 100%;
+  }
+
+  div.course {
+    width: 10em;
+    max-width: 10em;
+    height: 7.5em;
+    max-height: 7.5em;
+    line-height: 7.5em;
+    margin: 1em;
+    float: left;
+    background: white;
+    text-align: center;
+    color: darkgray;
+    font-size: xx-large;
+    padding: 0em;
+  }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+   <h1>Map it</h1>
+</header>
+
+<div class="course" onclick="myfunction()">CS492</div>
+<div class="course" onclick="myfunction()">CS493</div>
+<div class="course" onclick="myfunction()">CS494</div>
+<div class="course" onclick="myfunction()">CS495</div>
+<div class="course" onclick="myfunction()">CS496</div>
+<div class="course" onclick="myfunction()">+</div>
+<p style="clear: both;">
+
+</div>
+
+<script type="text/javascript">
+  function myfunction() {
+    console.log('Go to structure maps!');
+  }
+</script>
+
+</body>
+</html>

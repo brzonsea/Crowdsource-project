@@ -2,6 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8"/>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.1/raphael.js"></script>
+  <script type="text/javascript" src="./dist/dracula.dev.js"></script>
   <style>
   div.container {
       width: 100%;
@@ -47,31 +49,22 @@
     padding: 0em;
   }
 
+  #structure-map {
+    width: 100%;
+    height: 100%;
+  }
+
   </style>
 </head>
 <body>
 
-<div class="container">
-
-<header>
-   <h1>Map it</h1>
-</header>
-
-<div class="course" onclick="myfunction()">CS492</div>
-<div class="course" onclick="myfunction()">CS493</div>
-<div class="course" onclick="myfunction()">CS494</div>
-<div class="course" onclick="myfunction()">CS495</div>
-<div class="course" onclick="myfunction()">CS496</div>
-<div class="course" onclick="myfunction()">+</div>
-<p style="clear: both;">
-
+<div class='container'>
+  <header>
+    <h1>Map it</h1>
+  </header>
 </div>
 
-<script type="text/javascript">
-  function myfunction() {
-    console.log('Go to structure maps!');
-  }
-</script>
-
+  <div id='structure-map' style="height: 400px; width: 600px;"></div>
+  <script type="text/javascript" src="js/graph.js"></script>
 </body>
 </html>

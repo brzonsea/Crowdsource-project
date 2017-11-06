@@ -2,59 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.1/raphael.js"></script>
-  <script type="text/javascript" src="./dist/dracula.dev.js"></script>
-  <style>
-  div.container {
-      width: 100%;
-      background: lightgray;
-      /*border: 1px solid gray;*/
-  }
-
-  body {
-    margin: 0;
-    background: lightgray;
-    font-size: large;
-  }
-
-  header {
-      padding: 0.1em 1em 0.1em 2em;
-      color: darkgray;
-      background-color: white;
-      clear: left;
-      text-align: left;
-  }
-
-  article {
-      /*margin-left: 170px;*/
-      /*border-left: 1px solid gray;*/
-      padding: 1em;
-      overflow: auto;
-      background: lightgray;
-      height: 100%;
-  }
-
-  div.course {
-    width: 10em;
-    max-width: 10em;
-    height: 7.5em;
-    max-height: 7.5em;
-    line-height: 7.5em;
-    margin: 1em;
-    float: left;
-    background: white;
-    text-align: center;
-    color: darkgray;
-    font-size: xx-large;
-    padding: 0em;
-  }
-
-  #structure-map {
-    width: 100%;
-    height: 100%;
-  }
-
-  </style>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.5/cytoscape.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 </head>
 <body>
 
@@ -64,7 +13,7 @@
   </header>
 </div>
 
-  <div id='structure-map' style="height: 400px; width: 600px;"></div>
+  <div id='structure-map'></div>
   <script type="text/javascript" src="js/graph.js"></script>
 </body>
 </html>

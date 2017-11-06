@@ -1,11 +1,65 @@
-const graph = new Dracula.Graph
+var cy = cytoscape({
 
-graph.addEdge('Banana', 'Apple')
-graph.addEdge('Apple', 'Kiwi')
-graph.addEdge('Apple', 'Dragonfruit')
-graph.addEdge('Dragonfruit', 'Banana')
-graph.addEdge('Kiwi', 'Banana')
+  container: document.getElementById('structure-map'), // container to render in
 
-const layout = new Dracula.Layout.Spring(graph)
-const renderer = new Dracula.Renderer.Raphael('#structure-map', graph, 400, 300)
-renderer.draw()
+  elements: [ // list of graph elements to start with
+    { // node a
+      data: { id: 'a' }
+    },
+    { // node a
+      data: { id: 'b' }
+    },
+    { // node a
+      data: { id: 'c' }
+    },
+    { // node a
+      data: { id: 'd' }
+    },
+    { // node b
+      data: { id: 'e' }
+    },
+    { // edge ab
+      data: { id: 'ab', source: 'a', target: 'b' }
+    },
+    { // edge ab
+      data: { id: 'ac', source: 'a', target: 'c' }
+    },
+    { // edge ab
+      data: { id: 'ad', source: 'a', target: 'd' }
+    },
+    { // edge ab
+      data: { id: 'bd', source: 'b', target: 'd' }
+    },
+    { // edge ab
+      data: { id: 'bc', source: 'b', target: 'c' }
+    },
+    { // edge ab
+      data: { id: 'ce', source: 'c', target: 'e' }
+    },
+  ],
+
+  style: [ // the stylesheet for the graph
+    {
+      selector: 'node',
+      style: {
+        'background-color': '#666',
+        'label': 'data(id)'
+      }
+    },
+
+    {
+      selector: 'edge',
+      style: {
+        'width': 3,
+        'line-color': '#ccc',
+        'target-arrow-color': '#ccc',
+        'target-arrow-shape': 'triangle'
+      }
+    }
+  ],
+
+  layout: {
+    name: 'cose'
+  }
+
+});

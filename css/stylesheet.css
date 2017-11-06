@@ -41,3 +41,11 @@ div.course {
 	font-size: xx-large;
 	padding: 0em;
 }
+
+#structure-map {
+	width: 800px;
+	height: 500px;
+	/*margin-left: auto;*/
+  	/*margin-right: auto;*/
+  	display: block;
+  }

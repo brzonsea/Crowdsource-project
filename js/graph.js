@@ -90,14 +90,35 @@ var cy = cytoscape({
   layout: {
     name: 'cose'
   }
-
 });
 
-var clickhandler = function(evt) {
+/**
+ * State variable, signalling if the user is currently defining a relationship
+ */
+cy.definingRelationship = 0;
+cy.relationshipSource = null;
 
-}
+cy.nodes().on('click', function(evt) {
+  switch (evt.cy.definingRelationship) {
+    case 0:
+      addNode(evt);
+      break;
+    case 1:
+      cy.relationshipSource = evt.target.id();
+      cy.definingRelationship += 1;
+      break;
+    case 2:
+      addRelationship(evt);
+      cy.definingRelationship = 0;
+      break;
+    default:
+      console.log("onClick; bad switch case");
+      break;
 
-cy.on('click', function(evt) {
+  }
+});
+
+function addNode(evt) {
   // lock the nodes to apply layout only on new node later
   evt.cy.nodes().lock();
   // add the new node
@@ -122,4 +143,32 @@ cy.on('click', function(evt) {
   layout.run();
   // unlock all nodes so the user can move them
   evt.cy.nodes().unlock();
-});
+}
+
+function addRelationship(evt) {
+  evt.cy.add({
+    group: 'edges',
+    data: {
+      source: evt.cy.relationshipSource,
+      target: evt.target.id()
+    },
+    style: {
+      'curve-style': 'bezier', //needed so arrows are drawn
+      'source-arrow-shape': 'triangle',
+      'source-arrow-color': 'grey',
+      'target-arrow-shape': 'triangle',
+      'target-arrow-color': 'grey',
+    }
+  });
+  document.getElementById('relationshipButton').style = null;
+}
+
+function defRelationship() {
+  if (cy.definingRelationship == 0) {
+    cy.definingRelationship = 1;
+    document.getElementById('relationshipButton').style.backgroundColor = 'lightblue';
+  } else {
+    cy.definingRelationship = 0;
+    document.getElementById('relationshipButton').style = null;
+  }
+}

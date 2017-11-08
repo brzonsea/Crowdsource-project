@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8"/>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.5/cytoscape.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+	<meta charset="utf-8"/>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.5/cytoscape.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 </head>
 <body>
+	<div class='container'>
+		<header>
+			<h1>Map it</h1>
+		</header>
+	</div>
 
-<div class='container'>
-  <header>
-    <h1>Map it</h1>
-  </header>
-</div>
+	<div id='structure-map'></div>
 
-  <div id='structure-map'></div>
-  <script type="text/javascript" src="js/graph.js"></script>
+	<button id="relationshipButton" onclick="defRelationship()">Define relationship</button>
+
+	<script type="text/javascript" src="js/graph.js"></script>
 </body>
 </html>

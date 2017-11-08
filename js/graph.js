@@ -159,13 +159,16 @@ function addRelationship(evt) {
       'target-arrow-shape': 'triangle',
       'target-arrow-color': 'grey',
     }
-  })
+  });
+  document.getElementById('relationshipButton').style = null;
 }
 
 function defRelationship() {
   if (cy.definingRelationship == 0) {
     cy.definingRelationship = 1;
+    document.getElementById('relationshipButton').style.backgroundColor = 'lightblue';
   } else {
     cy.definingRelationship = 0;
+    document.getElementById('relationshipButton').style = null;
   }
 }

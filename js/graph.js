@@ -6,12 +6,14 @@ var cy = cytoscape({
     {
       data: {
         id: 'a',
-        label: 'A'
+        label: 'A',
+        description: 'Quality control are methods to ensure high quality of crowd workers contributions.'
       }
     }, {
       data: {
         id: 'b',
-        label: 'B'
+        label: 'B',
+        description: 'Quality control are methods to ensure high quality of crowd workers contributions.'
       }
     }, {
       data: {
@@ -120,8 +122,34 @@ cy.nodes().on('click', function(evt) {
     default:
       console.log("onClick; bad switch case");
       break;
-
   }
+});
+
+cy.nodes().on('mouseover', function(evt) {
+  var anchor = document.createElement('div');
+  anchor.className = 'anchor';
+  
+  var targetPosition = evt.target.renderedPosition();
+  anchor.style.left = targetPosition.x  +'px';
+  anchor.style.top = (targetPosition.y + 50) +'px';
+  
+  document.getElementById('structure-map').appendChild(anchor);
+  
+  var div = document.createElement('div');
+
+  div.id = 'node-popup';
+  div.innerHTML = evt.target.data().description;
+
+  anchor.appendChild(div);
+});
+
+cy.nodes().on('mouseout', function(evt) {
+  var popup = document.getElementById('node-popup');
+  var anchor = popup.parentNode;
+  var structureMap = document.getElementById('structure-map');
+
+  anchor.removeChild(popup);
+  structureMap.removeChild(anchor);
 });
 
 function addNode(evt) {

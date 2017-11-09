@@ -110,6 +110,7 @@ cy.nodes().on('click', function(evt) {
       break;
     case 1:
       cy.relationshipSource = evt.target.id();
+      evt.target.style('background-color', 'lightblue');
       cy.definingRelationship += 1;
       break;
     case 2:
@@ -166,6 +167,7 @@ function addRelationship(evt) {
     }
   });
   document.getElementById('relationshipButton').style = null;
+  evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
 }
 
 function defRelationship() {

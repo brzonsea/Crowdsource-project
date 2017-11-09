@@ -49,15 +49,46 @@ div.course {
 	padding: 0em;
 }
 
-.mapbox {
+.mapbox_column {
   display: flex;
   flex-flow: column;
   height: 100%;
 }
+.w3-sidebar {
+	padding: 0.5em;
+}
+.sidebar_header{
+	font-size: 80%;
+	padding:10px;
+}
+.sidebar_box1{
+	width:180px;
+	height:150px;
+	border:1px solid black;
+	box-sizing: border-box;
+	padding:10px;
+}
+.sidebar_box2{
+	width:180px;
+	height:300px;
+	border:1px solid black;
+	box-sizing: border-box;
+	padding:10px;
+}
+.sidebar_box3{
+	width:180px;
+	height:800px;
+	border:1px solid black;
+	box-sizing: border-box;
+	padding:10px;
+}
+
+#content {
+	flex: 1 1 auto;
+}
 
 #structure-map {
-	flex: 1 1 auto;
-	/*overflow: hidden;*/
+	overflow: hidden;
 	height: 100%;
 	/*min-height: 100%;*/
 	/*margin-left: auto;*/

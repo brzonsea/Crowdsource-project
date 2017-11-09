@@ -1,6 +1,13 @@
-div.container {
+html,
+body {
+  height: 100%;
+  margin: 0
+}
+
+div.title {
 	width: 100%;
 	background: lightgray;
+	flex: 0 1 auto;
 	/*border: 1px solid gray;*/
 }
 
@@ -42,20 +49,33 @@ div.course {
 	padding: 0em;
 }
 
+.mapbox {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
 #structure-map {
-	width: 1200px;
-	height: 800px;
+	flex: 1 1 auto;
+	/*overflow: hidden;*/
+	height: 100%;
+	/*min-height: 100%;*/
 	/*margin-left: auto;*/
-  	/*margin-right: auto;*/
-  	display: block;
-  }
+	/*margin-right: auto;*/
+	display: block;
+}
+
+#relationshipButton {
+	flex: 0 1 2em;
+	width: 15em;
+}
 
 #node-popup {
 	width: 20em;
 	max-width: 20em;
 	padding: 1em;
 	margin-left: -50%;
-    float: left;
+	float: left;
 	background: white;
 	text-align: center;
 	color: darkgray;

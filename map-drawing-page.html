@@ -6,15 +6,19 @@
 	<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 </head>
 <body>
-	<div class='container'>
-		<header>
-			<h1>Map it</h1>
-		</header>
+
+	<div class="mapbox">
+		<div class='title'>
+			<header>
+				<h1>Map it</h1>
+			</header>
+		</div>
+
+		<div id='structure-map'></div>
+
+		<button id="relationshipButton" onclick="defRelationship()">Define relationship</button>
 	</div>
 
-	<div id='structure-map'></div>
-
-	<button id="relationshipButton" onclick="defRelationship()">Define relationship</button>
 
 	<script type="text/javascript" src="js/graph.js"></script>
 </body>

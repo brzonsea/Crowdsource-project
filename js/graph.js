@@ -71,8 +71,15 @@ var cy = cytoscape({
     {
       selector: 'node',
       style: {
-        'background-color': '#666',
-        'label': 'data(label)'
+        'background-color': 'white',
+        'label': 'data(label)',
+        'shape': 'ellipse',
+        'width': '10em',
+        'height': '5em',
+        'text-halign': 'center',
+        'text-valign': 'center',
+        'text-max-width': '10em',
+        'text-wrap': 'wrap',
       }
     },
 
@@ -80,9 +87,7 @@ var cy = cytoscape({
       selector: 'edge',
       style: {
         'width': 3,
-        'line-color': '#ccc',
-        'target-arrow-color': '#ccc',
-        'target-arrow-shape': 'triangle'
+        'line-color': 'grey',
       }
     }
   ],
@@ -105,6 +110,7 @@ cy.nodes().on('click', function(evt) {
       break;
     case 1:
       cy.relationshipSource = evt.target.id();
+      evt.target.style('background-color', 'lightblue');
       cy.definingRelationship += 1;
       break;
     case 2:
@@ -161,6 +167,7 @@ function addRelationship(evt) {
     }
   });
   document.getElementById('relationshipButton').style = null;
+  evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
 }
 
 function defRelationship() {

@@ -49,3 +49,19 @@ div.course {
   	/*margin-right: auto;*/
   	display: block;
   }
+
+#node-popup {
+	width: 20em;
+	max-width: 20em;
+	padding: 1em;
+	margin-left: -50%;
+    float: left;
+	background: white;
+	text-align: center;
+	color: darkgray;
+	border:1px solid darkgray;
+}
+
+div.anchor {
+	position: absolute;
+}

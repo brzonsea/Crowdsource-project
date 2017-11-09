@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.5/cytoscape.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+</head>
+<body>
+
+	<div class="mapbox_column">
+		<div class='title'>
+			<header>
+				<h1>Map it</h1>
+			</header>
+		</div>
+
+		<div id="content">
+			<div style="height: 2px;"></div>
+			<div>
+				<div class="w3-sidebar w3-bar-block w3-collapse" style="width:200px;right:0" id="mySidebar">
+				<button class="w3-bar-item w3-button w3-hide-large"
+				  onclick="w3_close()">Close &times;</button> 
+					
+
+					<h6 class="sidebar_header"> Node </h6>
+					<div> 
+						<form>
+							<input type="text" class="sidebar_box1">
+						</form>
+					</div>
+					<h6 class="sidebar_header"> Notes </h6>
+					<div>
+						<form>
+							<input type="text" class="sidebar_box2">
+						</form>
+					</div>
+					<h6 class="sidebar_header"> Comments </h6>
+					<div>
+						<form>
+							<input type="text" class="sidebar_box3">
+						</form> 
+					</div>
+
+				</div>
+			</div>
+			<div id='structure-map'></div>
+		</div>
+
+
+
+		<button id="relationshipButton" onclick="defRelationship()">Define relationship</button>
+	</div>
+
+<!-- 	<script>
+	function w3_open() {
+	  document.getElementById("mySidebar").style.display = "block";
+	}
+	function w3_close() {
+	  document.getElementById("mySidebar").style.display = "none";
+	}
+	</script> -->
+
+	<script type="text/javascript" src="js/graph.js"></script>
+</body>
+</html>

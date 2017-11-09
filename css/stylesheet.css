@@ -1,6 +1,13 @@
-div.container {
+html,
+body {
+  height: 100%;
+  margin: 0
+}
+
+div.title {
 	width: 100%;
 	background: lightgray;
+	flex: 0 1 auto;
 	/*border: 1px solid gray;*/
 }
 
@@ -40,4 +47,72 @@ div.course {
 	color: darkgray;
 	font-size: xx-large;
 	padding: 0em;
+}
+
+.mapbox_column {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+.w3-sidebar {
+	padding: 0.5em;
+}
+.sidebar_header{
+	font-size: 80%;
+	padding:10px;
+}
+.sidebar_box1{
+	width:180px;
+	height:150px;
+	border:1px solid black;
+	box-sizing: border-box;
+	padding:10px;
+}
+.sidebar_box2{
+	width:180px;
+	height:300px;
+	border:1px solid black;
+	box-sizing: border-box;
+	padding:10px;
+}
+.sidebar_box3{
+	width:180px;
+	height:800px;
+	border:1px solid black;
+	box-sizing: border-box;
+	padding:10px;
+}
+
+#content {
+	flex: 1 1 auto;
+}
+
+#structure-map {
+	overflow: hidden;
+	height: 100%;
+	/*min-height: 100%;*/
+	/*margin-left: auto;*/
+	/*margin-right: auto;*/
+	display: block;
+}
+
+#relationshipButton {
+	flex: 0 1 2em;
+	width: 15em;
+}
+
+#node-popup {
+	width: 20em;
+	max-width: 20em;
+	padding: 1em;
+	margin-left: -50%;
+	float: left;
+	background: white;
+	text-align: center;
+	color: darkgray;
+	border:1px solid darkgray;
+}
+
+div.anchor {
+	position: absolute;
 }

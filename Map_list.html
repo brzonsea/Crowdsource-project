@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+
+div.container {
+	width: 100%;
+	background: white;
+	/*border: 1px solid gray;*/
+}
+
+div.layout {
+	display: block;
+	width: 100%;
+	background: lightgray;
+}
+
+body {
+	margin: 0;
+	background: lightgray;
+	font-size: large;
+}
+
+div.course {
+	width: 10em;
+	max-width: 10em;
+	height: 7.5em;
+	max-height: 7.5em;
+	float: left;
+	background: white;
+	text-align: left;
+	color: darkgray;
+	font-size: xx-large;
+	padding: 0.5em;
+	margin-bottom: 1em;
+	margin-left: 1em;
+	margin-right: 1em;
+	position: relative;
+}
+
+p {
+	margin-top: 2em;
+	margin-left: 1.2em;
+	color: gray;
+	font-size: 1.5em;
+}
+
+#login p {
+	margin: 0em;
+	margin-right: 1em;
+	margin-top: 0.5em;
+	color: gray;
+	text-align: center;
+	font-size: large;
+}
+
+#map_name p {
+	font-size: 25px;
+	margin: 0em;
+}
+
+span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#plus img {
+	margin: auto;
+	display: block;
+	margin: auto;
+   	position: absolute;
+   	top: 0; 
+   	left: 0; 
+   	bottom: 0; 
+   	right: 0;
+}
+
+</style>
+</head>
+
+
+
+<body>
+
+<div class='container'>
+  <header>
+  	<img src="logo_0.1.png" alt = "Logo" width="120" height="30" style="margin: 0.25em">
+  	<div class='p' id='login' style="float: right;">
+  		<p>mikolez@kaist.ac.kr</p>
+  	</div>
+	<!-- <input id="image" type="image" src="https://raw.githubusercontent.com/brzonsea/Crowdsource-project/master/logo_0.1.png" width = "140" height = "35" margin-left = "10"> -->
+  </header>
+</div>
+
+
+<p>My Maps</p>
+
+<div class="course" id="Team_4">
+<!-- 	<button id="myButton" class="float-left submit-button">cvzb</button>
+ -->
+	<div class="p" id="map_name">
+		<p>Team 4</p>
+	</div>
+</div>
+<div class="course" id="plus">
+	<img src="plus.png" alt = "Plus" width="60" height="60">
+</div>
+
+<p style="clear:both">Shared Maps</p>
+
+<div class="course">
+	<div class="p" id="map_name">
+			<p>Awesone Group</p>
+		</div>
+</div>
+<div class="course">
+	<div class="p" id="map_name">
+			<p>Adi and Friends</p>
+		</div>
+</div>
+<div class="course">
+	<span>
+		<div class="p" id="map_name">
+			<p>Andreas and the Chocolate Factory</p>
+		</div>
+	</span>
+</div>
+
+
+</body>
+
+<script type="text/javascript">
+	    document.getElementById("Team_4").onclick = function () {
+	        window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
+	    };
+</script>
+
+</html>
+

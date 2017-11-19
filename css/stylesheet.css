@@ -52,11 +52,8 @@ div.course {
 }
 .w3-sidebar {
 	padding: 0.5em;
-<<<<<<< 304487c50ad826cd6039a13a9944c92ec41581e3
-	background-color: #fff;
-=======
 	z-index: 100;
->>>>>>> Added load and save button for database
+	background-color: #fff;
 }
 .sidebar_header{
 	font-size: 80%;

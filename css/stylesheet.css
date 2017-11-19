@@ -64,6 +64,7 @@ div.course {
 	border:1px solid black;
 	box-sizing: border-box;
 	padding:10px;
+	resize: none;
 }
 .sidebar_summary{
 	width:100%;
@@ -71,6 +72,7 @@ div.course {
 	border:1px solid black;
 	box-sizing: border-box;
 	padding:10px;
+	resize: none;
 }
 .sidebar_comments{
 	width:100%;
@@ -78,6 +80,7 @@ div.course {
 	border:1px solid black;
 	box-sizing: border-box;
 	padding:10px;
+	resize: none;
 }
 
 #sidebar {
@@ -93,7 +96,7 @@ div.course {
 	bottom: 0;
 	left: 0;
 	top: 57px;
-	right: 200px;
+	right: 0;
 }
 
 #relationshipButton {

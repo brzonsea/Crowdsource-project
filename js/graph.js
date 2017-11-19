@@ -7,13 +7,13 @@ var cy = cytoscape({
 			data: {
 				id: 'a',
 				label: 'A',
-				description: 'Quality control are methods to ensure high quality of crowd workers contributions.'
+				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.'
 			}
 		}, {
 			data: {
 				id: 'b',
 				label: 'B',
-				description: 'Quality control are methods to ensure high quality of crowd workers contributions.'
+				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.'
 			}
 		}, {
 			data: {
@@ -100,16 +100,43 @@ var cy = cytoscape({
 
 });
 
+var setSidebarVisible = function(setVisible){
+	var displayStyle = setVisible ? null : 'none';
+	var children = document.getElementById('mySidebar').querySelectorAll('*');
+	for (var i = children.length - 1; i >= 0; i--) {
+		children[i].style.display = displayStyle;
+	}
+}
+
+window.onload = function(){
+	setSidebarVisible(false);
+}
+
+cy.on('click', function(evt){
+	if (!evt.target.group) {
+		setSidebarVisible(false);
+	}
+});
+
+cy.activeNode = null;
+
 /**
  * State variable, signalling if the user is currently defining a relationship
+ * 0: not defining relationship
+ * 1: defining relationship; start node NOT specified
+ * 2: defining relationship; start node was specified
  */
 cy.definingRelationship = 0;
 cy.relationshipSource = null;
 
 cy.nodes().on('click', function(evt) {
+	setSidebarVisible(true);
+
 	switch (evt.cy.definingRelationship) {
 		case 0:
-			addNode(evt);
+			cy.activeNode = evt.target;
+			document.getElementById('titleInput').value = cy.activeNode.data('label');
+			document.getElementById('summaryInput').value = cy.activeNode.data('summary');
 			break;
 		case 1:
 			cy.relationshipSource = evt.target.id();
@@ -139,7 +166,7 @@ cy.nodes().on('mouseover', function(evt) {
 	var div = document.createElement('div');
 
 	div.id = 'node-popup';
-	div.innerHTML = evt.target.data().description;
+	div.innerHTML = evt.target.data().summary;
 
 	anchor.appendChild(div);
 });
@@ -179,6 +206,18 @@ function addNode(evt) {
 	// unlock all nodes so the user can move them
 	evt.cy.nodes().unlock();
 }
+
+updateTitle = function(){
+	cy.activeNode.data('label', this.value);
+}
+var titleInput = document.getElementById('titleInput');
+titleInput.oninput = updateTitle;
+
+updateSummary = function(){
+	cy.activeNode.data('summary', this.value);
+}
+var summaryInput = document.getElementById('summaryInput');
+summaryInput.oninput = updateSummary;
 
 function addRelationship(evt) {
 	evt.cy.add({

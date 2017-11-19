@@ -14,56 +14,46 @@
 		<div class='title'>
 			<header>
 				<a href="course-overview.html">
-				 	<img src="logo_0.1.png" alt="Map it" style="width:150px">
+				 	<img src="logo_0.1.png" alt="Map it" style="width:150px;margin:8px;">
 				</a>
 			</header>
 		</div>
 
-		<div id="content">
-			<div style="height: 2px;"></div>
+		<div id="sidebar">
+			<div style="height: 3px;"></div>
 			<div>
-				<div class="w3-sidebar w3-bar-block w3-collapse" style="width:200px;right:0" id="mySidebar">
-				<button class="w3-bar-item w3-button w3-hide-large"
-				  onclick="w3_close()">Close &times;</button> 
-					
+				<button id="relationshipButton" onclick="defRelationship()">
+					Define relationship
+				</button>
+				<div class="w3-sidebar" style="width:200px;right:0" id="mySidebar">
 
-					<h6 class="sidebar_header"> Node </h6>
+					<h6 class="sidebar_header"> Title </h6>
 					<div> 
 						<form>
-							<input type="text" class="sidebar_box1">
+							<input type="text" class="sidebar_title">
 						</form>
 					</div>
-					<h6 class="sidebar_header"> Notes </h6>
+					<h6 class="sidebar_header"> Summary </h6>
 					<div>
 						<form>
-							<input type="text" class="sidebar_box2">
+							<input type="text" class="sidebar_summary">
 						</form>
 					</div>
 					<h6 class="sidebar_header"> Comments </h6>
 					<div>
 						<form>
-							<input type="text" class="sidebar_box3">
+							<input type="text" class="sidebar_comments">
 						</form> 
 					</div>
 
 				</div>
 			</div>
-			<!-- <div id='structure-map'></div> -->
 		</div>
+
 		<div id='structure-map'></div>
 
 
-		<button id="relationshipButton" onclick="defRelationship()">Define relationship</button>
 	</div>
-
-<!-- 	<script>
-	function w3_open() {
-	  document.getElementById("mySidebar").style.display = "block";
-	}
-	function w3_close() {
-	  document.getElementById("mySidebar").style.display = "none";
-	}
-	</script> -->
 
 	<script type="text/javascript" src="js/graph.js"></script>
 </body>

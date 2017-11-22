@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<style>
+body {
+    background-color: #eeeeff;
+}
+
+input[type=text], select {
+    width: 25%;
+    font-family:Comic Sans MS;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+input[type=button] {
+    width: 25%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family:Comic Sans MS;
+}
+
+.center {
+    text-align: center;
+    border: 3px;
+}
+
+
+.test {
+    width: 25%;
+    background-color: #11111;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family:Comic Sans MS;
+    
+}
+
+
+
+
+
+input[type=button]:hover {
+    background-color: #45a049;
+}
+
+div {
+	margin: auto;
+    border-radius: 5px;
+    background-color: #eeeeff;
+    padding: 20px;
+}
+</style>
+<body>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="center">
+  <form action="course-overview.html">
+  	<p style="font-size:200%;font-family:Comic Sans MS;"> Sign up </p>
+    <input type="text" id="fname" name="firstname" placeholder="Username">
+    <br>
+    <input type="text" id="lname" name="lastname" placeholder="Password">
+    
+    <br>
+
+
+    <button onclick="signup()"> Sign up </button>
+
+    </form>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+<script>
+     // Initialize Firebase
+        var config = {
+
+            apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
+            authDomain: "adipro-5bbe6.firebaseapp.com",
+            databaseURL: "https://adipro-5bbe6.firebaseio.com",
+            projectId: "adipro-5bbe6",
+            storageBucket: "",
+            messagingSenderId: "14626937593"
+
+        };
+
+        firebase.initializeApp(config);
+
+        var database = firebase.database();
+        var mapref = database.ref("accounts");
+        
+        function signup() {
+            //console.log("Populating map2ref database...");
+            mapref.push({
+                username: "asdsa",
+                password: "asdas"
+            });
+            window.location = "./course-overview.html";
+        }
+
+</script>
+
+</body>
+</html>

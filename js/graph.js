@@ -26,18 +26,21 @@ var cy = cytoscape({
 			data: {
 				id: 'a',
 				label: 'A',
-				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.'
+				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
+				childNode: 'b',
 			}
 		}, {
 			data: {
 				id: 'b',
 				label: 'B',
-				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.'
+				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
+				childNode: 'c',
 			}
 		}, {
 			data: {
 				id: 'c',
-				label: 'C'
+				label: 'C',
+				childNode: 'd',
 			}
 		}, {
 			data: {
@@ -119,7 +122,7 @@ var cy = cytoscape({
 
 });
 
-var setSidebarVisible = function(setVisible){
+var setSidebarVisible = function(setVisible) {
 	var displayStyle = setVisible ? null : 'none';
 	var children = document.getElementById('mySidebar').querySelectorAll('*');
 	for (var i = children.length - 1; i >= 0; i--) {
@@ -127,11 +130,11 @@ var setSidebarVisible = function(setVisible){
 	}
 }
 
-window.onload = function(){
+window.onload = function() {
 	setSidebarVisible(false);
 }
 
-cy.on('click', function(evt){
+cy.on('click', function(evt) {
 	if (!evt.target.group) {
 		setSidebarVisible(false);
 	}
@@ -206,9 +209,10 @@ function addNode(evt) {
 	var element = evt.cy.add({
 		group: "nodes",
 		data: {
-			label: "New Node"
+			label: "New Node",
 		}
 	});
+	target.data('childNode', element.id());
 	// add edge between new node and target
 	evt.cy.add({
 		group: 'edges',
@@ -226,13 +230,13 @@ function addNode(evt) {
 	evt.cy.nodes().unlock();
 }
 
-updateTitle = function(){
+updateTitle = function() {
 	cy.activeNode.data('label', this.value);
 }
 var titleInput = document.getElementById('titleInput');
 titleInput.oninput = updateTitle;
 
-updateSummary = function(){
+updateSummary = function() {
 	cy.activeNode.data('summary', this.value);
 }
 var summaryInput = document.getElementById('summaryInput');
@@ -255,6 +259,29 @@ function addRelationship(evt) {
 	});
 	document.getElementById('relationshipButton').style = null;
 	evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
+}
+
+function deleteNode() {
+	if (confirm("This will delete the current node and all its child nodes!") == true) {
+		var nodesToDelete = [];
+		var targetNode = cy.activeNode;
+		nodesToDelete.push(targetNode.id());
+
+		while (targetNode.data().childNode != undefined) {
+			targetNode = cy.getElementById(targetNode.data().childNode);
+			nodesToDelete.push(targetNode.id());
+		}
+		cy.nodes().forEach(function(ele){
+			if (ele.data().childNode == cy.activeNode.id()) {
+				delete ele.data().childNode;
+			}
+		});
+		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
+			cy.remove(cy.getElementById(nodesToDelete[i])); 
+		}
+	} else {
+		return;
+	}
 }
 
 function defRelationship() {

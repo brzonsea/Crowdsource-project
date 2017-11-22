@@ -22,10 +22,16 @@
 		<div id="content">
 			<div style="height: 2px;"></div>
 			<div>
-				<div class="w3-sidebar w3-bar-block w3-collapse" style="width:200px;right:0" id="mySidebar">
-				<button class="w3-bar-item w3-button w3-hide-large"
-				  onclick="w3_close()">Close &times;</button> 
-					
+				<div class="w3-sidebar" style="width:200px;right:0" id="mySidebar">
+					<button class="sidebarButton" id="relationshipButton" onclick="defRelationship()">
+						Define relationship
+					</button>
+					<button class="sidebarButton" id="saveButton" onclick="saveMap()">
+						Save
+					</button>
+					<button class="sidebarButton" id="loadButton" onclick="loadMap()">
+						Load
+					</button>
 
 					<h6 class="sidebar_header"> Node </h6>
 					<div> 
@@ -51,20 +57,8 @@
 			<!-- <div id='structure-map'></div> -->
 		</div>
 		<div id='structure-map'></div>
-
-
-		<button id="relationshipButton" onclick="defRelationship()">Define relationship</button>
 	</div>
-
-<!-- 	<script>
-	function w3_open() {
-	  document.getElementById("mySidebar").style.display = "block";
-	}
-	function w3_close() {
-	  document.getElementById("mySidebar").style.display = "none";
-	}
-	</script> -->
-
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
 	<script type="text/javascript" src="js/graph.js"></script>
 </body>
 </html>

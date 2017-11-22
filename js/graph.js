@@ -13,6 +13,10 @@ var config = {
 firebase.initializeApp(config);
 var database = firebase.database();
 
+var user = {
+	name: 'MisterSmart'
+}
+
 var cy = cytoscape({
 
 	container: document.getElementById('structure-map'), // container to render in
@@ -264,46 +268,39 @@ function defRelationship() {
 }
 
 function saveMap() {
-	console.log('Save Database!');
-	console.log(cy.json());
 	var mapref = database.ref("maps2");
 
 	var mapJson = cy.json();
-	mapJson = JSON.parse(JSON.stringify(mapJson));
 
 	for (obj in mapJson) {
-		console.log(obj);
 	 	if(mapJson[obj] == undefined) {
-	 		console.log('Found undefined1');
 	 		delete mapJson[obj];
 	 	}
 	 }
 
-	console.log(mapJson);
-
 	mapref.push({
-		name: 'Adi',
+		name: user.name,
 		json: mapJson,
 	});
 
-	cy = null;
+	cy = cytoscape({
+		container: document.getElementById('structure-map'), // container to render in
+	});
 }
 
 function loadMap() {
 	var mapref = database.ref("maps2");
 
-	// var map2ref = database.ref('maps/maps2');
-
-	var map;
-
 	var myMap = mapref.once('value', function(maps) {
+		var map;
 		maps.forEach(function(child) {
-			if (child.val().name = 'Adi') {
+			if (child.val().name == user.name) {
 				map = child.val().json;
 			}
-		})
-		console.log(map);
+		})	
+		cy = cytoscape({
+			container: document.getElementById('structure-map'), // container to render in
+		});
+		cy.json(map);
 	});
-
-	cy.json(map);
 }

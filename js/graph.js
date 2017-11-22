@@ -1,3 +1,18 @@
+// Initialize Firebase
+var config = {
+
+	apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
+	authDomain: "adipro-5bbe6.firebaseapp.com",
+	databaseURL: "https://adipro-5bbe6.firebaseio.com",
+	projectId: "adipro-5bbe6",
+	storageBucket: "",
+	messagingSenderId: "14626937593"
+
+};
+
+firebase.initializeApp(config);
+var database = firebase.database();
+
 var cy = cytoscape({
 
 	container: document.getElementById('structure-map'), // container to render in
@@ -246,4 +261,49 @@ function defRelationship() {
 		cy.definingRelationship = 0;
 		document.getElementById('relationshipButton').style = null;
 	}
+}
+
+function saveMap() {
+	console.log('Save Database!');
+	console.log(cy.json());
+	var mapref = database.ref("maps2");
+
+	var mapJson = cy.json();
+	mapJson = JSON.parse(JSON.stringify(mapJson));
+
+	for (obj in mapJson) {
+		console.log(obj);
+	 	if(mapJson[obj] == undefined) {
+	 		console.log('Found undefined1');
+	 		delete mapJson[obj];
+	 	}
+	 }
+
+	console.log(mapJson);
+
+	mapref.push({
+		name: 'Adi',
+		json: mapJson,
+	});
+
+	cy = null;
+}
+
+function loadMap() {
+	var mapref = database.ref("maps2");
+
+	// var map2ref = database.ref('maps/maps2');
+
+	var map;
+
+	var myMap = mapref.once('value', function(maps) {
+		maps.forEach(function(child) {
+			if (child.val().name = 'Adi') {
+				map = child.val().json;
+			}
+		})
+		console.log(map);
+	});
+
+	cy.json(map);
 }

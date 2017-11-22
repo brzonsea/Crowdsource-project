@@ -52,7 +52,11 @@ div.course {
 }
 .w3-sidebar {
 	padding: 0.5em;
+<<<<<<< 304487c50ad826cd6039a13a9944c92ec41581e3
 	background-color: #fff;
+=======
+	z-index: 100;
+>>>>>>> Added load and save button for database
 }
 .sidebar_header{
 	font-size: 80%;
@@ -95,12 +99,15 @@ div.course {
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	top: 57px;
-	right: 0;
+	top: 41px;
+	right: 200px;
+	z-index: 1;
 }
 
-#relationshipButton {
+.sidebarButton {
+	flex: 0 1 2em;
 	width: 100%;
+	z-index: 100;
 }
 
 #node-popup {

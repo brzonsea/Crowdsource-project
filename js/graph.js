@@ -282,10 +282,6 @@ function saveMap() {
 		name: user.name,
 		json: mapJson,
 	});
-
-	cy = cytoscape({
-		container: document.getElementById('structure-map'), // container to render in
-	});
 }
 
 function loadMap() {

@@ -126,7 +126,9 @@ var setSidebarVisible = function(setVisible) {
 	var displayStyle = setVisible ? null : 'none';
 	var children = document.getElementById('mySidebar').querySelectorAll('*');
 	for (var i = children.length - 1; i >= 0; i--) {
-		children[i].style.display = displayStyle;
+		if (children[i].id != 'relationshipButton') {
+			children[i].style.display = displayStyle;
+		}
 	}
 }
 
@@ -137,6 +139,7 @@ window.onload = function() {
 cy.on('click', function(evt) {
 	if (!evt.target.group) {
 		setSidebarVisible(false);
+		cy.activeNode = null;
 	}
 });
 
@@ -152,10 +155,10 @@ cy.definingRelationship = 0;
 cy.relationshipSource = null;
 
 cy.nodes().on('click', function(evt) {
-	setSidebarVisible(true);
 
 	switch (evt.cy.definingRelationship) {
 		case 0:
+			setSidebarVisible(true);
 			cy.activeNode = evt.target;
 			document.getElementById('titleInput').value = cy.activeNode.data('label');
 			document.getElementById('summaryInput').value = cy.activeNode.data('summary');
@@ -181,7 +184,7 @@ cy.nodes().on('mouseover', function(evt) {
 
 	var targetPosition = evt.target.renderedPosition();
 	anchor.style.left = targetPosition.x + 'px';
-	anchor.style.top = (targetPosition.y + 50) + 'px';
+	anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
 
 	document.getElementById('structure-map').appendChild(anchor);
 
@@ -191,6 +194,12 @@ cy.nodes().on('mouseover', function(evt) {
 	div.innerHTML = evt.target.data().summary;
 
 	anchor.appendChild(div);
+
+	cy.on('position', '#' + evt.target.id(), function(evt) {
+		targetPosition = evt.target.renderedPosition();
+		anchor.style.left = targetPosition.x + 'px';
+		anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
+	})
 });
 
 cy.nodes().on('mouseout', function(evt) {
@@ -271,13 +280,13 @@ function deleteNode() {
 			targetNode = cy.getElementById(targetNode.data().childNode);
 			nodesToDelete.push(targetNode.id());
 		}
-		cy.nodes().forEach(function(ele){
+		cy.nodes().forEach(function(ele) {
 			if (ele.data().childNode == cy.activeNode.id()) {
 				delete ele.data().childNode;
 			}
 		});
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
-			cy.remove(cy.getElementById(nodesToDelete[i])); 
+			cy.remove(cy.getElementById(nodesToDelete[i]));
 		}
 	} else {
 		return;
@@ -286,9 +295,19 @@ function deleteNode() {
 
 function defRelationship() {
 	if (cy.definingRelationship == 0) {
-		cy.definingRelationship = 1;
+		if (cy.activeNode == null) {
+			// no active Node
+			cy.definingRelationship = 1;
+		} else {
+			// active Node will automatically be source of relationship
+			cy.definingRelationship = 2;
+			cy.relationshipSource = cy.activeNode.id();
+		}
 		document.getElementById('relationshipButton').style.backgroundColor = 'lightblue';
 	} else {
+		if (cy.definingRelationship == 2 && cy.activeNode == null) {
+			cy.getElementById(cy.relationshipSource).removeStyle();
+		}
 		cy.definingRelationship = 0;
 		document.getElementById('relationshipButton').style = null;
 	}
@@ -300,10 +319,10 @@ function saveMap() {
 	var mapJson = cy.json();
 
 	for (obj in mapJson) {
-	 	if(mapJson[obj] == undefined) {
-	 		delete mapJson[obj];
-	 	}
-	 }
+		if (mapJson[obj] == undefined) {
+			delete mapJson[obj];
+		}
+	}
 
 	mapref.push({
 		name: user.name,
@@ -320,7 +339,7 @@ function loadMap() {
 			if (child.val().name == user.name) {
 				map = child.val().json;
 			}
-		})	
+		})
 		cy = cytoscape({
 			container: document.getElementById('structure-map'), // container to render in
 		});

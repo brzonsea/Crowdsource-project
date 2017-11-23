@@ -125,18 +125,15 @@ var cy = cytoscape({
 var setSidebarVisible = function(setVisible) {
 	var displayStyle = setVisible ? null : 'none';
 	var children = document.getElementById('mySidebar').querySelectorAll('*');
-	var addNodeButton = document.getElementById("addNodeButton");
 	for (var i = children.length - 1; i >= 0; i--) {
 		if (children[i].id != 'relationshipButton') {
 			children[i].style.display = displayStyle;
 		}
 	}
-	addNodeButton.style.display = displayStyle;
 }
 
 window.onload = function() {
 	setSidebarVisible(false);
-	console.log(cy.nodes());
 }
 
 
@@ -242,9 +239,6 @@ var nodeOnClick = function(evt) {
 	}
 };
 
-// TODO own onClick function needed?
-cy.edges().on('click', nodeOnClick);
-
 // cy.nodes().on('mouseover', function(evt) {
 // 	var anchor = document.createElement('div');
 // 	anchor.className = 'anchor';
@@ -278,11 +272,11 @@ cy.edges().on('click', nodeOnClick);
 // 	structureMap.removeChild(anchor);
 // });
 
-function addNode() {
+function addNode(evt) {
 	// lock the nodes to apply layout only on new node later
-	cy.nodes().lock();
+	evt.cy.nodes().lock();
 	// add the new node
-	var element = cy.add({
+	var element = evt.cy.add({
 		group: "nodes",
 		data: {
 			label: "New Node",
@@ -290,11 +284,11 @@ function addNode() {
 	});
 	target.data('childNode', element.id());
 	// add edge between new node and target
-	cy.add({
+	evt.cy.add({
 		group: 'edges',
 		data: {
 			source: element.id(),
-			target: cy.activeNode.id()
+			target: evt.target.id()
 		}
 	});
 	// apply layout to move new node to appropriate position
@@ -303,9 +297,7 @@ function addNode() {
 	});
 	layout.run();
 	// unlock all nodes so the user can move them
-	cy.nodes().unlock();
-	console.log(cy.nodes());
-	element.on('click', onNodeClick);
+	evt.cy.nodes().unlock();
 }
 
 updateTitle = function() {
@@ -415,4 +407,3 @@ function loadMap() {
 		cy.json(map);
 	});
 }
-

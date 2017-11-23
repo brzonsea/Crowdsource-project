@@ -26,9 +26,6 @@
 					<button class="sidebarButton" id="relationshipButton" onclick="defRelationship()">
 						Define relationship
 					</button>
-					<button class="sidebarButton" id="addNodeButton" onclick="addNode()">
-						Add New Node
-					</button>
 					<button class="sidebarButton" id="deleteButton" onclick="deleteNode()">
 						Delete Node
 					</button>
@@ -38,6 +35,7 @@
 					<button class="sidebarButton" id="loadButton" onclick="loadMap()">
 						Load
 					</button>
+
 					<h6 class="sidebar_header"> Title </h6>
 					<div> 
 						<form>
@@ -60,7 +58,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div id='structure-map'></div>
 	</div>
 	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>

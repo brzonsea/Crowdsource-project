@@ -14,6 +14,46 @@ input[type=text], select {
     border-radius: 8px;
     box-sizing: border-box;
 }
+.test {
+    width: 25%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.test:hover {
+    width: 25%;
+    background-color: #45a049;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.purple {
+    width: 25%;
+    background-color: #990099;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.purple:hover {
+    width: 25%;
+    background-color: #660066;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
 input[type=button] {
     width: 25%;
@@ -55,17 +95,74 @@ div {
 <br>
 
 <div class="center">
-  <form action="login.html">
   	<p style="font-size:200%;font-family:Comic Sans MS;"> Login </p>
-    <input type="text" id="fname" name="firstname" placeholder="Username">
+    <input type="text" id="id" name="username" placeholder="Username">
     <br>
-    <input type="text" id="lname" name="lastname" placeholder="Password">
+    <input type="text" id="pw" name="password" placeholder="Password">
     <br>
-    <a href="./course-overview.html">
-   	<input type="button" value="Log in" />
-	</a>
-  </form>
+    <button class="test" id='login_button' onclick="login()"> Log in </button>
+    <br>
+	<button class="purple" id='signup_button' onclick="window.location = './signup.html'"> Sign up </button>
 </div>
+
+
+<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+<script>
+     // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
+            authDomain: "adipro-5bbe6.firebaseapp.com",
+            databaseURL: "https://adipro-5bbe6.firebaseio.com",
+            projectId: "adipro-5bbe6",
+            storageBucket: "",
+            messagingSenderId: "14626937593"
+        };
+        firebase.initializeApp(config);
+        var database = firebase.database();
+        var mapref = database.ref("accounts");
+        // function initApp(){
+        //   document.getElementById('login_button').addEventListener('click', login);
+        // }
+        window.onload = function() {
+           initApp();
+         }
+        function login() {
+            //console.log("Populating map2ref database...");
+            // mapref.push({
+            //     username: "asdsa",
+            //     password: "asdas"
+            // });
+            var Username = document.getElementById('id').value;
+            var Password = document.getElementById('pw').value;
+            firebase.auth().signInWithEmailAndPassword(Username, Password).then(function(result) {
+                  // This gives you a Google Access Token. You can use it to access the Google API.
+                  // var token = result.credential.accessToken;
+                  // // The signed-in user info.
+                  // var user = result.user;
+                  window.location = './course-overview.html';
+                  // ...
+                }).catch(function(error) {
+                  // Handle Errors here.
+                  var errorCode = error.code;
+                  var errorMessage = error.message;
+                  // [START_EXCLUDE]
+                  if (errorCode === 'auth/wrong-password') {
+                    alert('Wrong password.');
+                  } else {
+                    //alert(errorMessage);
+                  }
+                  console.log(error);
+                  document.getElementById('quickstart-sign-in').disabled = false;
+                  // [END_EXCLUDE]
+                });
+                // [END authwithemail]
+        };
+ 
+</script>
+
+</body>
+</html>
 
 </body>
 </html>

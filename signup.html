@@ -32,8 +32,26 @@ input[type=button] {
     text-align: center;
     border: 3px;
 }
-
-
+.purple {
+    width: 25%;
+    background-color: #990099;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.purple:hover {
+    width: 25%;
+    background-color: #660066;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
 .test {
     width: 25%;
     background-color: #11111;
@@ -44,11 +62,7 @@ input[type=button] {
     border-radius: 8px;
     cursor: pointer;
     font-family:Comic Sans MS;
-    
 }
-
-
-
 
 
 input[type=button]:hover {
@@ -74,49 +88,116 @@ div {
 <br>
 
 <div class="center">
-  <form action="course-overview.html">
-  	<p style="font-size:200%;font-family:Comic Sans MS;"> Sign up </p>
-    <input type="text" id="fname" name="firstname" placeholder="Username">
+    <p style="font-size:200%;font-family:Comic Sans MS;"> Sign up </p>
+    <input type="text" id="id" name="username" placeholder="Username">
     <br>
-    <input type="text" id="lname" name="lastname" placeholder="Password">
-    
+    <input type="text" id="pw" name="password" placeholder="Password">
     <br>
-
-
-    <button onclick="signup()"> Sign up </button>
-
-    </form>
+    <button class="purple" id='mybutton' > Sign up </button>
 </div>
 
+
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
 <script>
      // Initialize Firebase
         var config = {
-
             apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
             authDomain: "adipro-5bbe6.firebaseapp.com",
             databaseURL: "https://adipro-5bbe6.firebaseio.com",
             projectId: "adipro-5bbe6",
             storageBucket: "",
             messagingSenderId: "14626937593"
-
         };
-
         firebase.initializeApp(config);
-
         var database = firebase.database();
         var mapref = database.ref("accounts");
+        function initApp(){
+          document.getElementById('mybutton').addEventListener('click', signup);
+        }
+        window.onload = function() {
+           initApp();
+         }
+        
+        // firebase.auth().createUserWithEmailAndPassword(Username, Password).catch(function(error) {
+        //     // Handle Errors here.
+        //     var errorCode = error.code;
+        //     var errorMessage = error.message;
+        //      // [START_EXCLUDE]
+        //     if (errorCode == 'auth/weak-password') {
+        //       alert('The password is too weak.');
+        //     } else {
+        //       alert(errorMessage);
+        //     }
+        //     console.log(error);
+        //     // [END_EXCLUDE]
+        // });
         
         function signup() {
             //console.log("Populating map2ref database...");
-            mapref.push({
-                username: "asdsa",
-                password: "asdas"
+            // mapref.push({
+            //     username: "asdsa",
+            //     password: "asdas"
+            // });
+            var Username = document.getElementById('id').value;
+            var Password = document.getElementById('pw').value;
+            firebase.auth().createUserWithEmailAndPassword(Username, Password).then(function(user){
+              window.location = './course-overview.html';
+            }).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                 // [START_EXCLUDE]
+                if (errorCode == 'auth/weak-password') {
+                  alert('The password is too weak.');
+                } else {
+                  alert(errorMessage);
+                }
+                console.log(error);
+                // [END_EXCLUDE]
+            
             });
-            window.location = "./course-overview.html";
+            // // Sign in with email and pass.
+            // // [START createwithemail]
+            // firebase.auth().signInWithPopup(provider).then(function(result) {
+            // // This gives you a Google Access Token. You can use it to access the Google API.
+            // var token = result.credential.accessToken;
+            // // The signed-in user info.
+            // var user = result.user;
+            // // ...
+            // }).
+            // firebase.auth().signInWithEmailAndPassword(Username, Password).then(function(result) {
+            //   // This gives you a Google Access Token. You can use it to access the Google API.
+            //   var token = result.credential.accessToken;
+            //   // The signed-in user info.
+            //   var user = result.user;
+            //   window.location = './course-overview.html';
+            //   // ...
+            // }).catch(function(error) {
+            //   // Handle Errors here.
+            //   var errorCode = error.code;
+            //   var errorMessage = error.message;
+            //   // [START_EXCLUDE]
+            //   if (errorCode === 'auth/wrong-password') {
+            //     alert('Wrong password.');
+            //   } else {
+            //     //alert(errorMessage);
+            //   }
+            //   console.log(error);
+            //   document.getElementById('quickstart-sign-in').disabled = false;
+            //   // [END_EXCLUDE]
+            // });
+            // // [END authwithemail]
+            // firebase.auth().onAuthStateChanged(user => {
+            //   if(user) {
+            //     window.location = './course-overview.html';
+            //   }
+            // });
+            // [END createwithemail]
+            //window.location = "./course-overview.html";
         }
-
 </script>
+
 
 </body>
 </html>

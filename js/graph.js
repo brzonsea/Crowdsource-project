@@ -375,7 +375,6 @@ function saveMap() {
 	});
 }
 
-
 function loadMap() {
 	var mapref = database.ref("maps2");
 

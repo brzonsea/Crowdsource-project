@@ -1,13 +1,11 @@
 // Initialize Firebase
 var config = {
-
 	apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
 	authDomain: "adipro-5bbe6.firebaseapp.com",
 	databaseURL: "https://adipro-5bbe6.firebaseio.com",
 	projectId: "adipro-5bbe6",
 	storageBucket: "",
 	messagingSenderId: "14626937593"
-
 };
 
 firebase.initializeApp(config);
@@ -142,7 +140,22 @@ var setSidebarVisible = function(setVisible) {
 
 window.onload = function() {
 	setSidebarVisible(false);
-	console.log(cy.nodes());
+
+	// // listen to map changes
+	// var mapref = database.ref("maps2");
+	// mapref.on('value', function(maps) {
+	// 	var map;
+	// 	maps.forEach(function(child) {
+	// 		if (child.val().name == user.name) {
+	// 			map = child.val().json;
+	// 		}
+	// 	})
+	// 	cy = cytoscape({
+	// 		container: document.getElementById('structure-map'), // container to render in
+	// 	});
+	// 	cy.json(map);
+	// 	cy.nodes().on('click', nodeOnClick);
+	// });
 }
 
 
@@ -359,36 +372,22 @@ function defRelationship() {
 	}
 }
 
-function saveMap() {
-	var mapref = database.ref("maps2");
+// listen to all changes events on the map and save them
+cy.on('add remove free data', saveMap);
 
-	var mapJson = cy.json();
+function saveMap(evt) {
+	console.log('Save Map');
+	// var mapref = database.ref("maps2");
 
-	for (obj in mapJson) {
-		if (mapJson[obj] == undefined) {
-			delete mapJson[obj];
-		}
-	}
-	mapref.push({
-		name: user.name,
-		json: mapJson,
-	});
-}
+	// var mapJson = cy.json();
 
-function loadMap() {
-	var mapref = database.ref("maps2");
-
-	var myMap = mapref.once('value', function(maps) {
-		var map;
-		maps.forEach(function(child) {
-			if (child.val().name == user.name) {
-				map = child.val().json;
-			}
-		})
-		cy = cytoscape({
-			container: document.getElementById('structure-map'), // container to render in
-		});
-		cy.json(map);
-		cy.nodes().on('click', nodeOnClick);
-	});
+	// for (obj in mapJson) {
+	// 	if (mapJson[obj] == undefined) {
+	// 		delete mapJson[obj];
+	// 	}
+	// }
+	// mapref.push({
+	// 	name: user.name,
+	// 	json: mapJson,
+	// });
 }

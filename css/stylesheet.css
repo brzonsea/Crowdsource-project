@@ -104,7 +104,9 @@ div.course {
 .sidebarButton {
 	flex: 0 1 2em;
 	width: 100%;
-	z-index: 100;
+	z-index: 10;
+	background-color: #4CAF50;
+    color: white;
 }
 
 #node-popup {

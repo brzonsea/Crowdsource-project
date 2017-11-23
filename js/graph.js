@@ -56,37 +56,43 @@ var cy = cytoscape({
 			data: {
 				id: 'ab',
 				source: 'a',
-				target: 'b'
+				target: 'b',
+				isEdge: true
 			}
 		}, {
 			data: {
 				id: 'ac',
 				source: 'a',
-				target: 'c'
+				target: 'c',
+				isEdge: true
 			}
 		}, {
 			data: {
 				id: 'ad',
 				source: 'a',
-				target: 'd'
+				target: 'd',
+				isEdge: true
 			}
 		}, {
 			data: {
 				id: 'bd',
 				source: 'b',
-				target: 'd'
+				target: 'd',
+				isEdge: true
 			}
 		}, {
 			data: {
 				id: 'bc',
 				source: 'b',
-				target: 'c'
+				target: 'c',
+				isEdge: true
 			}
 		}, {
 			data: {
 				id: 'ce',
 				source: 'c',
-				target: 'e'
+				target: 'e',
+				isEdge: true
 			}
 		},
 	],
@@ -245,39 +251,6 @@ var nodeOnClick = function(evt) {
 // TODO own onClick function needed?
 cy.edges().on('click', nodeOnClick);
 
-// cy.nodes().on('mouseover', function(evt) {
-// 	var anchor = document.createElement('div');
-// 	anchor.className = 'anchor';
-
-// 	var targetPosition = evt.target.renderedPosition();
-// 	anchor.style.left = targetPosition.x + 'px';
-// 	anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
-
-// 	document.getElementById('structure-map').appendChild(anchor);
-
-// 	var div = document.createElement('div');
-
-// 	div.id = 'node-popup';
-// 	div.innerHTML = evt.target.data().summary;
-
-// 	anchor.appendChild(div);
-
-// 	cy.on('position', '#' + evt.target.id(), function(evt) {
-// 		targetPosition = evt.target.renderedPosition();
-// 		anchor.style.left = targetPosition.x + 'px';
-// 		anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
-// 	})
-// });
-
-// cy.nodes().on('mouseout', function(evt) {
-// 	var popup = document.getElementById('node-popup');
-// 	var anchor = popup.parentNode;
-// 	var structureMap = document.getElementById('structure-map');
-
-// 	anchor.removeChild(popup);
-// 	structureMap.removeChild(anchor);
-// });
-
 function addNode() {
 	// lock the nodes to apply layout only on new node later
 	cy.nodes().lock();
@@ -290,7 +263,7 @@ function addNode() {
 	});
 	target.data('childNode', element.id());
 	// add edge between new node and target
-	cy.add({
+	var edge = cy.add({
 		group: 'edges',
 		data: {
 			source: element.id(),
@@ -305,7 +278,11 @@ function addNode() {
 	// unlock all nodes so the user can move them
 	cy.nodes().unlock();
 	console.log(cy.nodes());
-	element.on('click', onNodeClick);
+	element.on('click', onElementClick);
+	element.on('mouseover', onElementMouseover);
+	element.on('mouseout', onElementMouseout);
+
+	edge.on('click', onElementClick);
 }
 
 updateTitle = function() {
@@ -325,7 +302,8 @@ function addRelationship(evt) {
 		group: 'edges',
 		data: {
 			source: evt.cy.relationshipSource,
-			target: evt.target.id()
+			target: evt.target.id(),
+			isEdge: false
 		},
 		style: {
 			'curve-style': 'bezier', //needed so arrows are drawn
@@ -337,6 +315,7 @@ function addRelationship(evt) {
 	});
 	document.getElementById('relationshipButton').style = null;
 	evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
+	console.log(cy.edges());
 }
 
 function deleteNode() {
@@ -392,11 +371,34 @@ function saveMap() {
 			delete mapJson[obj];
 		}
 	}
-
 	mapref.push({
 		name: user.name,
 		json: mapJson,
-	});
+	});	
+}
+
+function onElementClick(evt) {
+	setSidebarVisible(true);
+	switch (evt.cy.definingRelationship) {
+		case 0:
+			cy.activeNode = evt.target;
+			document.getElementById('titleInput').value = cy.activeNode.data('label');
+			document.getElementById('summaryInput').value = cy.activeNode.data('summary');
+			break;
+		case 1:
+			cy.relationshipSource = evt.target.id();
+			evt.target.style('background-color', 'lightblue');
+			cy.definingRelationship += 1;
+			break;
+		case 2:
+			addRelationship(evt);
+			cy.definingRelationship = 0;
+			break;
+		default:
+			console.log("onClick; bad switch case");
+			break;
+		}
+	}
 }
 
 function loadMap() {
@@ -415,4 +417,3 @@ function loadMap() {
 		cy.json(map);
 	});
 }
-

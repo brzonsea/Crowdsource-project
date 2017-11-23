@@ -165,7 +165,7 @@ cy.relationshipSource = null;
 
 var clickedBefore;
 var clickedTimeout;
-cy.nodes().on('click', function(event) {
+var nodeOnClick = function(event) {
 	var clickedNow = event.target;
 	if (clickedTimeout && clickedBefore) {
 		clearTimeout(clickedTimeout);
@@ -176,11 +176,12 @@ cy.nodes().on('click', function(event) {
 	} else {
 		clickedTimeout = setTimeout(function() {
 			clickedBefore = null;
-			nodeOnClick(event);
+			nodeOnSingleClick(event);
 		}, 300);
 		clickedBefore = clickedNow;
 	}
-});
+}
+cy.nodes().on('click', nodeOnClick);
 
 cy.nodes().on('doubleClick', function(event) {
 	console.log('Node doubleclicked.');
@@ -223,7 +224,7 @@ cy.nodes().on('doubleClick', function(event) {
 	}
 });
 
-var nodeOnClick = function(evt) {
+var nodeOnSingleClick = function(evt) {
 	console.log('Node clicked.');
 
 	switch (evt.cy.definingRelationship) {
@@ -249,9 +250,10 @@ var nodeOnClick = function(evt) {
 };
 
 // TODO own onClick function needed?
-cy.edges().on('click', nodeOnClick);
+cy.edges().on('click', nodeOnSingleClick);
 
 function addNode() {
+	console.log('activeNode', cy.activeNode);
 	// lock the nodes to apply layout only on new node later
 	cy.nodes().lock();
 	// add the new node
@@ -261,7 +263,7 @@ function addNode() {
 			label: "New Node",
 		}
 	});
-	target.data('childNode', element.id());
+	cy.activeNode.data('childNode', element.id());
 	// add edge between new node and target
 	var edge = cy.add({
 		group: 'edges',
@@ -278,11 +280,7 @@ function addNode() {
 	// unlock all nodes so the user can move them
 	cy.nodes().unlock();
 	console.log(cy.nodes());
-	element.on('click', onElementClick);
-	element.on('mouseover', onElementMouseover);
-	element.on('mouseout', onElementMouseout);
-
-	edge.on('click', onElementClick);
+	element.on('click', nodeOnClick);
 }
 
 updateTitle = function() {
@@ -315,7 +313,7 @@ function addRelationship(evt) {
 	});
 	document.getElementById('relationshipButton').style = null;
 	evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
-	console.log(cy.edges());
+	// console.log(cy.edges());
 }
 
 function deleteNode() {
@@ -374,32 +372,9 @@ function saveMap() {
 	mapref.push({
 		name: user.name,
 		json: mapJson,
-	});	
+	});
 }
 
-function onElementClick(evt) {
-	setSidebarVisible(true);
-	switch (evt.cy.definingRelationship) {
-		case 0:
-			cy.activeNode = evt.target;
-			document.getElementById('titleInput').value = cy.activeNode.data('label');
-			document.getElementById('summaryInput').value = cy.activeNode.data('summary');
-			break;
-		case 1:
-			cy.relationshipSource = evt.target.id();
-			evt.target.style('background-color', 'lightblue');
-			cy.definingRelationship += 1;
-			break;
-		case 2:
-			addRelationship(evt);
-			cy.definingRelationship = 0;
-			break;
-		default:
-			console.log("onClick; bad switch case");
-			break;
-		}
-	}
-}
 
 function loadMap() {
 	var mapref = database.ref("maps2");
@@ -415,5 +390,6 @@ function loadMap() {
 			container: document.getElementById('structure-map'), // container to render in
 		});
 		cy.json(map);
+		cy.nodes().on('click', nodeOnClick);
 	});
 }

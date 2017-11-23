@@ -136,6 +136,7 @@ window.onload = function() {
 	setSidebarVisible(false);
 }
 
+
 cy.on('click', function(evt) {
 	if (!evt.target.group) {
 		setSidebarVisible(false);
@@ -144,7 +145,6 @@ cy.on('click', function(evt) {
 });
 
 cy.activeNode = null;
-
 /**
  * State variable, signalling if the user is currently defining a relationship
  * 0: not defining relationship
@@ -154,7 +154,68 @@ cy.activeNode = null;
 cy.definingRelationship = 0;
 cy.relationshipSource = null;
 
-cy.nodes().on('click', function(evt) {
+var clickedBefore;
+var clickedTimeout;
+cy.nodes().on('click', function(event) {
+	var clickedNow = event.target;
+	if (clickedTimeout && clickedBefore) {
+		clearTimeout(clickedTimeout);
+	}
+	if (clickedBefore === clickedNow) {
+		clickedNow.trigger('doubleClick');
+		clickedBefore = null;
+	} else {
+		clickedTimeout = setTimeout(function() {
+			clickedBefore = null;
+			nodeOnClick(event);
+		}, 300);
+		clickedBefore = clickedNow;
+	}
+});
+
+cy.nodes().on('doubleClick', function(event) {
+	console.log('Node doubleclicked.');
+	if (event.target.data().detailsVisible) {
+		var popup = document.getElementById('node-popup-' + event.target.id());
+		if (popup) {
+			var anchor = popup.parentNode;
+			var structureMap = document.getElementById('structure-map');
+
+			anchor.removeChild(popup);
+			structureMap.removeChild(anchor);
+		}
+		event.target.data().detailsVisible = false;
+	} else {
+		var anchor = document.createElement('div');
+		anchor.className = 'anchor';
+
+		var targetPosition = event.target.renderedPosition();
+		anchor.style.left = targetPosition.x + 'px';
+		anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
+
+		document.getElementById('structure-map').appendChild(anchor);
+
+		var div = document.createElement('div');
+
+		div.id = 'node-popup-' + event.target.id();
+		div.className = 'node-popup';
+		div.innerHTML = event.target.data().summary;
+
+		anchor.appendChild(div);
+
+		cy.on('position', '#' + event.target.id(), function(event) {
+			var targetPosition = event.target.renderedPosition();
+			var popup = document.getElementById('node-popup-' + event.target.id());
+			var anchor = popup.parentNode;
+			anchor.style.left = targetPosition.x + 'px';
+			anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
+		});
+		event.target.data().detailsVisible = true;
+	}
+});
+
+var nodeOnClick = function(evt) {
+	console.log('Node clicked.');
 
 	switch (evt.cy.definingRelationship) {
 		case 0:
@@ -176,40 +237,40 @@ cy.nodes().on('click', function(evt) {
 			console.log("onClick; bad switch case");
 			break;
 	}
-});
+};
 
-cy.nodes().on('mouseover', function(evt) {
-	var anchor = document.createElement('div');
-	anchor.className = 'anchor';
+// cy.nodes().on('mouseover', function(evt) {
+// 	var anchor = document.createElement('div');
+// 	anchor.className = 'anchor';
 
-	var targetPosition = evt.target.renderedPosition();
-	anchor.style.left = targetPosition.x + 'px';
-	anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
+// 	var targetPosition = evt.target.renderedPosition();
+// 	anchor.style.left = targetPosition.x + 'px';
+// 	anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
 
-	document.getElementById('structure-map').appendChild(anchor);
+// 	document.getElementById('structure-map').appendChild(anchor);
 
-	var div = document.createElement('div');
+// 	var div = document.createElement('div');
 
-	div.id = 'node-popup';
-	div.innerHTML = evt.target.data().summary;
+// 	div.id = 'node-popup';
+// 	div.innerHTML = evt.target.data().summary;
 
-	anchor.appendChild(div);
+// 	anchor.appendChild(div);
 
-	cy.on('position', '#' + evt.target.id(), function(evt) {
-		targetPosition = evt.target.renderedPosition();
-		anchor.style.left = targetPosition.x + 'px';
-		anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
-	})
-});
+// 	cy.on('position', '#' + evt.target.id(), function(evt) {
+// 		targetPosition = evt.target.renderedPosition();
+// 		anchor.style.left = targetPosition.x + 'px';
+// 		anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
+// 	})
+// });
 
-cy.nodes().on('mouseout', function(evt) {
-	var popup = document.getElementById('node-popup');
-	var anchor = popup.parentNode;
-	var structureMap = document.getElementById('structure-map');
+// cy.nodes().on('mouseout', function(evt) {
+// 	var popup = document.getElementById('node-popup');
+// 	var anchor = popup.parentNode;
+// 	var structureMap = document.getElementById('structure-map');
 
-	anchor.removeChild(popup);
-	structureMap.removeChild(anchor);
-});
+// 	anchor.removeChild(popup);
+// 	structureMap.removeChild(anchor);
+// });
 
 function addNode(evt) {
 	// lock the nodes to apply layout only on new node later

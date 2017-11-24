@@ -144,13 +144,7 @@ window.onload = function() {
 	cy.mapName = 'Crazy_Trasurehunt_Map';
 
 	// listen to map changes
-	var mapref = functions.database.ref("maps");
-
-	mapref.onWrite(function(maps) {
-		var snapShot = maps.data;
-		console.log(snapShot);
-		console.log(snapShot.changed());
-	});
+	var mapref = database.ref("maps");
 
 	mapref.on('value', function(maps) {
 		console.log('Change in database happened');
@@ -159,9 +153,12 @@ window.onload = function() {
 			// console.log(map.val().changed());
 			if (map.val().name == cy.mapName) {
 				// console.log(database.ref('maps/' + map.key + '/json').changed());
-				console.log('Updating map from database!');
 				mapJSON = map.val().json;
-				cy.json(mapJSON);
+				oldJSON = cy.json();
+				if (!_.isEqual(mapJSON, oldJSON)) {
+					console.log('Updating map from database!');
+					cy.json(mapJSON);
+				}
 			}
 		})
 		// cy = cytoscape({
@@ -393,10 +390,10 @@ function saveMap(evt) {
 	console.log('Save Map');
 	var mapref = database.ref("maps");
 
-	var mapJson = cy.json();
-	for (obj in mapJson) {
-		if (mapJson[obj] == undefined) {
-			delete mapJson[obj];
+	var mapJSON = cy.json();
+	for (obj in mapJSON) {
+		if (mapJSON[obj] == undefined) {
+			delete mapJSON[obj];
 		}
 	}
 
@@ -404,19 +401,24 @@ function saveMap(evt) {
 		var mapUpdated = false;
 		maps.forEach(function(map) {
 			if (!mapUpdated && map.val().name == cy.mapName) {
-				console.log('Updating map in database.')
-				var key = map.key;
-				var path = 'maps/' + key + '/json';
-				var pathRef = database.ref(path);
-				pathRef.update({json: mapJson});
-				mapUpdated = true;
+				dbJSON = map.val().json;
+				if (!_.isEqual(dbJSON, mapJSON)) {
+					console.log('dbJSON', dbJSON);
+					console.log('mapJSON',mapJSON);
+					console.log('Updating map in database.')
+					var key = map.key;
+					var path = 'maps/' + key;
+					var pathRef = database.ref(path);
+					pathRef.update({json: mapJSON});
+					mapUpdated = true;
+				}
 			}
 		});
 		if (!mapUpdated) {
 			console.log('Pushing map to database.');
 			mapref.push({
 				name: cy.mapName,
-				json: mapJson
+				json: mapJSON
 			});
 		}
 	});

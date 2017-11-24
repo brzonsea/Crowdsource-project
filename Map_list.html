@@ -96,47 +96,66 @@
 	</div>
 
 
+
 	<p>My Maps</p>
 	<div id="my_maps"></div>
 
 	<p style="clear:both">Shared Maps</p>
 	<div id="shared_maps"></div>
 
+<div>
+<button id='login_button' onclick="addMap('test', 'Andreas', '2')"> Test </button>
+</div>
+
+
 </body>
 
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
 <script type="text/javascript">
 	window.onload = function() {
-		// // Initialize Firebase
-		// var config = {
-		// 	apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
-		// 	authDomain: "adipro-5bbe6.firebaseapp.com",
-		// 	databaseURL: "https://adipro-5bbe6.firebaseio.com",
-		// 	projectId: "adipro-5bbe6",
-		// 	storageBucket: "",
-		// 	messagingSenderId: "14626937593"
-		// };
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
+			authDomain: "adipro-5bbe6.firebaseapp.com",
+			databaseURL: "https://adipro-5bbe6.firebaseio.com",
+			projectId: "adipro-5bbe6",
+			storageBucket: "",
+			messagingSenderId: "14626937593"
+		};
 
-		// firebase.initializeApp(config);
-		// var database = firebase.database();
+		firebase.initializeApp(config);
+		var database = firebase.database();
 
-		// // get user information including maps somehow
-		// var user = {name: 'Kilo Pascal', maps: ['Team_4', 'Crazy_Team']};
-
-		// var teamsRef = database.ref('bagOfChocolate');
-		// teamsRef.once('value', function(teams) {
-		// 	teams.forEach(function(team) {
-		// 		// see, if user is part of map and add it to corresponding div
-		// 	})
-		// });
 
 		var loadMap = function() {
 			window.location = 'map-drawing-page.html';
 		}
 
-		var my_maps = ['Team_4', 'Crazy_Team'];
-		var shared_maps = ['Awesome_Group','Adi_and_Friends', 'Andreas_and_the_Chocolate_Factory'];
+		function getValue(varname) {
+			var url = window.location.href;
+			var qparts = url.split("?");
 
+			if (qparts.length == 1) {
+				return "";
+			} else {
+			var query = qparts[1];
+				var vars = query.split("&");
+			var value = "";
+			for (i = 0; i < vars.length; i++) {			
+				var parts = vars[i].split("=");
+				if (parts[0] == varname) {
+					value = parts[1];
+					break;
+				}
+			}
+			value = unescape(value);
+
+			// Convert "+"s to " "s
+			value.replace(/\+/g, " ");
+			return value;
+			}
+		}
+		function dosmth1(){
 		var my_maps_div = document.getElementById('my_maps');
 		for (var i = 0; i < my_maps.length; i++) {
 			var map_div = document.createElement('div');
@@ -146,7 +165,8 @@
 			map_div.onclick = loadMap;
 			my_maps_div.appendChild(map_div);
 		}
-
+		}
+		function dosmth2() {
 		var shared_maps_div = document.getElementById('shared_maps');
 		for (var i = 0; i < shared_maps.length; i++) {
 			console.log(shared_maps[i]);
@@ -159,10 +179,74 @@
 		}
 
 	}
-	document.getElementById("Team_4").onclick = function() {
-		window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
-	};
-</script>
 
+
+		var my_maps = [];
+		var shared_maps = [];
+		//var username = getValue("username");
+		var username = "testname";
+		var mymapref = database.ref("accounts/" + username);
+
+		mymapref.once("value", function(maps) {
+			maps.forEach(function(map) {
+				console.log(map.val().name);
+				my_maps.push(map.val().name);
+			});
+		}).then(dosmth1);
+
+		var mapref = database.ref("maps");
+		mapref.once("value", function(maps) {
+			maps.forEach(function(map) {
+				if (!my_maps.includes(map.val().name)) {
+					console.log(map.val().name);
+					shared_maps.push(map.val().name);
+				}
+			});
+		}).then(dosmth2);
+		console.log(my_maps);
+		console.log(shared_maps);
+		//var my_maps = ['Team_4', 'Crazy_Team'];
+		//var shared_maps = ['Awesome_Group','Adi_and_Friends', 'Andreas_and_the_Chocolate_Factory'];
+		
+}
+	// document.getElementById("Team_4").onclick = function() {
+	// 	window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
+	// };
+</script>
+<!-- <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+<script>
+     // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
+            authDomain: "adipro-5bbe6.firebaseapp.com",
+            databaseURL: "https://adipro-5bbe6.firebaseio.com",
+            projectId: "adipro-5bbe6",
+            storageBucket: "",
+            messagingSenderId: "14626937593"
+        };
+        firebase.initializeApp(config);
+        var database = firebase.database();
+        var index = 0
+        function addMap(mapname, username, replace) {
+        	var path = "accounts/" + username + "/maps";
+        	console.log(path);
+        	var mapref = database.ref(path);
+        	mapref.once("value", function(maps) {
+        		maps.forEach(function(map) {
+        			if (map.val().map == "test") {
+        				var key = map.key;
+        				var path2 = "accounts/" + username + "/maps/" + key;
+        				console.log(path2);
+        				var testref = database.ref(path2);
+        				testref.update({number: "2"});
+        			}
+        		});
+        	});
+        }
+
+
+// if (map.val().name == sample) 
+</script> --> 
 </html>
 

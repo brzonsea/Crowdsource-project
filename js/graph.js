@@ -139,23 +139,37 @@ var setSidebarVisible = function(setVisible) {
 }
 
 window.onload = function() {
-	setSidebarVisible(false);
 
-	// // listen to map changes
-	// var mapref = database.ref("maps2");
-	// mapref.on('value', function(maps) {
-	// 	var map;
-	// 	maps.forEach(function(child) {
-	// 		if (child.val().name == user.name) {
-	// 			map = child.val().json;
-	// 		}
-	// 	})
-	// 	cy = cytoscape({
-	// 		container: document.getElementById('structure-map'), // container to render in
-	// 	});
-	// 	cy.json(map);
-	// 	cy.nodes().on('click', nodeOnClick);
-	// });
+	setSidebarVisible(false);
+	cy.mapName = 'Crazy_Trasurehunt_Map';
+
+	// listen to map changes
+	var mapref = functions.database.ref("maps");
+
+	mapref.onWrite(function(maps) {
+		var snapShot = maps.data;
+		console.log(snapShot);
+		console.log(snapShot.changed());
+	});
+
+	mapref.on('value', function(maps) {
+		console.log('Change in database happened');
+		var mapJSON;
+		maps.forEach(function(map) {
+			// console.log(map.val().changed());
+			if (map.val().name == cy.mapName) {
+				// console.log(database.ref('maps/' + map.key + '/json').changed());
+				console.log('Updating map from database!');
+				mapJSON = map.val().json;
+				cy.json(mapJSON);
+			}
+		})
+		// cy = cytoscape({
+		// 	container: document.getElementById('structure-map'), // container to render in
+		// });
+		// cy.nodes().on('click', nodeOnClick);
+	});
+
 }
 
 
@@ -377,17 +391,33 @@ cy.on('add remove free data', saveMap);
 
 function saveMap(evt) {
 	console.log('Save Map');
-	// var mapref = database.ref("maps2");
+	var mapref = database.ref("maps");
 
-	// var mapJson = cy.json();
+	var mapJson = cy.json();
+	for (obj in mapJson) {
+		if (mapJson[obj] == undefined) {
+			delete mapJson[obj];
+		}
+	}
 
-	// for (obj in mapJson) {
-	// 	if (mapJson[obj] == undefined) {
-	// 		delete mapJson[obj];
-	// 	}
-	// }
-	// mapref.push({
-	// 	name: user.name,
-	// 	json: mapJson,
-	// });
+	mapref.once('value', function(maps) {
+		var mapUpdated = false;
+		maps.forEach(function(map) {
+			if (!mapUpdated && map.val().name == cy.mapName) {
+				console.log('Updating map in database.')
+				var key = map.key;
+				var path = 'maps/' + key + '/json';
+				var pathRef = database.ref(path);
+				pathRef.update({json: mapJson});
+				mapUpdated = true;
+			}
+		});
+		if (!mapUpdated) {
+			console.log('Pushing map to database.');
+			mapref.push({
+				name: cy.mapName,
+				json: mapJson
+			});
+		}
+	});
 }

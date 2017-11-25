@@ -199,8 +199,8 @@ window.onload = function() {
 				}
 
 				console.log(mapJSON);
-				delete mapJSON[zoom];
-				delete mapJSON[pan];
+				delete mapJSON['zoom'];
+				delete mapJSON['pan'];
 
 				mapref.transaction(function(currentData) {
 					return {

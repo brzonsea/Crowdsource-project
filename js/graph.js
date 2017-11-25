@@ -15,75 +15,23 @@ var user = {
 	name: 'MisterNotSmart'
 }
 
-<<<<<<< HEAD
-=======
+var setSidebarVisible = function(setVisible) {
+	var displayStyle = setVisible ? null : 'none';
+	var children = document.getElementById('mySidebar').querySelectorAll('*');
+	var addNodeButton = document.getElementById("addNodeButton");
+	for (var i = children.length - 1; i >= 0; i--) {
+		if (children[i].id != 'relationshipButton') {
+			children[i].style.display = displayStyle;
+		}
+	}
+	addNodeButton.style.display = displayStyle;
+}
+
+
+setSidebarVisible(false);
+
 var cy = cytoscape({
-
 	container: document.getElementById('structure-map'), // container to render in
-
-	elements: [ // list of graph elements to start with
-		{
-			data: {
-				id: 'a',
-				label: 'A',
-				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
-				childNode: ["b"]
-			}
-		}, {
-			data: {
-				id: 'b',
-				label: 'B',
-				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
-				childNode: ["c"]
-			}
-		}, {
-			data: {
-				id: 'c',
-				label: 'C',
-				childNode: ["d"]
-			}
-		}, {
-			data: {
-				id: 'd',
-				label: 'D',
-				childNode: ["e"]
-			}
-		}, {
-			data: {
-				id: 'e',
-				label: 'E',
-				childNode: []
-			}
-		}, {
-			data: {
-				id: 'ab',
-				source: 'a',
-				target: 'b',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'bc',
-				source: 'b',
-				target: 'c',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'cd',
-				source: 'c',
-				target: 'd',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'de',
-				source: 'd',
-				target: 'e',
-				isEdge: true
-			}
-		},
-	],
 
 	style: [ // the style-sheet for the graph
 		{
@@ -116,126 +64,71 @@ var cy = cytoscape({
 
 });
 
->>>>>>> origin/new-delete-button
-var setSidebarVisible = function(setVisible) {
-	var displayStyle = setVisible ? null : 'none';
-	var children = document.getElementById('mySidebar').querySelectorAll('*');
-	var addNodeButton = document.getElementById("addNodeButton");
-	for (var i = children.length - 1; i >= 0; i--) {
-		if (children[i].id != 'relationshipButton') {
-			children[i].style.display = displayStyle;
+cy.mapName = 'Crazy_Treasurehunt_Map';
+
+// listen to map changes
+var mapsref = database.ref("maps");
+
+mapsref.once('value', function(maps) {
+	maps.forEach(function(map) {
+		if (map.val().name == cy.mapName) {
+			cy.mapKey = map.key;
+			cy.json(map.val().json);  
 		}
-	}
-	addNodeButton.style.display = displayStyle;
-}
+		console.log(cy.mapKey);
+	});
+}).then(function() {
+	var mapref = mapsref.child(cy.mapKey);
 
-window.onload = function() {
-<<<<<<< HEAD
-=======
-	setSidebarVisible(false);
-}
->>>>>>> origin/new-delete-button
+	mapref.once('value', function(map) {
+		console.log('Change in database happened');
+		//if (map.val().username != user.name) {
+		console.log('updating map');
+		cy.off('add remove free data');
+		cy.json(map.val().json);
+		cy.once('add remove free data', saveMap);
+		//}
+	});
 
-		setSidebarVisible(false);
-
-		var cy = cytoscape({
-			container: document.getElementById('structure-map'), // container to render in
-
-			style: [ // the style-sheet for the graph
-				{
-					selector: 'node',
-					style: {
-						'background-color': 'white',
-						'label': 'data(label)',
-						'shape': 'ellipse',
-						'width': '10em',
-						'height': '5em',
-						'text-halign': 'center',
-						'text-valign': 'center',
-						'text-max-width': '10em',
-						'text-wrap': 'wrap',
-					}
-				},
-
-				{
-					selector: 'edge',
-					style: {
-						'width': 3,
-						'line-color': 'grey',
-					}
-				}
-			],
-
-			layout: {
-				name: 'cose',
-			},
-
-		});
-		
-		cy.mapName = 'Crazy_Treasurehunt_Map';
-
-		// listen to map changes
-		var mapsref = database.ref("maps");
-
-		mapsref.once('value', function(maps) {
-			maps.forEach(function(map) {
-				if (map.val().name == cy.mapName) {
-					cy.mapKey = map.key;
-					cy.json(map.val().json);
-				}
-			});
-		}).then(function() {
-			var mapref = mapsref.child(cy.mapKey);
-
-			mapref.once('value', function(map) {
-				console.log('Change in database happened');
-				//if (map.val().username != user.name) {
-				console.log('updating map');
-				cy.off('add remove free data');
-				cy.json(map.val().json);
-				cy.once('add remove free data', saveMap);
-				//}
-			});
-
-			mapref.on('value', function(map) {
-				console.log('Change in database happened');
-				if (map.val().username != user.name) {
-					console.log('updating map');
-					cy.off('add remove free data');
-					cy.json(map.val().json);
-					cy.on('add remove free data', saveMap);
-				}
-			}); // end mapref.on
-
-			// listen to all changes events on the map and save them
+	mapref.on('value', function(map) {
+		console.log('Change in database happened');
+		if (map.val().username != user.name) {
+			console.log('updating map');
+			cy.off('add remove free data');
+			cy.json(map.val().json);
 			cy.on('add remove free data', saveMap);
+		}
+	}); // end mapref.on
 
-			function saveMap(evt) {
-				console.log('Save Map');
-				var mapref = database.ref("maps/" + cy.mapKey);
+	// listen to all changes events on the map and save them
+	cy.on('add remove free data', saveMap);
 
-				var mapJSON = cy.json();
-				for (obj in mapJSON) {
-					if (mapJSON[obj] == undefined) {
-						delete mapJSON[obj];
-					}
-				}
+	function saveMap(evt) {
+		console.log('Save Map');
+		var mapref = database.ref("maps/" + cy.mapKey);
 
-				console.log(mapJSON);
-				delete mapJSON[zoom];
-				delete mapJSON[pan];
+		var mapJSON = cy.json();
+		for (obj in mapJSON) {
+			if (mapJSON[obj] == undefined) {
+				delete mapJSON[obj];
+			}
+		}
 
-				mapref.transaction(function(currentData) {
-					return {
-						'username': user.name,
-						'name': cy.mapName,
-						'json': mapJSON,
-						'diff': {}
-					}
-				}); // end transaction
-			} // end saveMap
-		}); // end then
-	} // end window.onload
+		console.log(mapJSON);
+		delete mapJSON["zoom"];
+		delete mapJSON["pan"];
+
+		mapref.transaction(function(currentData) {
+			return {
+				'username': user.name,
+				'name': cy.mapName,
+				'json': mapJSON,
+				'diff': {}
+			}
+		}); // end transaction
+	} // end saveMap
+}); // end then
+
 
 cy.on('click', function(evt) {
 	if (!evt.target.group) {

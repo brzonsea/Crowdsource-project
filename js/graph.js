@@ -1,13 +1,11 @@
 // Initialize Firebase
 var config = {
-
 	apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
 	authDomain: "adipro-5bbe6.firebaseapp.com",
 	databaseURL: "https://adipro-5bbe6.firebaseio.com",
 	projectId: "adipro-5bbe6",
 	storageBucket: "",
 	messagingSenderId: "14626937593"
-
 };
 
 firebase.initializeApp(config);
@@ -141,8 +139,34 @@ var setSidebarVisible = function(setVisible) {
 }
 
 window.onload = function() {
+
 	setSidebarVisible(false);
-	console.log(cy.nodes());
+	cy.mapName = 'Crazy_Trasurehunt_Map';
+
+	// listen to map changes
+	var mapref = database.ref("maps");
+
+	mapref.on('value', function(maps) {
+		console.log('Change in database happened');
+		var mapJSON;
+		maps.forEach(function(map) {
+			// console.log(map.val().changed());
+			if (map.val().name == cy.mapName) {
+				// console.log(database.ref('maps/' + map.key + '/json').changed());
+				mapJSON = map.val().json;
+				oldJSON = cy.json();
+				if (!_.isEqual(mapJSON, oldJSON)) {
+					console.log('Updating map from database!');
+					cy.json(mapJSON);
+				}
+			}
+		})
+		// cy = cytoscape({
+		// 	container: document.getElementById('structure-map'), // container to render in
+		// });
+		// cy.nodes().on('click', nodeOnClick);
+	});
+
 }
 
 
@@ -359,36 +383,43 @@ function defRelationship() {
 	}
 }
 
-function saveMap() {
-	var mapref = database.ref("maps2");
+// listen to all changes events on the map and save them
+cy.on('add remove free data', saveMap);
 
-	var mapJson = cy.json();
+function saveMap(evt) {
+	console.log('Save Map');
+	var mapref = database.ref("maps");
 
-	for (obj in mapJson) {
-		if (mapJson[obj] == undefined) {
-			delete mapJson[obj];
+	var mapJSON = cy.json();
+	for (obj in mapJSON) {
+		if (mapJSON[obj] == undefined) {
+			delete mapJSON[obj];
 		}
 	}
-	mapref.push({
-		name: user.name,
-		json: mapJson,
-	});
-}
 
-function loadMap() {
-	var mapref = database.ref("maps2");
-
-	var myMap = mapref.once('value', function(maps) {
-		var map;
-		maps.forEach(function(child) {
-			if (child.val().name == user.name) {
-				map = child.val().json;
+	mapref.once('value', function(maps) {
+		var mapUpdated = false;
+		maps.forEach(function(map) {
+			if (!mapUpdated && map.val().name == cy.mapName) {
+				dbJSON = map.val().json;
+				if (!_.isEqual(dbJSON, mapJSON)) {
+					console.log('dbJSON', dbJSON);
+					console.log('mapJSON',mapJSON);
+					console.log('Updating map in database.')
+					var key = map.key;
+					var path = 'maps/' + key;
+					var pathRef = database.ref(path);
+					pathRef.update({json: mapJSON});
+					mapUpdated = true;
+				}
 			}
-		})
-		cy = cytoscape({
-			container: document.getElementById('structure-map'), // container to render in
 		});
-		cy.json(map);
-		cy.nodes().on('click', nodeOnClick);
+		if (!mapUpdated) {
+			console.log('Pushing map to database.');
+			mapref.push({
+				name: cy.mapName,
+				json: mapJSON
+			});
+		}
 	});
 }

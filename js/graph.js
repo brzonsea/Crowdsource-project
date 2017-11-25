@@ -163,7 +163,9 @@ window.onload = function() {
 			if (map.val().username != user.name) {
 				console.log('updating map');
 				console.log(map.val().json);
+				cy.off('add remove free data');
 				cy.json(map.val().json);
+				cy.on('add remove free data', saveMap);
 			}
 			// var mapJSON;
 			// maps.forEach(function(map) {

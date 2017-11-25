@@ -111,6 +111,7 @@ var nodesOnDoubleClick = function(event) {
 }
 
 function addNode() {
+	cy.off('add remove free data');
 	console.log('activeNode', cy.activeNode);
 	// lock the nodes to apply layout only on new node later
 	cy.nodes().lock();
@@ -142,6 +143,8 @@ function addNode() {
 	// unlock all nodes so the user can move them
 	cy.nodes().unlock();
 	element.on('click', nodeOnClick);
+	cy.on('add remove free data', saveMap);
+	saveMap(null);
 }
 
 var updateTitle = function() {
@@ -365,7 +368,6 @@ mapsref.once('value', function(maps) {
 				'username': user.name,
 				'name': cy.mapName,
 				'json': mapJSON,
-				'diff': {}
 			}
 		}); // end transaction
 	} // end saveMap

@@ -381,17 +381,36 @@ function addNode() {
 	element.on('click', nodeOnClick);
 }
 
-updateTitle = function() {
+var updateTitle = function() {
+	console.log('updating title');
 	cy.activeNode.data('label', this.value);
 }
+var startTitleTimeout = function() {
+	if (!(null == titleTimeout)) {
+		clearTimeout(titleTimeout);
+		titleTimeout = setTimeout(updateTitle.bind(this), 3000);
+	} else {
+		titleTimeout = setTimeout(updateTitle.bind(this), 3000);
+	}
+}
 var titleInput = document.getElementById('titleInput');
-titleInput.oninput = updateTitle;
+var titleTimeout = null;
+titleInput.oninput = startTitleTimeout;
 
-updateSummary = function() {
+var updateSummary = function() {
 	cy.activeNode.data('summary', this.value);
 }
+var startSummaryTimeout = function() {
+	if (!null == summaryTimeout) {
+		clearTimeout(summaryTimeout);
+		summaryTimeout = setTimeout(updateSummary.bind(this), 3000);
+	} else {
+		summaryTimeout = setTimeout(updateSummary.bind(this), 3000);
+	}
+}
 var summaryInput = document.getElementById('summaryInput');
-summaryInput.oninput = updateSummary;
+var summaryTimeout = null;
+summaryInput.oninput = startSummaryTimeout;
 
 function addRelationship(evt) {
 	evt.cy.add({

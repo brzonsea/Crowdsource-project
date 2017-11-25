@@ -122,6 +122,9 @@ function addNode() {
 			childNode: []
 		}
 	});
+	if (!cy.activeNode.data('childNode')) {
+		cy.activeNode.data('childNode', []);
+	}
 	cy.activeNode.data("childNode").push(element.id());
 	// add edge between new node and target
 	var edge = cy.add({
@@ -311,7 +314,6 @@ mapsref.once('value', function(maps) {
 			cy.zoom(1);
 			cy.fit();
 		}
-		console.log(cy.mapKey);
 	});
 }).then(function() {
 
@@ -329,16 +331,16 @@ mapsref.once('value', function(maps) {
 	// TODO own onClick function needed?
 	cy.edges().on('click', nodeOnSingleClick);
 
-	// var mapref = mapsref.child(cy.mapKey);
-	// mapref.on('value', function(map) {
-	// 	console.log('Change in database happened');
-	// 	if (map.val().username != user.name) {
-	// 		console.log('updating map');
-	// 		cy.off('add remove free data');
-	// 		cy.json(map.val().json);
-	// 		cy.on('add remove free data', saveMap);
-	// 	}
-	// }); // end mapref.on
+	var mapref = mapsref.child(cy.mapKey);
+	mapref.on('value', function(map) {
+		console.log('Change in database happened');
+		if (map.val().username != user.name) {
+			console.log('updating map');
+			cy.off('add remove free data');
+			cy.json(map.val().json);
+			cy.on('add remove free data', saveMap);
+		}
+	}); // end mapref.on
 
 	// listen to all changes events on the map and save them
 	cy.on('add remove free data', saveMap);

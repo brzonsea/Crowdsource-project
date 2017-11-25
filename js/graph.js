@@ -15,117 +15,6 @@ var user = {
 	name: 'MisterSmart'
 }
 
-var cy = cytoscape({
-
-	container: document.getElementById('structure-map'), // container to render in
-
-	elements: [ // list of graph elements to start with
-		{
-			data: {
-				id: 'a',
-				label: 'A',
-				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
-				childNode: 'b',
-			}
-		}, {
-			data: {
-				id: 'b',
-				label: 'B',
-				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
-				childNode: 'c',
-			}
-		}, {
-			data: {
-				id: 'c',
-				label: 'C',
-				childNode: 'd',
-			}
-		}, {
-			data: {
-				id: 'd',
-				label: 'D'
-			}
-		}, {
-			data: {
-				id: 'e',
-				label: 'E'
-			}
-		}, {
-			data: {
-				id: 'ab',
-				source: 'a',
-				target: 'b',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'ac',
-				source: 'a',
-				target: 'c',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'ad',
-				source: 'a',
-				target: 'd',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'bd',
-				source: 'b',
-				target: 'd',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'bc',
-				source: 'b',
-				target: 'c',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'ce',
-				source: 'c',
-				target: 'e',
-				isEdge: true
-			}
-		},
-	],
-
-	style: [ // the style-sheet for the graph
-		{
-			selector: 'node',
-			style: {
-				'background-color': 'white',
-				'label': 'data(label)',
-				'shape': 'ellipse',
-				'width': '10em',
-				'height': '5em',
-				'text-halign': 'center',
-				'text-valign': 'center',
-				'text-max-width': '10em',
-				'text-wrap': 'wrap',
-			}
-		},
-
-		{
-			selector: 'edge',
-			style: {
-				'width': 3,
-				'line-color': 'grey',
-			}
-		}
-	],
-
-	layout: {
-		name: 'cose',
-	},
-
-});
-
 var setSidebarVisible = function(setVisible) {
 	var displayStyle = setVisible ? null : 'none';
 	var children = document.getElementById('mySidebar').querySelectorAll('*');
@@ -143,14 +32,48 @@ window.onload = function() {
 	setSidebarVisible(false);
 	cy.mapName = 'Crazy_Treasurehunt_Map';
 
+	var cy = cytoscape({
+		container: document.getElementById('structure-map'), // container to render in
+
+		style: [ // the style-sheet for the graph
+			{
+				selector: 'node',
+				style: {
+					'background-color': 'white',
+					'label': 'data(label)',
+					'shape': 'ellipse',
+					'width': '10em',
+					'height': '5em',
+					'text-halign': 'center',
+					'text-valign': 'center',
+					'text-max-width': '10em',
+					'text-wrap': 'wrap',
+				}
+			},
+
+			{
+				selector: 'edge',
+				style: {
+					'width': 3,
+					'line-color': 'grey',
+				}
+			}
+		],
+
+		layout: {
+			name: 'cose',
+		},
+
+	});
+
 	// listen to map changes
 	var mapsref = database.ref("maps");
 
 	mapsref.once('value', function(maps) {
 		maps.forEach(function(map) {
-			// console.log(map.val().changed());
 			if (map.val().name == cy.mapName) {
 				cy.mapKey = map.key;
+				cy.json(map.val().json);
 			}
 		});
 	}).then(function() {
@@ -164,25 +87,6 @@ window.onload = function() {
 				cy.json(map.val().json);
 				cy.on('add remove free data', saveMap);
 			}
-			// var mapJSON;
-			// maps.forEach(function(map) {
-			// 	// console.log(map.val().changed());
-			// 	if (map.val().name == cy.mapName) {
-			// 		// console.log(database.ref('maps/' + map.key + '/json').changed());
-			// 		mapJSON = map.val().json;
-			// 		oldJSON = cy.json();
-			// 		if (!_.isEqual(mapJSON, oldJSON)) {
-			// 			console.log('Updating map from database!');
-			// 			cy.json(mapJSON);
-			// 		}
-			// 	}
-			// })
-			// cy = cytoscape({
-			// 	container: document.getElementById('structure-map'), // container to render in
-			// });
-			// cy.nodes().on('click', nodeOnClick);
-			// });
-
 
 			// listen to all changes events on the map and save them
 			cy.on('add remove free data', saveMap);
@@ -209,40 +113,11 @@ window.onload = function() {
 						'json': mapJSON,
 						'diff': {}
 					}
-				});
-
-				// mapref.once('value', function(maps) {
-				// 	var mapUpdated = false;
-				// 	maps.forEach(function(map) {
-				// 		if (!mapUpdated && map.val().name == cy.mapName) {
-				// 			dbJSON = map.val().json;
-				// 			if (!_.isEqual(dbJSON, mapJSON)) {
-				// 				console.log('dbJSON', dbJSON);
-				// 				console.log('mapJSON',mapJSON);
-				// 				console.log('Updating map in database.')
-				// 				var key = map.key;
-				// 				var path = 'maps';
-				// 				var pathRef = database.ref(path).child(key);
-				// 				pathRef.transaction({'json':mapJSON});
-				// 				mapUpdated = true;
-				// 			}
-				// 		}
-				// 	});
-				// 	if (!mapUpdated) {
-				// 		console.log('Pushing map to database.');
-				// 		mapref.push({
-				// 			name: cy.mapName,
-				// 			json: mapJSON
-				// 		});
-				// 	}
-				// });
-			}
-		});
-
-	});
-
-
-}
+				}); // end transaction
+			} // end saveMap
+		}); // end mapref.on
+	}); // end then
+} // end window.onload
 
 cy.on('click', function(evt) {
 	if (!evt.target.group) {

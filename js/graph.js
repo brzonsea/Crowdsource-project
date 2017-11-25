@@ -216,26 +216,11 @@ function deleteNode() {
 			}
 		}
 
-		//for (var child in children) {
-		//	console.log(child.id());
-		//}
-
-		// while (children.length !== 0) {
-		// 	for (var child in targetNode.data("childNode")) {
-		// 		nodesToDelete.push(child);
-		// 		children.push(document.getElementById(child));
-		// 	}
-		// 	// targetNode = cy.getElementById(targetNode.data().childNode);
-		// 	// nodesToDelete.push(targetNode.id());
-		// }
-		// cy.nodes().forEach(function(ele) {
-		// 	if (ele.data().childNode == cy.activeNode.id()) {
-		// 		delete ele.data().childNode;
-		// 	}
-		// });
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
 			cy.remove(cy.getElementById(nodesToDelete[i].id()));
 		}
+		setSidebarVisible(false);
+		cy.activeNode = null;
 	} else {
 		return;
 	}

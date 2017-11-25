@@ -12,7 +12,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 var user = {
-	name: 'MisterNotSmart'
+	name: 'MisterSmart'
 }
 
 var setSidebarVisible = function(setVisible) {
@@ -112,6 +112,7 @@ var nodesOnDoubleClick = function(event) {
 }
 
 function addNode() {
+	console.log('activeNode', cy.activeNode);
 	// lock the nodes to apply layout only on new node later
 	cy.nodes().lock();
 	// add the new node
@@ -308,6 +309,8 @@ mapsref.once('value', function(maps) {
 		if (map.val().name == cy.mapName) {
 			cy.mapKey = map.key;
 			cy.json(map.val().json);
+			cy.zoom(1);
+			cy.fit();
 		}
 		console.log(cy.mapKey);
 	});
@@ -327,16 +330,16 @@ mapsref.once('value', function(maps) {
 	// TODO own onClick function needed?
 	cy.edges().on('click', nodeOnSingleClick);
 
-	var mapref = mapsref.child(cy.mapKey);
-	mapref.on('value', function(map) {
-		console.log('Change in database happened');
-		if (map.val().username != user.name) {
-			console.log('updating map');
-			cy.off('add remove free data');
-			cy.json(map.val().json);
-			cy.on('add remove free data', saveMap);
-		}
-	}); // end mapref.on
+	// var mapref = mapsref.child(cy.mapKey);
+	// mapref.on('value', function(map) {
+	// 	console.log('Change in database happened');
+	// 	if (map.val().username != user.name) {
+	// 		console.log('updating map');
+	// 		cy.off('add remove free data');
+	// 		cy.json(map.val().json);
+	// 		cy.on('add remove free data', saveMap);
+	// 	}
+	// }); // end mapref.on
 
 	// listen to all changes events on the map and save them
 	cy.on('add remove free data', saveMap);

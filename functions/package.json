@@ -1,0 +1,19 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase serve --only functions",
+    "shell": "firebase experimental:functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "dependencies": {
+    "cytoscape": "^3.2.6",
+    "cytosnap": "^2.0.1",
+    "firebase-admin": "~5.4.2",
+    "firebase-functions": "^0.7.1",
+    "json-concat": "0.0.1"
+  },
+  "private": true
+}

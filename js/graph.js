@@ -141,7 +141,7 @@ var setSidebarVisible = function(setVisible) {
 window.onload = function() {
 
 	setSidebarVisible(false);
-	cy.mapName = 'Crazy_Trasurehunt_Map';
+	cy.mapName = 'Crazy_Treasurehunt_Map';
 
 	// listen to map changes
 	var mapsref = database.ref("maps");
@@ -153,12 +153,14 @@ window.onload = function() {
 				cy.mapKey = map.key;
 			}
 		});
-	}).then(function(){
+	}).then(function() {
 		var mapref = mapsref.child(cy.mapKey);
 
 		mapref.on('value', function(map) {
 			console.log('Change in database happened');
-			if (map.username != user.name) {
+			console.log(map.val());
+			console.log(user.name);
+			if (map.val().username != user.name) {
 				cy.json(map.json);
 			}
 			// var mapJSON;
@@ -180,7 +182,59 @@ window.onload = function() {
 			// cy.nodes().on('click', nodeOnClick);
 			// });
 
+
+			// listen to all changes events on the map and save them
+			cy.on('add remove free data', saveMap);
+
+			function saveMap(evt) {
+				console.log('Save Map');
+				console.log('mapKey', cy.mapKey);
+				var mapref = database.ref("maps/" + cy.mapKey);
+
+				var mapJSON = cy.json();
+				for (obj in mapJSON) {
+					if (mapJSON[obj] == undefined) {
+						delete mapJSON[obj];
+					}
+				}
+
+				mapref.transaction(function(currentData) {
+					return {
+						'username': user.name,
+						'name': cy.mapName,
+						'json': mapJSON,
+						'diff': {}
+					}
+				});
+
+				// mapref.once('value', function(maps) {
+				// 	var mapUpdated = false;
+				// 	maps.forEach(function(map) {
+				// 		if (!mapUpdated && map.val().name == cy.mapName) {
+				// 			dbJSON = map.val().json;
+				// 			if (!_.isEqual(dbJSON, mapJSON)) {
+				// 				console.log('dbJSON', dbJSON);
+				// 				console.log('mapJSON',mapJSON);
+				// 				console.log('Updating map in database.')
+				// 				var key = map.key;
+				// 				var path = 'maps';
+				// 				var pathRef = database.ref(path).child(key);
+				// 				pathRef.transaction({'json':mapJSON});
+				// 				mapUpdated = true;
+				// 			}
+				// 		}
+				// 	});
+				// 	if (!mapUpdated) {
+				// 		console.log('Pushing map to database.');
+				// 		mapref.push({
+				// 			name: cy.mapName,
+				// 			json: mapJSON
+				// 		});
+				// 	}
+				// });
+			}
 		});
+
 	});
 
 
@@ -397,53 +451,4 @@ function defRelationship() {
 		cy.definingRelationship = 0;
 		document.getElementById('relationshipButton').style = null;
 	}
-}
-
-// listen to all changes events on the map and save them
-cy.on('add remove free data', saveMap);
-
-function saveMap(evt) {
-	console.log('Save Map');
-	var mapref = database.ref("maps" + cy.mapKey);
-
-	var mapJSON = cy.json();
-	for (obj in mapJSON) {
-		if (mapJSON[obj] == undefined) {
-			delete mapJSON[obj];
-		}
-	}
-
-	mapref.transaction(function(currentData) {
-		return {
-			'username': user.name,
-			'json': mapJSON,
-			'diff': {}
-		}
-	});
-
-	// mapref.once('value', function(maps) {
-	// 	var mapUpdated = false;
-	// 	maps.forEach(function(map) {
-	// 		if (!mapUpdated && map.val().name == cy.mapName) {
-	// 			dbJSON = map.val().json;
-	// 			if (!_.isEqual(dbJSON, mapJSON)) {
-	// 				console.log('dbJSON', dbJSON);
-	// 				console.log('mapJSON',mapJSON);
-	// 				console.log('Updating map in database.')
-	// 				var key = map.key;
-	// 				var path = 'maps';
-	// 				var pathRef = database.ref(path).child(key);
-	// 				pathRef.transaction({'json':mapJSON});
-	// 				mapUpdated = true;
-	// 			}
-	// 		}
-	// 	});
-	// 	if (!mapUpdated) {
-	// 		console.log('Pushing map to database.');
-	// 		mapref.push({
-	// 			name: cy.mapName,
-	// 			json: mapJSON
-	// 		});
-	// 	}
-	// });
 }

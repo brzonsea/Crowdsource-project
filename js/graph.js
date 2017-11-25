@@ -12,7 +12,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 var user = {
-	name: 'MisterSmart'
+	name: 'MisterNotSmart'
 }
 
 var setSidebarVisible = function(setVisible) {
@@ -29,64 +29,76 @@ var setSidebarVisible = function(setVisible) {
 
 window.onload = function() {
 
-	setSidebarVisible(false);
-	cy.mapName = 'Crazy_Treasurehunt_Map';
+		setSidebarVisible(false);
 
-	var cy = cytoscape({
-		container: document.getElementById('structure-map'), // container to render in
+		var cy = cytoscape({
+			container: document.getElementById('structure-map'), // container to render in
 
-		style: [ // the style-sheet for the graph
-			{
-				selector: 'node',
-				style: {
-					'background-color': 'white',
-					'label': 'data(label)',
-					'shape': 'ellipse',
-					'width': '10em',
-					'height': '5em',
-					'text-halign': 'center',
-					'text-valign': 'center',
-					'text-max-width': '10em',
-					'text-wrap': 'wrap',
+			style: [ // the style-sheet for the graph
+				{
+					selector: 'node',
+					style: {
+						'background-color': 'white',
+						'label': 'data(label)',
+						'shape': 'ellipse',
+						'width': '10em',
+						'height': '5em',
+						'text-halign': 'center',
+						'text-valign': 'center',
+						'text-max-width': '10em',
+						'text-wrap': 'wrap',
+					}
+				},
+
+				{
+					selector: 'edge',
+					style: {
+						'width': 3,
+						'line-color': 'grey',
+					}
 				}
+			],
+
+			layout: {
+				name: 'cose',
 			},
 
-			{
-				selector: 'edge',
-				style: {
-					'width': 3,
-					'line-color': 'grey',
-				}
-			}
-		],
-
-		layout: {
-			name: 'cose',
-		},
-
-	});
-
-	// listen to map changes
-	var mapsref = database.ref("maps");
-
-	mapsref.once('value', function(maps) {
-		maps.forEach(function(map) {
-			if (map.val().name == cy.mapName) {
-				cy.mapKey = map.key;
-				cy.json(map.val().json);
-			}
 		});
-	}).then(function() {
-		var mapref = mapsref.child(cy.mapKey);
+		
+		cy.mapName = 'Crazy_Treasurehunt_Map';
 
-		mapref.on('value', function(map) {
-			console.log('Change in database happened');
-			if (map.val().username != user.name) {
+		// listen to map changes
+		var mapsref = database.ref("maps");
+
+		mapsref.once('value', function(maps) {
+			maps.forEach(function(map) {
+				if (map.val().name == cy.mapName) {
+					cy.mapKey = map.key;
+					cy.json(map.val().json);
+				}
+			});
+		}).then(function() {
+			var mapref = mapsref.child(cy.mapKey);
+
+			mapref.once('value', function(map) {
+				console.log('Change in database happened');
+				//if (map.val().username != user.name) {
 				console.log('updating map');
 				cy.off('add remove free data');
 				cy.json(map.val().json);
-				cy.on('add remove free data', saveMap);
-			}
+				cy.once('add remove free data', saveMap);
+				//}
+			});
+
+			mapref.on('value', function(map) {
+				console.log('Change in database happened');
+				if (map.val().username != user.name) {
+					console.log('updating map');
+					cy.off('add remove free data');
+					cy.json(map.val().json);
+					cy.on('add remove free data', saveMap);
+				}
+			}); // end mapref.on
 
 			// listen to all changes events on the map and save them
 			cy.on('add remove free data', saveMap);
@@ -115,9 +127,8 @@ window.onload = function() {
 					}
 				}); // end transaction
 			} // end saveMap
-		}); // end mapref.on
-	}); // end then
-} // end window.onload
+		}); // end then
+	} // end window.onload
 
 cy.on('click', function(evt) {
 	if (!evt.target.group) {

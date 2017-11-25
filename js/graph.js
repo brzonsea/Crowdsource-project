@@ -158,10 +158,14 @@ window.onload = function() {
 
 		mapref.on('value', function(map) {
 			console.log('Change in database happened');
-			console.log(map.val());
+			console.log(map.val().username);
 			console.log(user.name);
 			if (map.val().username != user.name) {
-				cy.json(map.json);
+				console.log('updating map');
+				console.log(map.val().json);
+				cy.off('add remove free data');
+				cy.json(map.val().json);
+				cy.on('add remove free data', saveMap);
 			}
 			// var mapJSON;
 			// maps.forEach(function(map) {

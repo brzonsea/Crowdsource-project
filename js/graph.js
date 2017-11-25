@@ -158,11 +158,8 @@ window.onload = function() {
 
 		mapref.on('value', function(map) {
 			console.log('Change in database happened');
-			console.log(map.val().username);
-			console.log(user.name);
 			if (map.val().username != user.name) {
 				console.log('updating map');
-				console.log(map.val().json);
 				cy.off('add remove free data');
 				cy.json(map.val().json);
 				cy.on('add remove free data', saveMap);
@@ -192,7 +189,6 @@ window.onload = function() {
 
 			function saveMap(evt) {
 				console.log('Save Map');
-				console.log('mapKey', cy.mapKey);
 				var mapref = database.ref("maps/" + cy.mapKey);
 
 				var mapJSON = cy.json();
@@ -201,6 +197,10 @@ window.onload = function() {
 						delete mapJSON[obj];
 					}
 				}
+
+				console.log(mapJSON);
+				delete mapJSON[zoom];
+				delete mapJSON[pan];
 
 				mapref.transaction(function(currentData) {
 					return {
@@ -282,7 +282,6 @@ var nodeOnClick = function(event) {
 cy.nodes().on('click', nodeOnClick);
 
 cy.nodes().on('doubleClick', function(event) {
-	console.log('Node doubleclicked.');
 	if (event.target.data().detailsVisible) {
 		var popup = document.getElementById('node-popup-' + event.target.id());
 		if (popup) {
@@ -323,7 +322,6 @@ cy.nodes().on('doubleClick', function(event) {
 });
 
 var nodeOnSingleClick = function(evt) {
-	console.log('Node clicked.');
 
 	switch (evt.cy.definingRelationship) {
 		case 0:
@@ -351,7 +349,6 @@ var nodeOnSingleClick = function(evt) {
 cy.edges().on('click', nodeOnSingleClick);
 
 function addNode() {
-	console.log('activeNode', cy.activeNode);
 	// lock the nodes to apply layout only on new node later
 	cy.nodes().lock();
 	// add the new node
@@ -377,7 +374,6 @@ function addNode() {
 	layout.run();
 	// unlock all nodes so the user can move them
 	cy.nodes().unlock();
-	console.log(cy.nodes());
 	element.on('click', nodeOnClick);
 }
 
@@ -388,9 +384,9 @@ var updateTitle = function() {
 var startTitleTimeout = function() {
 	if (!(null == titleTimeout)) {
 		clearTimeout(titleTimeout);
-		titleTimeout = setTimeout(updateTitle.bind(this), 3000);
+		titleTimeout = setTimeout(updateTitle.bind(this), 300);
 	} else {
-		titleTimeout = setTimeout(updateTitle.bind(this), 3000);
+		titleTimeout = setTimeout(updateTitle.bind(this), 300);
 	}
 }
 var titleInput = document.getElementById('titleInput');
@@ -403,9 +399,9 @@ var updateSummary = function() {
 var startSummaryTimeout = function() {
 	if (!null == summaryTimeout) {
 		clearTimeout(summaryTimeout);
-		summaryTimeout = setTimeout(updateSummary.bind(this), 3000);
+		summaryTimeout = setTimeout(updateSummary.bind(this), 300);
 	} else {
-		summaryTimeout = setTimeout(updateSummary.bind(this), 3000);
+		summaryTimeout = setTimeout(updateSummary.bind(this), 300);
 	}
 }
 var summaryInput = document.getElementById('summaryInput');

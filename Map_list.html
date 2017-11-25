@@ -155,34 +155,31 @@
 			return value;
 			}
 		}
-		function dosmth1(){
-		var my_maps_div = document.getElementById('my_maps');
-		for (var i = 0; i < my_maps.length; i++) {
-			var map_div = document.createElement('div');
-			map_div.className = 'course';
-			map_div.id = my_maps[i];
-			map_div.innerHTML = my_maps[i].replace('_', ' ');
-			map_div.onclick = loadMap;
-			my_maps_div.appendChild(map_div);
-		}
-		}
-		function dosmth2() {
-		var shared_maps_div = document.getElementById('shared_maps');
-		for (var i = 0; i < shared_maps.length; i++) {
-			console.log(shared_maps[i]);
-			var map_div = document.createElement('div');
-			map_div.className = 'course';
-			map_div.id = shared_maps[i];
-			map_div.innerHTML = shared_maps[i].replace(/_/g, ' ');
-			map_div.onclick = loadMap;
-			shared_maps_div.appendChild(map_div);
-		}
-
-	}
-
 
 		var my_maps = [];
 		var shared_maps = [];
+		function displayMapTiles(maptypediv, arraytype) {
+			var shared_maps_div = document.getElementById(maptypediv);
+			for (var i = 0; i < arraytype.length; i++) {
+				console.log(arraytype[i]);
+				var map_div = document.createElement('div');
+				map_div.className = 'course';
+				map_div.id = arraytype[i];
+				map_div.innerHTML = arraytype[i].replace(/_/g, ' ');
+				map_div.onclick = loadMap;
+				shared_maps_div.appendChild(map_div);
+			}
+		}
+
+		function mine() {
+			displayMapTiles('my_maps', my_maps);
+		}
+
+		function shared() {
+			displayMapTiles('shared_maps', shared_maps);
+		}
+
+
 		//var username = getValue("username");
 		var username = "testname";
 		var mymapref = database.ref("accounts/" + username);
@@ -192,7 +189,7 @@
 				console.log(map.val().name);
 				my_maps.push(map.val().name);
 			});
-		}).then(dosmth1);
+		}).then(mine);
 
 		var mapref = database.ref("maps");
 		mapref.once("value", function(maps) {
@@ -202,13 +199,9 @@
 					shared_maps.push(map.val().name);
 				}
 			});
-		}).then(dosmth2);
-		console.log(my_maps);
-		console.log(shared_maps);
-		//var my_maps = ['Team_4', 'Crazy_Team'];
-		//var shared_maps = ['Awesome_Group','Adi_and_Friends', 'Andreas_and_the_Chocolate_Factory'];
+		}).then(shared);
 		
-}
+		}	
 	// document.getElementById("Team_4").onclick = function() {
 	// 	window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
 	// };

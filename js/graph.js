@@ -15,6 +15,108 @@ var user = {
 	name: 'MisterNotSmart'
 }
 
+<<<<<<< HEAD
+=======
+var cy = cytoscape({
+
+	container: document.getElementById('structure-map'), // container to render in
+
+	elements: [ // list of graph elements to start with
+		{
+			data: {
+				id: 'a',
+				label: 'A',
+				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
+				childNode: ["b"]
+			}
+		}, {
+			data: {
+				id: 'b',
+				label: 'B',
+				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
+				childNode: ["c"]
+			}
+		}, {
+			data: {
+				id: 'c',
+				label: 'C',
+				childNode: ["d"]
+			}
+		}, {
+			data: {
+				id: 'd',
+				label: 'D',
+				childNode: ["e"]
+			}
+		}, {
+			data: {
+				id: 'e',
+				label: 'E',
+				childNode: []
+			}
+		}, {
+			data: {
+				id: 'ab',
+				source: 'a',
+				target: 'b',
+				isEdge: true
+			}
+		}, {
+			data: {
+				id: 'bc',
+				source: 'b',
+				target: 'c',
+				isEdge: true
+			}
+		}, {
+			data: {
+				id: 'cd',
+				source: 'c',
+				target: 'd',
+				isEdge: true
+			}
+		}, {
+			data: {
+				id: 'de',
+				source: 'd',
+				target: 'e',
+				isEdge: true
+			}
+		},
+	],
+
+	style: [ // the style-sheet for the graph
+		{
+			selector: 'node',
+			style: {
+				'background-color': 'white',
+				'label': 'data(label)',
+				'shape': 'ellipse',
+				'width': '10em',
+				'height': '5em',
+				'text-halign': 'center',
+				'text-valign': 'center',
+				'text-max-width': '10em',
+				'text-wrap': 'wrap',
+			}
+		},
+
+		{
+			selector: 'edge',
+			style: {
+				'width': 3,
+				'line-color': 'grey',
+			}
+		}
+	],
+
+	layout: {
+		name: 'cose',
+	},
+
+});
+
+>>>>>>> origin/new-delete-button
 var setSidebarVisible = function(setVisible) {
 	var displayStyle = setVisible ? null : 'none';
 	var children = document.getElementById('mySidebar').querySelectorAll('*');
@@ -28,6 +130,11 @@ var setSidebarVisible = function(setVisible) {
 }
 
 window.onload = function() {
+<<<<<<< HEAD
+=======
+	setSidebarVisible(false);
+}
+>>>>>>> origin/new-delete-button
 
 		setSidebarVisible(false);
 
@@ -242,9 +349,10 @@ function addNode() {
 		group: "nodes",
 		data: {
 			label: "New Node",
+			childNode: []
 		}
 	});
-	cy.activeNode.data('childNode', element.id());
+	cy.activeNode.data("childNode").push(element.id());
 	// add edge between new node and target
 	var edge = cy.add({
 		group: 'edges',
@@ -319,19 +427,38 @@ function deleteNode() {
 	if (confirm("This will delete the current node and all its child nodes!") == true) {
 		var nodesToDelete = [];
 		var targetNode = cy.activeNode;
-		nodesToDelete.push(targetNode.id());
+		nodesToDelete.push(targetNode);
 
-		while (targetNode.data().childNode != undefined) {
-			targetNode = cy.getElementById(targetNode.data().childNode);
-			nodesToDelete.push(targetNode.id());
-		}
-		cy.nodes().forEach(function(ele) {
-			if (ele.data().childNode == cy.activeNode.id()) {
-				delete ele.data().childNode;
+		for (var i = 0; i < nodesToDelete.length; i++) {
+			targetNode = nodesToDelete[i];
+			console.log(targetNode);
+			if (targetNode.data("childNode") != null) {
+				var targetChildren = targetNode.data("childNode");
+				for (var j = 0; j < targetChildren.length; j++) {
+					nodesToDelete.push(cy.getElementById(targetChildren[j]));
+				}
 			}
-		});
+		}
+
+		//for (var child in children) {
+		//	console.log(child.id());
+		//}
+
+		// while (children.length !== 0) {
+		// 	for (var child in targetNode.data("childNode")) {
+		// 		nodesToDelete.push(child);
+		// 		children.push(document.getElementById(child));
+		// 	}
+		// 	// targetNode = cy.getElementById(targetNode.data().childNode);
+		// 	// nodesToDelete.push(targetNode.id());
+		// }
+		// cy.nodes().forEach(function(ele) {
+		// 	if (ele.data().childNode == cy.activeNode.id()) {
+		// 		delete ele.data().childNode;
+		// 	}
+		// });
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
-			cy.remove(cy.getElementById(nodesToDelete[i]));
+			cy.remove(cy.getElementById(nodesToDelete[i].id()));
 		}
 	} else {
 		return;

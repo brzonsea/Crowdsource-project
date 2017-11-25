@@ -12,7 +12,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 var user = {
-	name: 'MisterNotSmart'
+	name: 'MisterStupid'
 }
 
 var setSidebarVisible = function(setVisible) {

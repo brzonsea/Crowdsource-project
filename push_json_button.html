@@ -44,7 +44,7 @@ body {
 	var database = firebase.database();
 	var mapref = database.ref("maps/-KzhK6gc8YbYMuWbLSdf");
 
-	var default_json = cytoscape({
+	var default_map = cytoscape({
 
 		// container: document.getElementById('structure-map'), // container to render in
 
@@ -164,7 +164,13 @@ body {
          };
     function push_json_to_DB() {
     	console.log("hahaha");
-    	mapref.set(default_json);
+    	default_json = default_map.json();
+    	for (obj in default_json) {
+					if (default_json[obj] == undefined) {
+						delete default_json[obj];
+					}
+				}
+    	mapref.set(default_json);//elements().jsons());
     }
  //    	mapref.once('value', function(maps) {
 	// 		maps.forEach(function(map) {

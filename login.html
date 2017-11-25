@@ -100,7 +100,7 @@ div {
     <br>
     <input type="text" id="pw" name="password" placeholder="Password">
     <br>
-    <button class="test" id='login_button' onclick="login()"> Log in </button>
+    <button class="test" id='login_button' onclick="login()"> Test </button>
     <br>
 	<button class="purple" id='signup_button' onclick="window.location = './signup.html'"> Sign up </button>
 </div>
@@ -140,7 +140,7 @@ div {
                   // var token = result.credential.accessToken;
                   // // The signed-in user info.
                   // var user = result.user;
-                  window.location = './course-overview.html';
+                  window.location = "./course-overview.html/?username=" + Username;
                   // ...
                 }).catch(function(error) {
                   // Handle Errors here.

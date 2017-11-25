@@ -2,79 +2,79 @@
 <html>
 
 <head>
-<style>
+	<style>
 
-div.container {
-	width: 100%;
-	background: white;
-	/*border: 1px solid gray;*/
-}
+	div.container {
+		width: 100%;
+		background: white;
+		/*border: 1px solid gray;*/
+	}
 
-div.layout {
-	display: block;
-	width: 100%;
-	background: lightgray;
-}
+	div.layout {
+		display: block;
+		width: 100%;
+		background: lightgray;
+	}
 
-body {
-	margin: 0;
-	background: lightgray;
-	font-size: large;
-}
+	body {
+		margin: 0;
+		background: lightgray;
+		font-size: large;
+	}
 
-div.course {
-	width: 10em;
-	max-width: 10em;
-	height: 7.5em;
-	max-height: 7.5em;
-	float: left;
-	background: white;
-	text-align: left;
-	color: darkgray;
-	font-size: xx-large;
-	padding: 0.5em;
-	margin-bottom: 1em;
-	margin-left: 1em;
-	margin-right: 1em;
-	position: relative;
-}
+	div.course {
+		width: 10em;
+		max-width: 10em;
+		height: 7.5em;
+		max-height: 7.5em;
+		float: left;
+		background: white;
+		text-align: left;
+		color: darkgray;
+		font-size: xx-large;
+		padding: 0.5em;
+		margin-bottom: 1em;
+		margin-left: 1em;
+		margin-right: 1em;
+		position: relative;
+	}
 
-p {
-	margin-top: 2em;
-	margin-left: 1.2em;
-	color: gray;
-	font-size: 1.5em;
-}
+	p {
+		margin-top: 2em;
+		margin-left: 1.2em;
+		color: gray;
+		font-size: 1.5em;
+	}
 
-#login p {
-	margin: 0em;
-	margin-right: 1em;
-	margin-top: 0.5em;
-	color: gray;
-	text-align: center;
-	font-size: large;
-}
+	#login p {
+		margin: 0em;
+		margin-right: 1em;
+		margin-top: 0.5em;
+		color: gray;
+		text-align: center;
+		font-size: large;
+	}
 
-#map_name p {
-	font-size: 25px;
-	margin: 0em;
-}
+	#map_name p {
+		font-size: 25px;
+		margin: 0em;
+	}
 
-span {
-  display: inline-block;
-  vertical-align: middle;
-}
+	span {
+		display: inline-block;
+		vertical-align: middle;
+	}
 
-#plus img {
-	margin: auto;
-	display: block;
-	margin: auto;
-   	position: absolute;
-   	top: 0; 
-   	left: 0; 
-   	bottom: 0; 
-   	right: 0;
-}
+	#plus img {
+		margin: auto;
+		display: block;
+		margin: auto;
+		position: absolute;
+		top: 0; 
+		left: 0; 
+		bottom: 0; 
+		right: 0;
+	}
 
 </style>
 </head>
@@ -83,67 +83,170 @@ span {
 
 <body>
 
-<div class='container'>
-  <header>
-  	<a href="course-overview.html">
-  		<img src="logo_0.1.png" alt = "Logo" width="150" style="margin: 0.25em">
-  		<div class='p' id='login' style="float: right;">
-  			<p>mikolez@kaist.ac.kr</p>
-  		</div>
-  	</a>
-	<!-- <input id="image" type="image" src="https://raw.githubusercontent.com/brzonsea/Crowdsource-project/master/logo_0.1.png" width = "140" height = "35" margin-left = "10"> -->
-  </header>
-</div>
-
-
-<p>My Maps</p>
-<a href="map-drawing-page.html">
-	<div class="course" id="Team_4">
-	<!-- 	<button id="myButton" class="float-left submit-button">cvzb</button>
-	 -->
-		<div class="p" id="map_name">
-			<p>Team 4</p>
-		</div>
-	</div>
-</a>
-<div class="course" id="plus">
-	<img src="plus.png" alt = "Plus" width="60" height="60">
-</div>
-
-<p style="clear:both">Shared Maps</p>
-<a href="map-viewing-page.html">
-	<div class="course">
-		<div class="p" id="map_name">
-			<p>Awesome Group</p>
-		</div>
-	</div>
-</a>
-<a href="map-viewing-page.html">
-	<div class="course">
-		<div class="p" id="map_name">
-			<p>Adi and Friends</p>
-		</div>
-	</div>
-</a>		
-<a href="map-viewing-page.html">
-	<div class="course">
-		<span>
-				<div class="p" id="map_name">
-					<p>Andreas and the Chocolate Factory</p>
+	<div class='container'>
+		<header>
+			<a href="course-overview.html">
+				<img src="logo_0.1.png" alt = "Logo" width="150" style="margin: 0.25em">
+				<div class='p' id='login' style="float: right;">
+					<p>mikolez@kaist.ac.kr</p>
 				</div>
-		</span>
+			</a>
+			<!-- <input id="image" type="image" src="https://raw.githubusercontent.com/brzonsea/Crowdsource-project/master/logo_0.1.png" width = "140" height = "35" margin-left = "10"> -->
+		</header>
 	</div>
-</a>
 
+
+
+	<p>My Maps</p>
+	<div id="my_maps"></div>
+
+	<p style="clear:both">Shared Maps</p>
+	<div id="shared_maps"></div>
+
+<div>
+<button id='login_button' onclick="addMap('test', 'Andreas', '2')"> Test </button>
+</div>
 
 
 </body>
 
+<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
 <script type="text/javascript">
-	    document.getElementById("Team_4").onclick = function () {
-	        window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
-	    };
-</script>
+	window.onload = function() {
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
+			authDomain: "adipro-5bbe6.firebaseapp.com",
+			databaseURL: "https://adipro-5bbe6.firebaseio.com",
+			projectId: "adipro-5bbe6",
+			storageBucket: "",
+			messagingSenderId: "14626937593"
+		};
 
+		firebase.initializeApp(config);
+		var database = firebase.database();
+
+
+		var loadMap = function() {
+			window.location = 'map-drawing-page.html';
+		}
+
+		function getValue(varname) {
+			var url = window.location.href;
+			var qparts = url.split("?");
+
+			if (qparts.length == 1) {
+				return "";
+			} else {
+			var query = qparts[1];
+				var vars = query.split("&");
+			var value = "";
+			for (i = 0; i < vars.length; i++) {			
+				var parts = vars[i].split("=");
+				if (parts[0] == varname) {
+					value = parts[1];
+					break;
+				}
+			}
+			value = unescape(value);
+
+			// Convert "+"s to " "s
+			value.replace(/\+/g, " ");
+			return value;
+			}
+		}
+		function dosmth1(){
+		var my_maps_div = document.getElementById('my_maps');
+		for (var i = 0; i < my_maps.length; i++) {
+			var map_div = document.createElement('div');
+			map_div.className = 'course';
+			map_div.id = my_maps[i];
+			map_div.innerHTML = my_maps[i].replace('_', ' ');
+			map_div.onclick = loadMap;
+			my_maps_div.appendChild(map_div);
+		}
+		}
+		function dosmth2() {
+		var shared_maps_div = document.getElementById('shared_maps');
+		for (var i = 0; i < shared_maps.length; i++) {
+			console.log(shared_maps[i]);
+			var map_div = document.createElement('div');
+			map_div.className = 'course';
+			map_div.id = shared_maps[i];
+			map_div.innerHTML = shared_maps[i].replace(/_/g, ' ');
+			map_div.onclick = loadMap;
+			shared_maps_div.appendChild(map_div);
+		}
+
+	}
+
+
+		var my_maps = [];
+		var shared_maps = [];
+		//var username = getValue("username");
+		var username = "testname";
+		var mymapref = database.ref("accounts/" + username);
+
+		mymapref.once("value", function(maps) {
+			maps.forEach(function(map) {
+				console.log(map.val().name);
+				my_maps.push(map.val().name);
+			});
+		}).then(dosmth1);
+
+		var mapref = database.ref("maps");
+		mapref.once("value", function(maps) {
+			maps.forEach(function(map) {
+				if (!my_maps.includes(map.val().name)) {
+					console.log(map.val().name);
+					shared_maps.push(map.val().name);
+				}
+			});
+		}).then(dosmth2);
+		console.log(my_maps);
+		console.log(shared_maps);
+		//var my_maps = ['Team_4', 'Crazy_Team'];
+		//var shared_maps = ['Awesome_Group','Adi_and_Friends', 'Andreas_and_the_Chocolate_Factory'];
+		
+}
+	// document.getElementById("Team_4").onclick = function() {
+	// 	window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
+	// };
+</script>
+<!-- <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+<script>
+     // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
+            authDomain: "adipro-5bbe6.firebaseapp.com",
+            databaseURL: "https://adipro-5bbe6.firebaseio.com",
+            projectId: "adipro-5bbe6",
+            storageBucket: "",
+            messagingSenderId: "14626937593"
+        };
+        firebase.initializeApp(config);
+        var database = firebase.database();
+        var index = 0
+        function addMap(mapname, username, replace) {
+        	var path = "accounts/" + username + "/maps";
+        	console.log(path);
+        	var mapref = database.ref(path);
+        	mapref.once("value", function(maps) {
+        		maps.forEach(function(map) {
+        			if (map.val().map == "test") {
+        				var key = map.key;
+        				var path2 = "accounts/" + username + "/maps/" + key;
+        				console.log(path2);
+        				var testref = database.ref(path2);
+        				testref.update({number: "2"});
+        			}
+        		});
+        	});
+        }
+
+
+// if (map.val().name == sample) 
+</script> --> 
 </html>
 

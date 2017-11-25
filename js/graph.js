@@ -261,6 +261,30 @@ function defRelationship() {
 	}
 }
 
+function saveMap(evt) {
+	console.log('Save Map');
+	var mapref = database.ref("maps/" + cy.mapKey);
+
+	var mapJSON = cy.json();
+	for (obj in mapJSON) {
+		if (mapJSON[obj] == undefined) {
+			delete mapJSON[obj];
+		}
+	}
+
+	console.log(mapJSON);
+	delete mapJSON["zoom"];
+	delete mapJSON["pan"];
+
+	mapref.transaction(function(currentData) {
+		return {
+			'username': user.name,
+			'name': cy.mapName,
+			'json': mapJSON,
+		}
+	}); // end transaction
+} // end saveMap
+
 var cy = cytoscape({
 	container: document.getElementById('structure-map'), // container to render in
 
@@ -347,28 +371,4 @@ mapsref.once('value', function(maps) {
 
 	// listen to all changes events on the map and save them
 	cy.on('add remove free data', saveMap);
-
-	function saveMap(evt) {
-		console.log('Save Map');
-		var mapref = database.ref("maps/" + cy.mapKey);
-
-		var mapJSON = cy.json();
-		for (obj in mapJSON) {
-			if (mapJSON[obj] == undefined) {
-				delete mapJSON[obj];
-			}
-		}
-
-		console.log(mapJSON);
-		delete mapJSON["zoom"];
-		delete mapJSON["pan"];
-
-		mapref.transaction(function(currentData) {
-			return {
-				'username': user.name,
-				'name': cy.mapName,
-				'json': mapJSON,
-			}
-		}); // end transaction
-	} // end saveMap
 }); // end then

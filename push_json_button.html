@@ -164,13 +164,15 @@ body {
          };
     function push_json_to_DB() {
     	console.log("hahaha");
+    	default_map.mapName = 'Crazy_Treasurehunt_Map';
     	default_json = default_map.json();
     	for (obj in default_json) {
 					if (default_json[obj] == undefined) {
 						delete default_json[obj];
 					}
 				}
-    	mapref.set(default_json);//elements().jsons());
+    	mapref.set( {"name" : default_map.mapName , "json" : default_json});//elements().jsons());
+    	//mapref.update({"name" : default_map.mapName });
     }
  //    	mapref.once('value', function(maps) {
 	// 		maps.forEach(function(map) {

@@ -12,7 +12,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 var user = {
-	name: 'MisterNotSmart'
+	name: 'MisterSmart'
 }
 
 var setSidebarVisible = function(setVisible) {
@@ -79,16 +79,6 @@ window.onload = function() {
 			});
 		}).then(function() {
 			var mapref = mapsref.child(cy.mapKey);
-
-			mapref.once('value', function(map) {
-				console.log('Change in database happened');
-				//if (map.val().username != user.name) {
-				console.log('updating map');
-				cy.off('add remove free data');
-				cy.json(map.val().json);
-				cy.once('add remove free data', saveMap);
-				//}
-			});
 
 			mapref.on('value', function(map) {
 				console.log('Change in database happened');
@@ -242,9 +232,10 @@ function addNode() {
 		group: "nodes",
 		data: {
 			label: "New Node",
+			childNode: []
 		}
 	});
-	cy.activeNode.data('childNode', element.id());
+	cy.activeNode.data("childNode").push(element.id());
 	// add edge between new node and target
 	var edge = cy.add({
 		group: 'edges',
@@ -319,19 +310,38 @@ function deleteNode() {
 	if (confirm("This will delete the current node and all its child nodes!") == true) {
 		var nodesToDelete = [];
 		var targetNode = cy.activeNode;
-		nodesToDelete.push(targetNode.id());
+		nodesToDelete.push(targetNode);
 
-		while (targetNode.data().childNode != undefined) {
-			targetNode = cy.getElementById(targetNode.data().childNode);
-			nodesToDelete.push(targetNode.id());
-		}
-		cy.nodes().forEach(function(ele) {
-			if (ele.data().childNode == cy.activeNode.id()) {
-				delete ele.data().childNode;
+		for (var i = 0; i < nodesToDelete.length; i++) {
+			targetNode = nodesToDelete[i];
+			console.log(targetNode);
+			if (targetNode.data("childNode") != null) {
+				var targetChildren = targetNode.data("childNode");
+				for (var j = 0; j < targetChildren.length; j++) {
+					nodesToDelete.push(cy.getElementById(targetChildren[j]));
+				}
 			}
-		});
+		}
+
+		//for (var child in children) {
+		//	console.log(child.id());
+		//}
+
+		// while (children.length !== 0) {
+		// 	for (var child in targetNode.data("childNode")) {
+		// 		nodesToDelete.push(child);
+		// 		children.push(document.getElementById(child));
+		// 	}
+		// 	// targetNode = cy.getElementById(targetNode.data().childNode);
+		// 	// nodesToDelete.push(targetNode.id());
+		// }
+		// cy.nodes().forEach(function(ele) {
+		// 	if (ele.data().childNode == cy.activeNode.id()) {
+		// 		delete ele.data().childNode;
+		// 	}
+		// });
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
-			cy.remove(cy.getElementById(nodesToDelete[i]));
+			cy.remove(cy.getElementById(nodesToDelete[i].id()));
 		}
 	} else {
 		return;

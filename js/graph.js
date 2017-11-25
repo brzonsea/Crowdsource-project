@@ -27,57 +27,38 @@ var cy = cytoscape({
 				id: 'a',
 				label: 'A',
 				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
-				childNode: 'b',
+				childNode: ["b"]
 			}
 		}, {
 			data: {
 				id: 'b',
 				label: 'B',
 				summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
-				childNode: 'c',
+				childNode: ["c"]
 			}
 		}, {
 			data: {
 				id: 'c',
 				label: 'C',
-				childNode: 'd',
+				childNode: ["d"]
 			}
 		}, {
 			data: {
 				id: 'd',
-				label: 'D'
+				label: 'D',
+				childNode: ["e"]
 			}
 		}, {
 			data: {
 				id: 'e',
-				label: 'E'
+				label: 'E',
+				childNode: []
 			}
 		}, {
 			data: {
 				id: 'ab',
 				source: 'a',
 				target: 'b',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'ac',
-				source: 'a',
-				target: 'c',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'ad',
-				source: 'a',
-				target: 'd',
-				isEdge: true
-			}
-		}, {
-			data: {
-				id: 'bd',
-				source: 'b',
-				target: 'd',
 				isEdge: true
 			}
 		}, {
@@ -89,8 +70,15 @@ var cy = cytoscape({
 			}
 		}, {
 			data: {
-				id: 'ce',
+				id: 'cd',
 				source: 'c',
+				target: 'd',
+				isEdge: true
+			}
+		}, {
+			data: {
+				id: 'de',
+				source: 'd',
 				target: 'e',
 				isEdge: true
 			}
@@ -142,7 +130,6 @@ var setSidebarVisible = function(setVisible) {
 
 window.onload = function() {
 	setSidebarVisible(false);
-	console.log(cy.nodes());
 }
 
 
@@ -253,7 +240,6 @@ var nodeOnSingleClick = function(evt) {
 cy.edges().on('click', nodeOnSingleClick);
 
 function addNode() {
-	console.log('activeNode', cy.activeNode);
 	// lock the nodes to apply layout only on new node later
 	cy.nodes().lock();
 	// add the new node
@@ -261,9 +247,10 @@ function addNode() {
 		group: "nodes",
 		data: {
 			label: "New Node",
+			childNode: []
 		}
 	});
-	cy.activeNode.data('childNode', element.id());
+	cy.activeNode.data("childNode").push(element.id());
 	// add edge between new node and target
 	var edge = cy.add({
 		group: 'edges',
@@ -279,7 +266,6 @@ function addNode() {
 	layout.run();
 	// unlock all nodes so the user can move them
 	cy.nodes().unlock();
-	console.log(cy.nodes());
 	element.on('click', nodeOnClick);
 }
 
@@ -320,19 +306,38 @@ function deleteNode() {
 	if (confirm("This will delete the current node and all its child nodes!") == true) {
 		var nodesToDelete = [];
 		var targetNode = cy.activeNode;
-		nodesToDelete.push(targetNode.id());
+		nodesToDelete.push(targetNode);
 
-		while (targetNode.data().childNode != undefined) {
-			targetNode = cy.getElementById(targetNode.data().childNode);
-			nodesToDelete.push(targetNode.id());
-		}
-		cy.nodes().forEach(function(ele) {
-			if (ele.data().childNode == cy.activeNode.id()) {
-				delete ele.data().childNode;
+		for (var i = 0; i < nodesToDelete.length; i++) {
+			targetNode = nodesToDelete[i];
+			console.log(targetNode);
+			if (targetNode.data("childNode") != null) {
+				var targetChildren = targetNode.data("childNode");
+				for (var j = 0; j < targetChildren.length; j++) {
+					nodesToDelete.push(cy.getElementById(targetChildren[j]));
+				}
 			}
-		});
+		}
+
+		//for (var child in children) {
+		//	console.log(child.id());
+		//}
+
+		// while (children.length !== 0) {
+		// 	for (var child in targetNode.data("childNode")) {
+		// 		nodesToDelete.push(child);
+		// 		children.push(document.getElementById(child));
+		// 	}
+		// 	// targetNode = cy.getElementById(targetNode.data().childNode);
+		// 	// nodesToDelete.push(targetNode.id());
+		// }
+		// cy.nodes().forEach(function(ele) {
+		// 	if (ele.data().childNode == cy.activeNode.id()) {
+		// 		delete ele.data().childNode;
+		// 	}
+		// });
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
-			cy.remove(cy.getElementById(nodesToDelete[i]));
+			cy.remove(cy.getElementById(nodesToDelete[i].id()));
 		}
 	} else {
 		return;

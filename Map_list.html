@@ -156,11 +156,7 @@
 		firebase.initializeApp(config);
 		var database = firebase.database();
 
-		var string = 'abcde';
-		string += '@generic.com';
-
-		//var username = getValue("username");
-		var username = getValue('username');
+		var username = getValue("username");
 		var mymapref = database.ref("accounts/" + username);
 
 		var loadMap = function() {

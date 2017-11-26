@@ -126,9 +126,25 @@
 		firebase.initializeApp(config);
 		var database = firebase.database();
 
+		// var username = null;
+		var username = "testname";
+		firebase.auth().onAuthStateChanged(function(user) {
+			if (user) {
+				// User is signed in.
+				username = user.uid;
+			} else {
+				// No user is signed in.
+			}
+		});
 
+		console.log(firebase.auth().currentUser);
 		var loadMap = function() {
-			window.location = 'map-drawing-page.html';
+			if (!username) {
+				alert('Your somehow aren\'t logged in, sorry. We\'ll redirect you to the login page.');
+				window.location = 'login.html';
+			} else {
+				window.location = 'map-drawing-page.html?mapName=' + this.name + '&username=' + username;
+			}
 		}
 
 		function getValue(varname) {
@@ -180,8 +196,6 @@
 		}
 
 
-		//var username = getValue("username");
-		var username = "testname";
 		var mymapref = database.ref("accounts/" + username);
 
 		mymapref.once("value", function(maps) {

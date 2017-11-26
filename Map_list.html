@@ -4,6 +4,68 @@
 <head>
 	<style>
 
+	.button {
+	    width: 10vh;
+	    height: 5vh;
+	    font-family: "Comic Sans MS";
+	    background-color: #4CAF50;
+	    color: white;
+	    border: none;
+	    border-radius: 8px;
+	    cursor: pointer;
+	    line-height: 0vh;
+	    position: absolute;
+	    bottom: 2vh;
+	    right: 3vh;
+	    z-index: 100;
+	}
+	.button:hover {
+	    width: 10vh;
+	    height: 5vh;
+	    font-family: "Comic Sans MS";
+	    background-color: #45a049;
+	    color: white;
+	    border: none;
+	    border-radius: 8px;
+	    cursor: pointer;
+	    line-height: 0vh;
+	    position: absolute;
+	    bottom: 2vh;
+	    right: 3vh;
+	    z-index: 100;
+	}
+
+	.red {
+	    width: 10vh;
+	    height: 5vh;
+	    font-family: "Comic Sans MS";
+	    background-color: #cd1f1b;
+	    color: white;
+	    border: none;
+	    border-radius: 8px;
+	    cursor: pointer;
+	    line-height: 0vh;
+	    position: absolute;
+	    bottom: 2vh;
+	    right: 3vh;
+	    z-index: 100;
+	}
+	.red:hover {
+	    width: 10vh;
+	    height: 5vh;
+	    font-family: "Comic Sans MS";
+	    background-color: #aa1916;
+	    color: white;
+	    border: none;
+	    border-radius: 8px;
+	    cursor: pointer;
+	    line-height: 0vh;
+	    position: absolute;
+	    bottom: 2vh;
+	    right: 3vh;
+	    z-index: 100;
+	}
+
 	div.container {
 		width: 100%;
 		background: white;
@@ -37,6 +99,8 @@
 		margin-left: 1em;
 		margin-right: 1em;
 		position: relative;
+		z-index: 0;
+		border-radius: 10px;
 	}
 
 	p {
@@ -103,10 +167,6 @@
 	<p style="clear:both">Shared Maps</p>
 	<div id="shared_maps"></div>
 
-<div>
-<button id='login_button' onclick="addMap('test', 'Andreas', '2')"> Test </button>
-</div>
-
 
 </body>
 
@@ -125,10 +185,10 @@
 
 		firebase.initializeApp(config);
 		var database = firebase.database();
-
+		var username = "testname";
 
 		var loadMap = function() {
-			window.location = 'map-drawing-page.html';
+			//window.location = 'map-drawing-page.html?mapName=' + this.name + '&username=' + username;
 		}
 
 		function getValue(varname) {
@@ -155,19 +215,88 @@
 			return value;
 			}
 		}
+		function addMap() {
+        	var path = "accounts/" + this.username;
+        	var mapref = database.ref(path);
+        	mapref.push({name: this.mapname});
+        	var tile = document.getElementById(this.mapname);
+        	var shared_maps_div = document.getElementById("shared_maps");
+        	var my_maps_div = document.getElementById("my_maps");
+        	shared_maps_div.removeChild(tile);
+        	my_maps_div.appendChild(tile);
+
+        	var child = tile.childNodes[1];
+	       	child.className = "red";
+	       	child.innerHTML = "Leave";
+	       	var nameContainer = {'mapname': tile.id, 'username': username};
+			child.onclick = removeMap.bind(nameContainer);
+
+        	var e = window.event;
+    		e.cancelBubble = true;
+    		e.stopPropagation();
+        }
+
+        function removeMap() {
+        	var path = "accounts/" + this.username;
+        	var mapref = database.ref(path);
+        	var key;
+        	var mapname = this.mapname;
+        	var tile = document.getElementById(mapname);
+	        var shared_maps_div = document.getElementById("shared_maps");
+	       	var my_maps_div = document.getElementById("my_maps");
+	       	my_maps_div.removeChild(tile);
+	       	shared_maps_div.appendChild(tile);
+
+	       	var child = tile.childNodes[1];
+	       	child.className = "button";
+	       	child.innerHTML = "Join";
+	       	var nameContainer = {'mapname': tile.id, 'username': username};
+			child.onclick = addMap.bind(nameContainer);
+
+
+        	mapref.once("value", function(maps) {
+        		maps.forEach(function(map) {
+        			if (map.val().name == mapname) {
+        				key = map.key;
+        			}
+        		});
+        	}).then(function() {
+        		path = path + "/" + key;
+        		mapref = database.ref(path);
+        		mapref.remove();
+	        	var e = window.event;
+	    		e.cancelBubble = true;
+	    		e.stopPropagation();
+	    	});
+        }
 
 		var my_maps = [];
 		var shared_maps = [];
 		function displayMapTiles(maptypediv, arraytype) {
 			var shared_maps_div = document.getElementById(maptypediv);
 			for (var i = 0; i < arraytype.length; i++) {
-				console.log(arraytype[i]);
 				var map_div = document.createElement('div');
 				map_div.className = 'course';
 				map_div.id = arraytype[i];
 				map_div.innerHTML = arraytype[i].replace(/_/g, ' ');
 				map_div.onclick = loadMap;
 				shared_maps_div.appendChild(map_div);
+
+				if (maptypediv == "shared_maps"){
+					var map_join = document.createElement('button');
+					map_join.className = 'button';
+					map_div.appendChild(map_join);
+					map_join.innerHTML = "Join";
+					var nameContainer = {'mapname': arraytype[i], 'username': username};
+					map_join.onclick = addMap.bind(nameContainer);
+				} else {
+					var map_leave = document.createElement('button');
+					map_leave.className = 'red';
+					map_div.appendChild(map_leave);
+					map_leave.innerHTML = "Leave";
+					var nameContainer = {'mapname': arraytype[i], 'username': username};
+					map_leave.onclick = removeMap.bind(nameContainer);
+				}
 			}
 		}
 
@@ -181,12 +310,11 @@
 
 
 		//var username = getValue("username");
-		var username = "testname";
+		
 		var mymapref = database.ref("accounts/" + username);
 
 		mymapref.once("value", function(maps) {
 			maps.forEach(function(map) {
-				console.log(map.val().name);
 				my_maps.push(map.val().name);
 			});
 		}).then(mine);
@@ -195,51 +323,12 @@
 		mapref.once("value", function(maps) {
 			maps.forEach(function(map) {
 				if (!my_maps.includes(map.val().name)) {
-					console.log(map.val().name);
 					shared_maps.push(map.val().name);
 				}
 			});
 		}).then(shared);
-		
-		}	
-	// document.getElementById("Team_4").onclick = function() {
-	// 	window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
-	// };
+
+	}	
 </script>
-<!-- <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
-<script>
-     // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
-            authDomain: "adipro-5bbe6.firebaseapp.com",
-            databaseURL: "https://adipro-5bbe6.firebaseio.com",
-            projectId: "adipro-5bbe6",
-            storageBucket: "",
-            messagingSenderId: "14626937593"
-        };
-        firebase.initializeApp(config);
-        var database = firebase.database();
-        var index = 0
-        function addMap(mapname, username, replace) {
-        	var path = "accounts/" + username + "/maps";
-        	console.log(path);
-        	var mapref = database.ref(path);
-        	mapref.once("value", function(maps) {
-        		maps.forEach(function(map) {
-        			if (map.val().map == "test") {
-        				var key = map.key;
-        				var path2 = "accounts/" + username + "/maps/" + key;
-        				console.log(path2);
-        				var testref = database.ref(path2);
-        				testref.update({number: "2"});
-        			}
-        		});
-        	});
-        }
-
-
-// if (map.val().name == sample) 
-</script> --> 
 </html>
 

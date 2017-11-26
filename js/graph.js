@@ -12,7 +12,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 var user = {
-	name: 'MisterSmart'
+	name: getValue('username')
 }
 
 var setSidebarVisible = function(setVisible) {
@@ -135,6 +135,7 @@ function addNode() {
 			target: cy.activeNode.id()
 		}
 	});
+	console.log(edge);
 	// apply layout to move new node to appropriate position
 	var layout = cy.layout({
 		name: 'cose'
@@ -304,7 +305,7 @@ var cy = cytoscape({
 
 });
 
-cy.mapName = 'Crazy_Treasurehunt_Map';
+cy.mapName = getValue('mapName');
 cy.activeNode = null;
 /**
  * State variable, signalling if the user is currently defining a relationship
@@ -323,7 +324,6 @@ mapsref.once('value', function(maps) {
 		if (map.val().name == cy.mapName) {
 			cy.mapKey = map.key;
 			cy.json(map.val().json);
-			cy.zoom(1);
 			cy.fit();
 		}
 	});

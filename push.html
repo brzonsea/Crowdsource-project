@@ -41,7 +41,8 @@ body {
 	};
 	firebase.initializeApp(config);
 	var database = firebase.database();
-	var mapref = database.ref("maps/-KzhK6gc8YbYMuWbLSdf");
+	var mapref = database.ref("maps")
+		//-KzhK6gc8YbYMuWbLSdf");
 	var default_map = cytoscape({
 		// container: document.getElementById('structure-map'), // container to render in
 		elements: [ // list of graph elements to start with
@@ -157,14 +158,18 @@ body {
          };
     function push_json_to_DB() {
     	console.log("hahaha");
-    	default_map.mapName = 'Crazy_Treasurehunt_Map';
+    	default_map.mapName = 
+    	'Crazy_Treasurehunt_Map';
+    	//'Andreas_and_the_Chocolate_Factory';
+    	
     	default_json = default_map.json();
     	for (obj in default_json) {
 					if (default_json[obj] == undefined) {
 						delete default_json[obj];
 					}
 				}
-    	mapref.set( {"name" : default_map.mapName , "json" : default_json});//elements().jsons());
+
+    	mapref.push( {"name" : default_map.mapName , "json" : default_json});//elements().jsons());
     	//mapref.update({"name" : default_map.mapName });
     }
  //    	mapref.once('value', function(maps) {
@@ -176,5 +181,6 @@ body {
 	// 			}
 	// 		});
 	// })};
+
 </script>
 </body>

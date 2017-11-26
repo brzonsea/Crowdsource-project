@@ -397,13 +397,16 @@ function deletemap() {
 				}
 			});
 		});
-	});
-	ref.child("maps").once("value", function(maps) {
-		maps.forEach(function(map) {
-			if (map.val().name == cy.mapName) {
-				database.ref("maps/" + map.key).remove();
-			}
+	}).then(function() {
+		ref.child("maps").once("value", function(maps) {
+			maps.forEach(function(map) {
+				if (map.val().name == cy.mapName) {
+					database.ref("maps/" + map.key).remove();
+				}
+			});
+		}).then(function() {
+            window.location = "./Map_list.html?username=" + user.name;
 		});
 	});
-	//put thens and redirect to map_list with username
 }
+

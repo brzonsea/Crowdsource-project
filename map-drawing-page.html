@@ -5,19 +5,49 @@
 	<script type="text/javascript" src="js/cytoscape.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" type="text/css" href="css/w3stylesheet.css">
 
 </head>
 <body>
 
+	<div class='popup' id='popup'>
+		<h1>Please give us feedback</h1>
+		<br>
+		<textarea class = "area" type="text" id="feedback_text" style="width:80%;height:60%;border-radius: 2vh;padding-left: 3vh;padding-top: 2vh;padding-right: 3vh;"></textarea>
+		<button class = "submit" type="button" id="submit_button" onclick="submit_feedback()"> Submit </button>
+		<button class = "close" type="button" id="submit_button" onclick="close_feedback()"> Close </button>
+	</div>
+
+
+
+
 	<div class="mapbox_column">
 		<div class='title'>
 			<header>
+
+				<button style="top:0px;height:57px;width:15%;position:absolute;right:32%;border-radius: 5px;border:none;background-color:#990099;" class="sidebarButton" id="feedback_button" onclick="feedback()">
+						Feedback
+				</button>
+
+				<button style="top:0px;height:57px;width:15%;position:absolute;right:16%;border-radius: 5px;border:none;" class="sidebarButton" id="feedback_button" onclick="fitmap()">
+						Fit Map
+				</button> 
+
+				<button style="top:0px;height:57px;width:15%;position:absolute;right:0%;border-radius: 5px;border:none;background-color:#999999;" class="sidebarButton" id="feedback_button" onclick="deletemap()">
+						Delete Map
+				</button> 
+
 				<a href="course-overview.html">
 				 	<img src="logo_0.1.png" alt="Map it" style="width:150px;margin:8px;">
 				</a>
+
+				
+
 			</header>
 		</div>
+
+
+
 
 		<div id="sidebar">
 			<div style="height: 3px;"></div>
@@ -26,6 +56,9 @@
 					<button class="sidebarButton" id="relationshipButton" onclick="defRelationship()">
 						Define relationship
 					</button>
+
+					
+
 					<button class="sidebarButton" id="addNodeButton" onclick="addNode()">
 						Add New Node
 					</button>
@@ -44,12 +77,12 @@
 							<textarea class="sidebar_summary" id="summaryInput"></textarea>
 						</form>
 					</div>
-					<h6 class="sidebar_header"> Comments </h6>
+<!-- 					<h6 class="sidebar_header"> Comments </h6>
 					<div>
 						<form>
 							<textarea class="sidebar_comments"></textarea>
 						</form> 
-					</div>
+					</div> -->
 
 				</div>
 			</div>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta charset="US-ASCII"> 
 <html>
 
 <head>
@@ -23,20 +24,21 @@
 	}
 
 	div.course {
-		width: 10em;
-		max-width: 10em;
-		height: 7.5em;
-		max-height: 7.5em;
+		width: 30vh;
+		max-width: 30vh;
+		height: 22.5vh;
+		max-height: 22.5vh;
 		float: left;
 		background: white;
 		text-align: left;
 		color: darkgray;
 		font-size: xx-large;
-		padding: 0.5em;
-		margin-bottom: 1em;
-		margin-left: 1em;
-		margin-right: 1em;
+		padding: 1.5vh;
+		margin-bottom: 3vh;
+		margin-left: 3vh;
+		margin-right: 3vh;
 		position: relative;
+		cursor: pointer;
 	}
 
 	p {
@@ -76,6 +78,26 @@
 		right: 0;
 	}
 
+	div.popup {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		width: 45vmax;
+		height: 30vmax;
+		margin-left: -22.5vmax;
+		margin-top: -15vmax;
+		background-color: white;
+		z-index: 100;
+		border: 1px solid black;
+		text-align: center;
+		display: none;
+	}
+
+	input[type='text'] {
+		width: 80%;
+		height: 35px;
+	}
+
 </style>
 </head>
 
@@ -100,6 +122,13 @@
 	<p>My Maps</p>
 	<div id="my_maps"></div>
 
+	<div class="course" id='addMapDiv' style="text-align: center;font-size: 7vh;line-height: 22.5vh;">+</div>
+	<div class='popup' id='addMapPopup'>
+		<h1>Create a new map</h1>
+		<br>
+		<input type="text" id="newMapName"></textarea>
+	</div>
+
 	<p style="clear:both">Shared Maps</p>
 	<div id="shared_maps"></div>
 
@@ -111,6 +140,7 @@
 </body>
 
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+<script type="text/javascript" src="js/parseUrlParams.js"></script>
 <script type="text/javascript">
 	window.onload = function() {
 		// Initialize Firebase
@@ -126,34 +156,15 @@
 		firebase.initializeApp(config);
 		var database = firebase.database();
 
+		var string = 'abcde';
+		string += '@generic.com';
+
+		//var username = getValue("username");
+		var username = getValue('username');
+		var mymapref = database.ref("accounts/" + username);
 
 		var loadMap = function() {
-			window.location = 'map-drawing-page.html';
-		}
-
-		function getValue(varname) {
-			var url = window.location.href;
-			var qparts = url.split("?");
-
-			if (qparts.length == 1) {
-				return "";
-			} else {
-			var query = qparts[1];
-				var vars = query.split("&");
-			var value = "";
-			for (i = 0; i < vars.length; i++) {			
-				var parts = vars[i].split("=");
-				if (parts[0] == varname) {
-					value = parts[1];
-					break;
-				}
-			}
-			value = unescape(value);
-
-			// Convert "+"s to " "s
-			value.replace(/\+/g, " ");
-			return value;
-			}
+			window.location = 'map-drawing-page.html?mapName=' + this.name + '&username=' + username;
 		}
 
 		var my_maps = [];
@@ -166,7 +177,8 @@
 				map_div.className = 'course';
 				map_div.id = arraytype[i];
 				map_div.innerHTML = arraytype[i].replace(/_/g, ' ');
-				map_div.onclick = loadMap;
+				var mapNameObj = {'name': arraytype[i]};
+				map_div.onclick = loadMap.bind(mapNameObj);
 				shared_maps_div.appendChild(map_div);
 			}
 		}
@@ -180,9 +192,6 @@
 		}
 
 
-		//var username = getValue("username");
-		var username = "testname";
-		var mymapref = database.ref("accounts/" + username);
 
 		mymapref.once("value", function(maps) {
 			maps.forEach(function(map) {
@@ -200,6 +209,11 @@
 				}
 			});
 		}).then(shared);
+
+		var addMapDiv = document.getElementById('addMapDiv');
+		addMapDiv.onclick = function() {
+			document.getElementById('addMapPopup').style.display = 'block';
+		}
 		
 		}	
 	// document.getElementById("Team_4").onclick = function() {

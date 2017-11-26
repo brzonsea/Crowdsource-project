@@ -12,7 +12,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 var user = {
-	name: 'MisterSmart'
+	name: 'testname'
 }
 
 var setSidebarVisible = function(setVisible) {
@@ -357,3 +357,53 @@ mapsref.once('value', function(maps) {
 	// listen to all changes events on the map and save them
 	cy.on('add remove free data', saveMap);
 }); // end then
+
+
+
+function feedback() {
+	//var pop_up = document.getElementById('pop_up');
+	document.getElementById('popup').style.display = 'block';
+}
+
+function submit_feedback() {
+	var text = document.getElementById('feedback_text').value;
+	var feedref = database.ref("accounts/" + user.name + "/feedback");
+	//var time = Date.now();
+	if (text.value != "") {
+		feedref.push({
+			text: text,
+			//	time: time.getSeconds() + "/" + time.getMinutes() + "/" + time.getHours() + "/" + time.getDate() + "/" + time.getMonth()
+		});
+		text = "";
+	}
+	document.getElementById('popup').style.display = "None";
+}
+
+function close_feedback() {
+	document.getElementById('popup').style.display = "None";
+}
+
+function fitmap() {
+	cy.fit();
+}
+
+function deletemap() {
+	var ref = database.ref();
+	ref.child("accounts").once("value", function(accounts) {
+		accounts.forEach(function(account) {
+			account.forEach(function(map) {
+				if (map.val().name == cy.mapName) {
+					database.ref("accounts/" + account.key + "/" + map.key).remove();
+				}
+			});
+		});
+	});
+	ref.child("maps").once("value", function(maps) {
+		maps.forEach(function(map) {
+			if (map.val().name == cy.mapName) {
+				database.ref("maps/" + map.key).remove();
+			}
+		});
+	});
+	//put thens and redirect to map_list with username
+}

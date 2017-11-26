@@ -5,6 +5,65 @@ body {
   position: relative;
 }
 
+div.popup {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 90vh;
+	height: 60vh;
+	margin-left: -45vh;
+	margin-top: -30vh;
+	background-color: white;
+	z-index: 100;
+	border: 1px solid black;
+	text-align: center;
+	display: none;
+}
+
+.area {
+	width:80%;
+	height:60%;
+	border-radius: 2vh;
+	padding-left: 3vh;
+	padding-top: 2vh;
+	padding-right: 3vh;
+}
+
+.submit {
+	width: 10vh;
+	height: 5vh;
+    font-family: "Comic Sans MS";
+    background-color: #45a049;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    line-height: 0vh;
+    position: absolute;
+    left: 50%;
+    bottom: 3vh;
+    margin-left: -5vh;
+    z-index: 100;
+}
+
+.close {
+	width: 10vh;
+	height: 5vh;
+    font-family: "Comic Sans MS";
+    background-color: #999999;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    line-height: 0vh;
+    position: absolute;
+    right: 5%;
+    bottom: 3vh;
+    margin-left: -5vh;
+    z-index: 100;
+}
+
+
 div.title {
 	width: 100%;
 	background: lightgray;

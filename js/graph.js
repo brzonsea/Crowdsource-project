@@ -54,8 +54,6 @@ var nodeOnClick = function(event) {
 	}
 }
 var nodeOnSingleClick = function(evt) {
-	evt.target.select();
-
 	switch (evt.cy.definingRelationship) {
 		case 0:
 			setSidebarVisible(true, true);

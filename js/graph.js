@@ -200,7 +200,7 @@ function addRelationship(evt) {
 }
 
 function deleteNode() {
-	if (confirm("This will delete the current node and all its child nodes!") == true) {
+	if (confirm("This will delete the current node and all of its child nodes!") == true) {
 		var nodesToDelete = [];
 		var targetNode = cy.activeNode;
 		nodesToDelete.push(targetNode);
@@ -217,7 +217,13 @@ function deleteNode() {
 		}
 
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
-			cy.remove(cy.getElementById(nodesToDelete[i].id()));
+			var nodeToDelete = nodesToDelete[i];
+			console.log(nodeToDelete.data());
+			if (!(nodeToDelete.data('isRootNode') == true)) {
+				cy.remove(cy.getElementById(nodesToDelete[i].id()));
+			} else {
+				alert('You cannot delete the root node.');
+			}
 		}
 		setSidebarVisible(false);
 		cy.activeNode = null;

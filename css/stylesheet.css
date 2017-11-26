@@ -3,6 +3,11 @@ body {
   height: 100%;
   margin: 0;
   position: relative;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+h1 {
+  font-weight: normal;
 }
 
 div.title {
@@ -59,23 +64,20 @@ div.course {
 	font-size: 80%;
 	padding:7px;
 }
-.sidebar_title{
-	width:100%;
-	height:100px;
+.sidebar_textarea {
+	/*position: relative;*/
+	/*width:100%;*/
 	border:1px solid black;
 	box-sizing: border-box;
 	padding:10px;
 	resize: none;
 	margin: 0.5em;
 }
+.sidebar_title{
+	height:100px;
+}
 .sidebar_summary{
-	width:100%;
 	height:200px;
-	border:1px solid black;
-	box-sizing: border-box;
-	padding:10px;
-	resize: none;
-	margin: 0.5em;
 }
 .sidebar_comments{
 	width:100%;
@@ -109,6 +111,8 @@ div.course {
 	z-index: 10;
 	background-color: #4CAF50;
     color: white;
+    border-width: 0;
+    margin: 1px 0;
 }
 
 div.node-popup {

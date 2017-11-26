@@ -1,3 +1,13 @@
+var setSidebarVisible = function(setVisible, nodeInput) {
+	var nodeStyle = (setVisible && nodeInput) ? null : 'none';
+	var edgeStyle = (setVisible && !nodeInput) ? null : 'none';
+
+	document.getElementById('sidebarNodeInput').style.display = nodeStyle;
+	document.getElementById('sidebarRelInput').style.display = edgeStyle;
+}
+
+setSidebarVisible(false, false);
+
 // Initialize Firebase
 var config = {
 	apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
@@ -15,20 +25,12 @@ var user = {
 	name: 'MisterSmart'
 }
 
-var setSidebarVisible = function(setVisible) {
-	var displayStyle = setVisible ? null : 'none';
-	var children = document.getElementById('mySidebar').querySelectorAll('*');
-	var addNodeButton = document.getElementById("addNodeButton");
-	for (var i = children.length - 1; i >= 0; i--) {
-		if (children[i].id != 'relationshipButton') {
-			children[i].style.display = displayStyle;
-		}
-	}
-	addNodeButton.style.display = displayStyle;
+function toRenderedPosition(pos) {
+	return {
+		x: pos.x * cy.zoom() + cy.pan().x,
+		y: pos.y * cy.zoom() + cy.pan().y,
+	};
 }
-
-setSidebarVisible(false);
-
 var clickedBefore;
 var clickedTimeout;
 var nodeOnClick = function(event) {
@@ -42,16 +44,21 @@ var nodeOnClick = function(event) {
 	} else {
 		clickedTimeout = setTimeout(function() {
 			clickedBefore = null;
-			nodeOnSingleClick(event);
+			if (event.target.isNode()) {
+				nodeOnSingleClick(event);
+			} else {
+				edgesOnSingleClick(event);
+			}
 		}, 300);
 		clickedBefore = clickedNow;
 	}
 }
 var nodeOnSingleClick = function(evt) {
+	evt.target.select();
 
 	switch (evt.cy.definingRelationship) {
 		case 0:
-			setSidebarVisible(true);
+			setSidebarVisible(true, true);
 			cy.activeNode = evt.target;
 			document.getElementById('titleInput').value = cy.activeNode.data('label');
 			document.getElementById('summaryInput').value = cy.activeNode.data('summary');
@@ -81,13 +88,21 @@ var nodesOnDoubleClick = function(event) {
 			structureMap.removeChild(anchor);
 		}
 		event.target.data().detailsVisible = false;
+		setPopupEventListeners();
 	} else {
 		var anchor = document.createElement('div');
 		anchor.className = 'anchor';
 
-		var targetPosition = event.target.renderedPosition();
+		var targetPosition = null;
+		var yOffset = 50;
+		if (event.target.isNode()) {
+			targetPosition = event.target.renderedPosition();
+		} else {
+			targetPosition = toRenderedPosition(event.target.midpoint());
+			yOffset = 0;
+		}
 		anchor.style.left = targetPosition.x + 'px';
-		anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
+		anchor.style.top = (targetPosition.y + yOffset * cy.zoom()) + 'px';
 
 		document.getElementById('structure-map').appendChild(anchor);
 
@@ -99,14 +114,79 @@ var nodesOnDoubleClick = function(event) {
 
 		anchor.appendChild(div);
 
-		cy.on('position', '#' + event.target.id(), function(event) {
-			var targetPosition = event.target.renderedPosition();
-			var popup = document.getElementById('node-popup-' + event.target.id());
-			var anchor = popup.parentNode;
-			anchor.style.left = targetPosition.x + 'px';
-			anchor.style.top = (targetPosition.y + 50 * cy.zoom()) + 'px';
-		});
+		if (event.target.isEdge()) {
+			var selectorIDs = '#' + event.target.data('source') + ',#' + event.target.data('target');
+			cy.elements(selectorIDs).on('position', updatePopupPosition.bind({
+				'targetID': event.target.id()
+			}));
+		}
+
+		event.target.on('position', updatePopupPosition.bind({
+			'targetID': event.target.id()
+		}));
+		cy.on('pan zoom resize', updatePopupPosition.bind({
+			'targetID': event.target.id()
+		}));
+		event.target.on('data', updatePopupContent.bind({
+			'targetID': event.target.id()
+		}));
 		event.target.data().detailsVisible = true;
+	}
+}
+var edgesOnSingleClick = function(event) {
+	setSidebarVisible(true, false);
+	cy.activeNode = event.target;
+	document.getElementById('descrInput').value = cy.activeNode.data('summary');
+}
+
+var updatePopupPosition = function(event) {
+	var target = cy.getElementById(this.targetID);
+	var targetposition = null;
+	var yOffset = 50;
+	if (target.isNode()) {
+		targetPosition = target.renderedPosition();
+	} else {
+		targetPosition = toRenderedPosition(target.midpoint());
+		yOffset = 0;
+	}
+	var popup = document.getElementById('node-popup-' + target.id());
+	if (popup) {
+		var anchor = popup.parentNode;
+		anchor.style.left = targetPosition.x + 'px';
+		anchor.style.top = (targetPosition.y + yOffset * cy.zoom()) + 'px';
+	}
+}
+var updatePopupContent = function(event) {
+	var target = cy.getElementById(this.targetID);
+	var popup = document.getElementById('node-popup-' + target.id());
+	if (popup) {
+		popup.innerHTML = target.data().summary;
+	}
+}
+var setPopupEventListeners = function() {
+	var elements = cy.elements();
+	cy.off('pan zoom resize');
+	elements.off('position data');
+
+	for (var i = elements.length - 1; i >= 0; i--) {
+		if (elements[i].data('detailsVisible')) {
+			if (elements[i].isEdge()) {
+				var selectorIDs = '#' + elements[i].data('source') + ',#' + elements[i].data('target');
+				cy.elements(selectorIDs).on('position', updatePopupPosition.bind({
+					'targetID': elements[i].id()
+				}));
+			}
+
+			elements[i].on('position', updatePopupPosition.bind({
+				'targetID': elements[i].id()
+			}));
+			cy.on('pan zoom resize', updatePopupPosition.bind({
+				'targetID': elements[i].id()
+			}));
+			elements[i].on('data', updatePopupContent.bind({
+				'targetID': elements[i].id()
+			}));
+		}
 	}
 }
 
@@ -143,6 +223,7 @@ function addNode() {
 	// unlock all nodes so the user can move them
 	cy.nodes().unlock();
 	element.on('click', nodeOnClick);
+	element.on('doubleClick', nodesOnDoubleClick);
 	cy.on('add remove free data', saveMap);
 	saveMap(null);
 }
@@ -167,7 +248,7 @@ var updateSummary = function() {
 	cy.activeNode.data('summary', this.value);
 }
 var startSummaryTimeout = function() {
-	if (!null == summaryTimeout) {
+	if (!(null == summaryTimeout)) {
 		clearTimeout(summaryTimeout);
 		summaryTimeout = setTimeout(updateSummary.bind(this), 300);
 	} else {
@@ -178,13 +259,28 @@ var summaryInput = document.getElementById('summaryInput');
 var summaryTimeout = null;
 summaryInput.oninput = startSummaryTimeout;
 
+var updateDescription = function() {
+	cy.activeNode.data('summary', this.value);
+}
+var startDescriptionTimeout = function() {
+	if (!(null == descriptionTimeout)) {
+		clearTimeout(descriptionTimeout);
+	}
+	descriptionTimeout = setTimeout(updateDescription.bind(this), 300);
+}
+var descriptionInput = document.getElementById('descrInput');
+var descriptionTimeout = null;
+descriptionInput.oninput = startDescriptionTimeout;
+
 function addRelationship(evt) {
 	var element = evt.cy.add({
 		group: 'edges',
 		data: {
 			source: evt.cy.relationshipSource,
 			target: evt.target.id(),
-			isEdge: false
+			isEdge: false,
+			summary: '',
+			detailsVisible: false,
 		},
 		style: {
 			'curve-style': 'bezier', //needed so arrows are drawn
@@ -196,6 +292,7 @@ function addRelationship(evt) {
 	});
 	document.getElementById('relationshipButton').style = null;
 	element.on('click', nodeOnClick);
+	element.on('doubleClick', nodesOnDoubleClick);
 	evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
 	// console.log(cy.edges());
 }
@@ -205,6 +302,13 @@ function deleteNode() {
 		var nodesToDelete = [];
 		var targetNode = cy.activeNode;
 		nodesToDelete.push(targetNode);
+
+		if (cy.activeNode.data().detailsVisible) {
+			var event = {
+				'target': cy.activeNode
+			};
+			nodesOnDoubleClick(event);
+		}
 
 		for (var i = 0; i < nodesToDelete.length; i++) {
 			targetNode = nodesToDelete[i];
@@ -219,7 +323,7 @@ function deleteNode() {
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
 			cy.remove(cy.getElementById(nodesToDelete[i].id()));
 		}
-		setSidebarVisible(false);
+		setSidebarVisible(false, false);
 		cy.activeNode = null;
 	} else {
 		return;
@@ -246,6 +350,20 @@ function defRelationship() {
 	}
 }
 
+function deleteRelationship() {
+	if (confirm("Do you really want to delete the relationship?") == true) {
+		if (cy.activeNode.data().detailsVisible) {
+			var event = {
+				'target': cy.activeNode
+			};
+			nodesOnDoubleClick(event);
+		}
+		cy.remove(cy.activeNode);
+		cy.activeNode = null;
+		setSidebarVisible(false, false);
+	}
+}
+
 function saveMap(evt) {
 	console.log('Save Map');
 	var mapref = database.ref("maps/" + cy.mapKey);
@@ -260,6 +378,12 @@ function saveMap(evt) {
 	console.log(mapJSON);
 	delete mapJSON["zoom"];
 	delete mapJSON["pan"];
+	for (var i = mapJSON.elements.nodes.length - 1; i >= 0; i--) {
+		delete mapJSON.elements.nodes[i].data.detailsVisible;
+	}
+	for (var i = mapJSON.elements.edges.length - 1; i >= 0; i--) {
+		delete mapJSON.elements.edges[i].data.detailsVisible;
+	}
 
 	mapref.transaction(function(currentData) {
 		return {
@@ -304,7 +428,7 @@ var cy = cytoscape({
 
 });
 
-cy.mapName = 'Crazy_Treasurehunt_Map';
+cy.mapName = 'Andreas_and_the_Chocolate_Factory';
 cy.activeNode = null;
 /**
  * State variable, signalling if the user is currently defining a relationship
@@ -331,7 +455,7 @@ mapsref.once('value', function(maps) {
 
 	cy.on('click', function(evt) {
 		if (!evt.target.group) {
-			setSidebarVisible(false);
+			setSidebarVisible(false, false);
 			cy.activeNode = null;
 		}
 	});
@@ -340,17 +464,17 @@ mapsref.once('value', function(maps) {
 
 	cy.nodes().on('doubleClick', nodesOnDoubleClick);
 
-	// TODO own onClick function needed?
 	for (var i = 0; i < cy.edges().length; i++) {
 		var edge = cy.edges()[i];
 		if (edge.data("isEdge") != null && edge.data("isEdge") == false) {
-			edge.on("click", nodeOnSingleClick);
+			edge.on("click", nodeOnClick);
+			edge.on('doubleClick', nodesOnDoubleClick);
 			edge.style("curve-style", "bezier");
-			edge.style("source-arrow-shape",'triangle');
+			edge.style("source-arrow-shape", 'triangle');
 			edge.style("source-arrow-color", 'grey');
 			edge.style("target-arrow-shape", 'triangle');
 			edge.style("target-arrow-color", 'grey');
-		} 
+		}
 	}
 
 	var mapref = mapsref.child(cy.mapKey);

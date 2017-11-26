@@ -25,24 +25,22 @@
 		<div class='title'>
 			<header>
 
-				<button style="top:0px;height:57px;width:15%;position:absolute;right:32%;border-radius: 5px;border:none;background-color:#990099;" class="sidebarButton" id="feedback_button" onclick="feedback()">
-						Feedback
-				</button>
-
-				<button style="top:0px;height:57px;width:15%;position:absolute;right:16%;border-radius: 5px;border:none;" class="sidebarButton" id="feedback_button" onclick="fitmap()">
-						Fit Map
-				</button> 
-
-				<button style="top:0px;height:57px;width:15%;position:absolute;right:0%;border-radius: 5px;border:none;background-color:#999999;" class="sidebarButton" id="feedback_button" onclick="deletemap()">
-						Delete Map
-				</button> 
-
-				<a href="course-overview.html">
+				<a href="Map_list.html">
 				 	<img src="logo_0.1.png" alt="Map it" style="width:150px;margin:8px;">
 				</a>
 
-				
+				<button class="topbutton" id="feedback_button" onclick="feedback()">
+						Feedback
+				</button>
 
+				<button class="topbutton" id="fit_Map_button" onclick="fitmap()">
+						Fit Map
+				</button> 
+
+				<button class="topbutton" id="delete_Button_button" onclick="deletemap()">
+						Delete Map
+				</button> 
+				
 			</header>
 		</div>
 
@@ -56,34 +54,43 @@
 					<button class="sidebarButton" id="relationshipButton" onclick="defRelationship()">
 						Define relationship
 					</button>
-
-					
-
-					<button class="sidebarButton" id="addNodeButton" onclick="addNode()">
-						Add New Node
-					</button>
-					<button class="sidebarButton" id="deleteButton" onclick="deleteNode()">
-						Delete Node
-					</button>
-					<h6 class="sidebar_header"> Title </h6>
-					<div> 
-						<form>
-							<textarea class="sidebar_title" id="titleInput"></textarea>
-						</form>
+					<div id="sidebarNodeInput">
+						<button class="sidebarButton" id="addNodeButton" onclick="addNode()">
+							Add New Node
+						</button>
+						<button class="sidebarButton" id="deleteButton" onclick="deleteNode()">
+							Delete Node
+						</button>
+						<h6 class="sidebar_header"> Title </h6>
+						<div> 
+							<form>
+								<textarea class="sidebar_title" id="titleInput"></textarea>
+							</form>
+						</div>
+						<h6 class="sidebar_header"> Summary </h6>
+						<div>
+							<form>
+								<textarea class="sidebar_summary" id="summaryInput"></textarea>
+							</form>
+						</div>
+						<h6 class="sidebar_header"> Comments </h6>
+						<div>
+							<form>
+								<textarea class="sidebar_comments"></textarea>
+							</form> 
+						</div>
 					</div>
-					<h6 class="sidebar_header"> Summary </h6>
-					<div>
-						<form>
-							<textarea class="sidebar_summary" id="summaryInput"></textarea>
-						</form>
+					<div id="sidebarRelInput">
+						<button class="sidebarButton" id="deleteButton" onclick="deleteRelationship()">
+							Delete Relationship
+						</button>
+						<h6 class="sidebar_header"> Description </h6>
+						<div>
+							<form>
+								<textarea class="sidebar_summary" id="descrInput"></textarea>
+							</form>
+						</div>
 					</div>
-<!-- 					<h6 class="sidebar_header"> Comments </h6>
-					<div>
-						<form>
-							<textarea class="sidebar_comments"></textarea>
-						</form> 
-					</div> -->
-
 				</div>
 			</div>
 		</div>

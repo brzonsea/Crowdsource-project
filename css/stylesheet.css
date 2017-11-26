@@ -170,6 +170,32 @@ div.course {
     color: white;
 }
 
+.topbutton {
+	top:0px;
+	height:57px;
+	padding-right: 2vh;
+	padding-left: 2vh;
+	float: right;
+	margin-top: -1.5px; 
+	margin-left: 5px;
+	border-radius: 5px;
+	border:none;
+	color: white;
+}
+
+#feedback_button {
+	background-color: #990099;
+	margin-right: -15px;
+}
+
+#fit_Map_button {
+	background-color: #4CAF50;
+}
+
+#delete_Button_button {
+	background-color: #999999;
+}
+
 div.node-popup {
 	width: 20em;
 	max-width: 20em;

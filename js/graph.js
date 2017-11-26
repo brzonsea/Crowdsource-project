@@ -207,7 +207,7 @@ function deleteNode() {
 
 		for (var i = 0; i < nodesToDelete.length; i++) {
 			targetNode = nodesToDelete[i];
-			console.log(targetNode);
+			// console.log(targetNode);
 			if (targetNode.data("childNode") != null) {
 				var targetChildren = targetNode.data("childNode");
 				for (var j = 0; j < targetChildren.length; j++) {
@@ -218,8 +218,7 @@ function deleteNode() {
 
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
 			var nodeToDelete = nodesToDelete[i];
-			console.log(nodeToDelete.data());
-			if (!(nodeToDelete.data('isRootNode') == true)) {
+			if (!(nodeToDelete.data('rootNode') == true)) {
 				cy.remove(cy.getElementById(nodesToDelete[i].id()));
 			} else {
 				alert('You cannot delete the root node.');
@@ -253,7 +252,7 @@ function defRelationship() {
 }
 
 function saveMap(evt) {
-	console.log('Save Map');
+	// console.log('Save Map');
 	var mapref = database.ref("maps/" + cy.mapKey);
 
 	var mapJSON = cy.json();
@@ -263,7 +262,6 @@ function saveMap(evt) {
 		}
 	}
 
-	console.log(mapJSON);
 	delete mapJSON["zoom"];
 	delete mapJSON["pan"];
 
@@ -351,9 +349,9 @@ mapsref.once('value', function(maps) {
 
 	var mapref = mapsref.child(cy.mapKey);
 	mapref.on('value', function(map) {
-		console.log('Change in database happened');
+		// console.log('Change in database happened');
 		if (map.val().username != user.name) {
-			console.log('updating map');
+			// console.log('updating map');
 			cy.off('add remove free data');
 			cy.json(map.val().json);
 			cy.on('add remove free data', saveMap);

@@ -112,7 +112,7 @@ var nodesOnDoubleClick = function(event) {
 
 function addNode() {
 	cy.off('add remove free data');
-	console.log('activeNode', cy.activeNode);
+	// console.log('activeNode', cy.activeNode);
 	// lock the nodes to apply layout only on new node later
 	cy.nodes().lock();
 	// add the new node
@@ -179,7 +179,7 @@ var summaryTimeout = null;
 summaryInput.oninput = startSummaryTimeout;
 
 function addRelationship(evt) {
-	evt.cy.add({
+	var element = evt.cy.add({
 		group: 'edges',
 		data: {
 			source: evt.cy.relationshipSource,
@@ -195,6 +195,7 @@ function addRelationship(evt) {
 		}
 	});
 	document.getElementById('relationshipButton').style = null;
+	element.on('click', nodeOnClick);
 	evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
 	// console.log(cy.edges());
 }
@@ -207,7 +208,6 @@ function deleteNode() {
 
 		for (var i = 0; i < nodesToDelete.length; i++) {
 			targetNode = nodesToDelete[i];
-			console.log(targetNode);
 			if (targetNode.data("childNode") != null) {
 				var targetChildren = targetNode.data("childNode");
 				for (var j = 0; j < targetChildren.length; j++) {
@@ -341,7 +341,17 @@ mapsref.once('value', function(maps) {
 	cy.nodes().on('doubleClick', nodesOnDoubleClick);
 
 	// TODO own onClick function needed?
-	cy.edges().on('click', nodeOnSingleClick);
+	for (var i = 0; i < cy.edges().length; i++) {
+		var edge = cy.edges()[i];
+		if (edge.data("isEdge") != null && edge.data("isEdge") == false) {
+			edge.on("click", nodeOnSingleClick);
+			edge.style("curve-style", "bezier");
+			edge.style("source-arrow-shape",'triangle');
+			edge.style("source-arrow-color", 'grey');
+			edge.style("target-arrow-shape", 'triangle');
+			edge.style("target-arrow-color", 'grey');
+		} 
+	}
 
 	var mapref = mapsref.child(cy.mapKey);
 	mapref.on('value', function(map) {

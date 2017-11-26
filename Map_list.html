@@ -83,7 +83,7 @@
 		top: 50%;
 		left: 50%;
 		width: 45vmax;
-		height: 30vmax;
+		height: 15vmax;
 		margin-left: -22.5vmax;
 		margin-top: -15vmax;
 		background-color: white;
@@ -96,6 +96,14 @@
 	input[type='text'] {
 		width: 80%;
 		height: 35px;
+	}
+
+	#createButton {
+		position: relative;
+	}
+
+	#discardButton {
+		position: relative;
 	}
 
 </style>
@@ -122,11 +130,20 @@
 	<p>My Maps</p>
 	<div id="my_maps"></div>
 
-	<div class="course" id='addMapDiv' style="text-align: center;font-size: 7vh;line-height: 22.5vh;">+</div>
+	<div class="course" id='addMapDiv' onclick="onCreateNewMap()" style="text-align: center;font-size: 7vh;line-height: 22.5vh;">
+		+
+	</div>
 	<div class='popup' id='addMapPopup'>
 		<h1>Create a new map</h1>
-		<br>
-		<input type="text" id="newMapName"></textarea>
+		<input type="text" id="newMapName" style="clear: both;"></textarea>
+		<div>
+			<button id="createButton" onclick="onCreateButton()">
+				Create
+			</button>
+			<button id="discardButton" onclick="onDiscardButton()"> 
+				Discard
+			</button>
+		</div>
 	</div>
 
 	<p style="clear:both">Shared Maps</p>
@@ -140,6 +157,7 @@
 </body>
 
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+<script type="text/javascript" src="js/cytoscape.js"></script>
 <script type="text/javascript" src="js/parseUrlParams.js"></script>
 <script type="text/javascript">
 	window.onload = function() {
@@ -191,11 +209,8 @@
 			displayMapTiles('shared_maps', shared_maps);
 		}
 
-
-
 		mymapref.once("value", function(maps) {
 			maps.forEach(function(map) {
-				console.log(map.val().name);
 				my_maps.push(map.val().name);
 			});
 		}).then(mine);
@@ -214,46 +229,189 @@
 		addMapDiv.onclick = function() {
 			document.getElementById('addMapPopup').style.display = 'block';
 		}
-		
-		}	
-	// document.getElementById("Team_4").onclick = function() {
-	// 	window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
-	// };
+	}
+
+	// Global variable to check if Popup is on
+	isPopupOn = false;
+	isExisted = true;
+
+	// Makes popup visible and vice versa if clicked on the add map div
+	function onCreateNewMap() {
+		if (!isPopupOn) {
+			document.getElementById("addMapPopup").style.display = 'initial';
+			isPopupOn = true;
+		}
+	}
+
+	// Shuts popup down if discarded
+	function onDiscardButton() {
+		if (isPopupOn) {
+			document.getElementById("addMapPopup").style.display = 'none';
+			isPopupOn = false;
+		}
+	}
+
+	// Pushes a new map to DB and closes the popup
+	function onCreateButton() {
+		push_map_to_DB().then(function() {
+			if (isExisted) {
+				onDiscardButton();
+				window.localStorage.setItem("newMapName", document.getElementById("newMapName").value);
+				window.location.href="map-drawing-page.html";
+			}
+		});
+	}
+
+	// This function pushes a new map with default structure to the database
+	function push_map_to_DB() {
+
+		var default_map = cytoscape({
+		elements: [ // list of graph elements to start with
+				{
+					data: {
+						id: 'a',
+						label: 'A',
+						summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
+						childNode: ['b']
+					}
+				}, {
+					data: {
+						id: 'b',
+						label: 'B',
+						summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
+						childNode: ['c']
+					}
+				}, {
+					data: {
+						id: 'c',
+						label: 'C',
+						childNode: ['d']
+					}
+				}, {
+					data: {
+						id: 'd',
+						label: 'D',
+						childNode: []
+					}
+				}, {
+					data: {
+						id: 'e',
+						label: 'E',
+						childNode:[]
+					}
+				}, {
+					data: {
+						id: 'ab',
+						source: 'a',
+						target: 'b',
+						isEdge: true
+					}
+				}, {
+					data: {
+						id: 'ac',
+						source: 'a',
+						target: 'c',
+						isEdge: true
+					}
+				}, {
+					data: {
+						id: 'ad',
+						source: 'a',
+						target: 'd',
+						isEdge: true
+					}
+				}, {
+					data: {
+						id: 'bd',
+						source: 'b',
+						target: 'd',
+						isEdge: true
+					}
+				}, {
+					data: {
+						id: 'bc',
+						source: 'b',
+						target: 'c',
+						isEdge: true
+					}
+				}, {
+					data: {
+						id: 'ce',
+						source: 'c',
+						target: 'e',
+						isEdge: true
+					}
+				},
+			],
+			style: [ // the style-sheet for the graph
+				{
+					selector: 'node',
+					style: {
+						'background-color': 'white',
+						'label': 'data(label)',
+						'shape': 'ellipse',
+						'width': '10em',
+						'height': '5em',
+						'text-halign': 'center',
+						'text-valign': 'center',
+						'text-max-width': '10em',
+						'text-wrap': 'wrap',
+					}
+				},
+				{
+					selector: 'edge',
+					style: {
+						'width': 3,
+						'line-color': 'grey',
+					}
+				}
+			],
+			layout: {
+				name: 'cose',
+			},
+		});
+
+		var database = firebase.database();
+		var mapsref = database.ref("maps");
+		// mapName is extracted from the text area of the popup
+		default_map.mapName = document.getElementById("newMapName").value;
+
+		mapsref.once('value', function(maps) {
+			maps.forEach(function(map) {
+				if (map.val().name == default_map.mapName) {
+					isExisted = false;
+				}
+			});
+		}).then(function() {
+			console.log("Here!");
+			if (isExisted) {
+				var newMap = mapsref.push();
+				var pushId = newMap.key;
+				var newRef = database.ref("maps/" + pushId);
+
+				default_json = default_map.json();
+				for (obj in default_json) {
+							if (default_json[obj] == undefined) {
+								delete default_json[obj];
+							}
+						}
+				newRef.set( {"name" : default_map.mapName , "json" : default_json});//elements().jsons());
+			}
+		});
+		// var newMap = mapsref.push();
+		// var pushId = newMap.key;
+		// var newRef = database.ref("maps/" + pushId);
+
+		// default_json = default_map.json();
+		// for (obj in default_json) {
+		// 			if (default_json[obj] == undefined) {
+		// 				delete default_json[obj];
+		// 			}
+		// 		}
+		// newRef.set( {"name" : default_map.mapName , "json" : default_json});//elements().jsons());
+		// return false;
+	}
 </script>
-<!-- <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
-<script>
-     // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
-            authDomain: "adipro-5bbe6.firebaseapp.com",
-            databaseURL: "https://adipro-5bbe6.firebaseio.com",
-            projectId: "adipro-5bbe6",
-            storageBucket: "",
-            messagingSenderId: "14626937593"
-        };
-        firebase.initializeApp(config);
-        var database = firebase.database();
-        var index = 0
-        function addMap(mapname, username, replace) {
-        	var path = "accounts/" + username + "/maps";
-        	console.log(path);
-        	var mapref = database.ref(path);
-        	mapref.once("value", function(maps) {
-        		maps.forEach(function(map) {
-        			if (map.val().map == "test") {
-        				var key = map.key;
-        				var path2 = "accounts/" + username + "/maps/" + key;
-        				console.log(path2);
-        				var testref = database.ref(path2);
-        				testref.update({number: "2"});
-        			}
-        		});
-        	});
-        }
 
-
-// if (map.val().name == sample) 
-</script> --> 
 </html>
 

@@ -1,3 +1,5 @@
+
+
 // Initialize Firebase
 var config = {
 	apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
@@ -304,7 +306,7 @@ var cy = cytoscape({
 
 });
 
-cy.mapName = 'Crazy_Treasurehunt_Map';
+cy.mapName = parent.localStorage["newMapName"];
 cy.activeNode = null;
 /**
  * State variable, signalling if the user is currently defining a relationship

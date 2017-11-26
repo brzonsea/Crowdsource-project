@@ -257,7 +257,6 @@ function saveMap(evt) {
 		}
 	}
 
-	console.log(mapJSON);
 	delete mapJSON["zoom"];
 	delete mapJSON["pan"];
 
@@ -318,13 +317,17 @@ cy.relationshipSource = null;
 // listen to map changes
 var mapsref = database.ref("maps");
 
+
 mapsref.once('value', function(maps) {
 	maps.forEach(function(map) {
 		if (map.val().name == cy.mapName) {
 			cy.mapKey = map.key;
 			cy.json(map.val().json);
+			cy.fit([], 10);
+			if (cy.zoom() > 1) {
 			cy.zoom(1);
-			cy.fit();
+			}
+			console.log('Map initially loaded from DB.');
 		}
 	});
 }).then(function() {
@@ -343,14 +346,21 @@ mapsref.once('value', function(maps) {
 	// TODO own onClick function needed?
 	cy.edges().on('click', nodeOnSingleClick);
 
+	var firstLoad = true;
+
 	var mapref = mapsref.child(cy.mapKey);
 	mapref.on('value', function(map) {
 		console.log('Change in database happened');
-		if (map.val().username != user.name) {
-			console.log('updating map');
-			cy.off('add remove free data');
-			cy.json(map.val().json);
-			cy.on('add remove free data', saveMap);
+		if (!firstLoad) {
+			if (map.val().username != user.name) {
+				console.log('updating map');
+				cy.off('add remove free data');
+				cy.json(map.val().json);
+				cy.on('add remove free data', saveMap);
+			}
+		} else {
+			// skip first load as we already load once in the beginning
+			firstLoad = false;
 		}
 	}); // end mapref.on
 

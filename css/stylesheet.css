@@ -12,12 +12,11 @@ h1 {
 
 div.popup {
 	position: fixed;
-	top: 50%;
+	top: 35%;
 	left: 50%;
 	width: 60%;
-	/*height: 60vh;*/
 	margin-left: -30%;
-	margin-top: -30vh;
+	margin-top: -14%;
 	background-color: white;
 	z-index: 100;
 	border: 1px solid black;
@@ -26,6 +25,10 @@ div.popup {
 	border-radius: 8px;
 	font-family: "Comic Sans MS", 'Ubuntu', sans-serif;
 	padding: 4vh 2vh;
+}
+
+div.feedback-popup {
+	height: 60vh;
 }
 
 .area {

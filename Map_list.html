@@ -378,8 +378,11 @@
 
 		var addMapDiv = document.getElementById('addMapDiv');
 		addMapDiv.onclick = function() {
+			if (!isPopupOn) {
 				document.getElementById('addMapPopup').style.display = 'block';
+				isPopupOn = true;
 			}
+		}
 			// Global variable to check if Popup is on
 		isPopupOn = false;
 		isExisted = true;

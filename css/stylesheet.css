@@ -14,9 +14,9 @@ div.popup {
 	position: fixed;
 	top: 50%;
 	left: 50%;
-	width: 90vh;
+	width: 60%;
 	/*height: 60vh;*/
-	margin-left: -45vh;
+	margin-left: -30%;
 	margin-top: -30vh;
 	background-color: white;
 	z-index: 100;

@@ -11,23 +11,31 @@
 <body>
 
 	<div class='popup' id='popup'>
-		<h1>Please give us feedback</h1>
+		<h1 style="font-family: 'Comic Sans MS';"">Please give us feedback</h1>
 		<br>
 		<textarea class = "area" type="text" id="feedback_text" style="width:80%;height:60%;border-radius: 2vh;padding-left: 3vh;padding-top: 2vh;padding-right: 3vh;"></textarea>
 		<button class = "submit" type="button" id="submit_button" onclick="submit_feedback()"> Submit </button>
-		<button class = "close" type="button" id="submit_button" onclick="close_feedback()"> Close </button>
+		<button class = "close" type="button" id="close_button" onclick="close_feedback()"> Close </button>
 	</div>
 
 
+	<div class='popup' id='help_popup'>
+		<p> Write guidlines here </p>
+		<button class = "close" type="button" id="close_help" onclick="close_help()"> Close </button>
+	</div>
 
 
 	<div class="mapbox_column">
 		<div class='title'>
-			<header>
+			<header style="border-radius: 4px;">
 
 				<a href="Map_list.html">
 				 	<img src="logo_0.1.png" alt="Map it" style="width:150px;margin:8px;">
 				</a>
+
+				<button class="topbutton" id="help_button" onclick="help()">
+						Help
+				</button>
 
 				<button class="topbutton" id="feedback_button" onclick="feedback()">
 						Feedback
@@ -37,9 +45,11 @@
 						Fit Map
 				</button> 
 
-				<button class="topbutton" id="delete_Button_button" onclick="deletemap()">
+				<button class="topbutton" id="delete_button" onclick="deletemap()">
 						Delete Map
 				</button> 
+
+				 
 				
 			</header>
 		</div>
@@ -72,14 +82,14 @@
 							<form>
 								<textarea class="sidebar_summary" id="summaryInput"></textarea>
 							</form>
-						</div>
+						<!-- </div>
 						<h6 class="sidebar_header"> Comments </h6>
 						<div>
 							<form>
 								<textarea class="sidebar_comments"></textarea>
 							</form> 
-						</div>
-					</div>
+						</div> -->
+					</div>	
 					<div id="sidebarRelInput">
 						<button class="sidebarButton" id="deleteButton" onclick="deleteRelationship()">
 							Delete Relationship

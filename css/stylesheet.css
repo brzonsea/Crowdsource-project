@@ -18,6 +18,8 @@ div.popup {
 	border: 1px solid black;
 	text-align: center;
 	display: none;
+	border-radius: 8px;
+	font-family: "Comic Sans MS";
 }
 
 .area {
@@ -27,11 +29,13 @@ div.popup {
 	padding-left: 3vh;
 	padding-top: 2vh;
 	padding-right: 3vh;
+	resize: none;	
 }
 
 .submit {
 	width: 10vh;
 	height: 5vh;
+	font-size: 90%;
     font-family: "Comic Sans MS";
     background-color: #45a049;
     color: white;
@@ -67,6 +71,7 @@ div.popup {
 div.title {
 	width: 100%;
 	background: lightgray;
+
 }
 
 body {
@@ -113,21 +118,35 @@ div.course {
 	/*padding: 0.5em;*/
 	z-index: 100;
 	background-color: #fff;
+	border-radius: 6px;
 }
 .sidebar_header{
-	font-size: 80%;
+	font-size: 95%;
 	padding:7px;
+	font-family: "Comic Sans MS";
 }
 .sidebar_title{
-	width:100%;
+	width:95%;
 	height:100px;
 	border:1px solid black;
 	box-sizing: border-box;
 	padding:10px;
 	resize: none;
 	margin: 0.5em;
+	border-radius: 5px;
 }
 .sidebar_summary{
+	width:95%;
+	height:200px;
+	border:1px solid black;
+	box-sizing: border-box;
+	padding:10px;
+	resize: none;
+	margin: 0.5em;
+	border-radius: 5px;
+}
+
+/*.sidebar_comments{
 	width:100%;
 	height:200px;
 	border:1px solid black;
@@ -135,16 +154,7 @@ div.course {
 	padding:10px;
 	resize: none;
 	margin: 0.5em;
-}
-.sidebar_comments{
-	width:100%;
-	height:200px;
-	border:1px solid black;
-	box-sizing: border-box;
-	padding:10px;
-	resize: none;
-	margin: 0.5em;
-}
+}*/
 
 #sidebar {
 	width: 200px;
@@ -168,9 +178,15 @@ div.course {
 	z-index: 10;
 	background-color: #4CAF50;
     color: white;
+    border-radius: 5px;
+    font-family: "Comic Sans MS";
+    border:none;
+    margin-bottom:3px;
+    padding:2.5px;
 }
 
 .topbutton {
+	font-family: "Comic Sans MS";
 	top:0px;
 	height:57px;
 	padding-right: 2vh;
@@ -185,15 +201,40 @@ div.course {
 
 #feedback_button {
 	background-color: #990099;
-	margin-right: -15px;
+	
+}
+
+#feedback_button:hover {
+	background-color: #7f007f; 
+	
 }
 
 #fit_Map_button {
 	background-color: #4CAF50;
 }
 
-#delete_Button_button {
+#fit_Map_button:hover {
+	background-color: #3f9142;
+}
+
+#delete_button {
 	background-color: #999999;
+}
+
+#delete_button:hover {
+	background-color: #7f7f7f;
+}
+
+#help_button {
+	background-color: #990099;
+	margin-right: -15px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+#help_button:hover {
+	background-color: #7f007f;
+	margin-right: -15px;
 }
 
 div.node-popup {

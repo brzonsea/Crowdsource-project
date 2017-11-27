@@ -211,14 +211,15 @@ function addNode() {
 	var edge = cy.add({
 		group: 'edges',
 		data: {
-			source: element.id(),
-			target: cy.activeNode.id()
+			source: cy.activeNode.id(),
+			target: element.id()
 		}
 	});
 	console.log(edge);
 	// apply layout to move new node to appropriate position
 	var layout = cy.layout({
-		name: 'cose'
+		name: 'cose',
+		fit: false,
 	});
 	layout.run();
 	// unlock all nodes so the user can move them
@@ -389,8 +390,10 @@ function saveMap(evt) {
 	for (var i = mapJSON.elements.nodes.length - 1; i >= 0; i--) {
 		delete mapJSON.elements.nodes[i].data.detailsVisible;
 	}
-	for (var i = mapJSON.elements.edges.length - 1; i >= 0; i--) {
-		delete mapJSON.elements.edges[i].data.detailsVisible;
+	if (!(undefined == mapJSON.elements.edges)) {
+		for (var i = mapJSON.elements.edges.length - 1; i >= 0; i--) {
+			delete mapJSON.elements.edges[i].data.detailsVisible;
+		}
 	}
 
 	mapref.transaction(function(currentData) {
@@ -435,6 +438,9 @@ var cy = cytoscape({
 			style: {
 				'width': 3,
 				'line-color': 'grey',
+				'curve-style': 'bezier', //needed so arrows are drawn
+				'target-arrow-shape': 'triangle',
+				'target-arrow-color': 'grey',
 			}
 		}
 	],

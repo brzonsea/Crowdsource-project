@@ -407,79 +407,13 @@
 				elements: [ // list of graph elements to start with
 					{
 						data: {
-							id: 'a',
-							label: 'A',
-							summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
-							childNode: ['b']
+							id: 'rootnode',
+							label: 'Central concept',
+							summary: 'Summary...',
+							childNode: [],
+							rootNode: true,
 						}
-					}, {
-						data: {
-							id: 'b',
-							label: 'B',
-							summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
-							childNode: ['c']
-						}
-					}, {
-						data: {
-							id: 'c',
-							label: 'C',
-							childNode: ['d']
-						}
-					}, {
-						data: {
-							id: 'd',
-							label: 'D',
-							childNode: []
-						}
-					}, {
-						data: {
-							id: 'e',
-							label: 'E',
-							childNode: []
-						}
-					}, {
-						data: {
-							id: 'ab',
-							source: 'a',
-							target: 'b',
-							isEdge: true
-						}
-					}, {
-						data: {
-							id: 'ac',
-							source: 'a',
-							target: 'c',
-							isEdge: true
-						}
-					}, {
-						data: {
-							id: 'ad',
-							source: 'a',
-							target: 'd',
-							isEdge: true
-						}
-					}, {
-						data: {
-							id: 'bd',
-							source: 'b',
-							target: 'd',
-							isEdge: true
-						}
-					}, {
-						data: {
-							id: 'bc',
-							source: 'b',
-							target: 'c',
-							isEdge: true
-						}
-					}, {
-						data: {
-							id: 'ce',
-							source: 'c',
-							target: 'e',
-							isEdge: true
-						}
-					},
+					}
 				],
 				style: [ // the style-sheet for the graph
 					{
@@ -500,6 +434,9 @@
 						style: {
 							'width': 3,
 							'line-color': 'grey',
+							'curve-style': 'bezier', //needed so arrows are drawn
+							'target-arrow-shape': 'triangle',
+							'target-arrow-color': 'grey',
 						}
 					}
 				],

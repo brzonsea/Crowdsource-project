@@ -247,14 +247,15 @@
 		var username = getValue('username');
 
 		var loadMap = function() {
-			window.location = 'map-drawing-page.html?mapName=' + this.name + '&username=' + username;
+			// window.location = 'map-drawing-page.html?mapName=' + this.name + '&username=' + username;
 		}
 
-		function addMap() {
-        	var path = "accounts/" + this.username + "/maps";
+		function addMap(event, username, mapName) {
+        	console.log('event', event, username, mapName);
+        	var path = "accounts/" + username + "/maps";
         	var mapref = database.ref(path);
-        	mapref.push({name: this.mapname});
-        	var tile = document.getElementById(this.mapname);
+        	mapref.push({name: mapName});
+        	var tile = document.getElementById(mapName);
         	var shared_maps_div = document.getElementById("shared_maps");
         	var my_maps_div = document.getElementById("my_maps");
         	shared_maps_div.removeChild(tile);
@@ -264,38 +265,39 @@
 	       	child.className = "red";
 	       	child.innerHTML = "Leave";
 	       	var nameContainer = {'mapname': tile.id, 'username': username};
-			child.onclick = removeMap.bind(nameContainer);
+			child.addEventListener('click', function(event) {
+				removeMap(event, username, mapName);
+			});
 
-        	var e = window.event;
-    		e.cancelBubble = true;
-    		e.stopPropagation();
+    		event.cancelBubble = true;
+    		event.stopPropagation();
         }
 
-        function removeMap() {
-        	var path = "accounts/" + this.username + "/maps";
+        function removeMap(event, username, mapName) {
+        	console.log('event', event, username, mapName);
+        	var path = "accounts/" + username + "/maps";
         	var mapref = database.ref(path);
         	var key;
-        	var mapname = this.mapname;
-        	var tile = document.getElementById(mapname);
+        	var tile = document.getElementById(mapName);
 	        var shared_maps_div = document.getElementById("shared_maps");
 	       	var my_maps_div = document.getElementById("my_maps");
 	       	my_maps_div.removeChild(tile);
 	       	shared_maps_div.appendChild(tile);
 
-	       	var e = window.event;
-	    	e.cancelBubble = true;
-	    	e.stopPropagation();
+	    	event.cancelBubble = true;
+	    	event.stopPropagation();
 
 	       	var child = tile.childNodes[1];
 	       	child.className = "button";
 	       	child.innerHTML = "Join";
-	       	var nameContainer = {'mapname': tile.id, 'username': username};
-			child.onclick = addMap.bind(nameContainer);
+			child.addEventListener('click', function(event) {
+				addMap(event, username, mapName);
+			});
 
 
 			mapref.once("value", function(maps) {
 				maps.forEach(function(map) {
-					if (map.val().name == mapname) {
+					if (map.val().name == mapName) {
 						key = map.key;
 					}
 				});
@@ -327,23 +329,24 @@
 					map_join.className = 'button';
 					map_div.appendChild(map_join);
 					map_join.innerHTML = "Join";
-					var nameContainer = {
-						'mapname': arraytype[i],
-						'username': username
-					};
-					map_join.onclick = addMap.bind(nameContainer);
+					map_join.addEventListener('click', function(event) {
+						var mapName = identity(map_div.id);
+						addMap(event, username, mapName);
+					});
 				} else {
 					var map_leave = document.createElement('button');
 					map_leave.className = 'red';
 					map_div.appendChild(map_leave);
 					map_leave.innerHTML = "Leave";
-					var nameContainer = {
-						'mapname': arraytype[i],
-						'username': username
-					};
-					map_leave.onclick = removeMap.bind(nameContainer);
+					map_leave.addEventListener('click', function(event) {
+						removeMap(event, username, map_div.id);
+					});
 				}
 			}
+		}
+
+		function identity(x) {
+			return x;
 		}
 
 		function mine() {

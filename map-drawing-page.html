@@ -20,7 +20,15 @@
 
 
 	<div class='popup' id='help_popup'>
-		<p> Write guidlines here </p>
+		<h2>Welcome to Map it!</h2>
+		<p> You can use this platform to create a summary in form of a structure map together with your friends. </p>
+		<h3>What is a structure map?</h3>
+		<p> A structure map is similar to a mind-map but it additionally enables you to add relationships between different concepts to the map. These relationships show the influence that these concepts have on each other, the same way as for example quality can influence the cost of a system. </p>
+		<h3>How do I edit the map?</h3>
+		<p>Just click on a node to edit it's details in the sidebar.If you double-click a node, you can see it's details as a pop up. For relationships it works the same way.</p>
+		<h3>Anything else?</h3>
+		<p>Yeah. This is a prototype. Even though we did our best to implement everything correctly, there are probably still some errors. So if you find some please tell us and don't abuse them. Also please provide us with feedback after checking out the platform. We would appreciate it, if you tell us what you liked, what we need to improve, what features you missed or if there's anything else we should know.</p>
+		<h2>Thanks!</h2>
 		<button class = "close" type="button" id="close_help" onclick="close_help()"> Close </button>
 	</div>
 
@@ -29,9 +37,7 @@
 		<div class='title'>
 			<header style="border-radius: 4px;">
 
-				<a href="Map_list.html">
-				 	<img src="logo_0.1.png" alt="Map it" style="width:150px;margin:8px;">
-				</a>
+			 	<img src="logo_0.1.png" onclick="gotoMapList()" alt="Map it" style="width:150px;margin:8px;">
 
 				<button class="topbutton" id="help_button" onclick="help()">
 						Help

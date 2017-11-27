@@ -268,8 +268,10 @@
 			child.onclick = removeMap.bind(nameContainer);
 
         	var e = window.event;
-    		e.cancelBubble = true;
-    		e.stopPropagation();
+        	if (e) {
+	    		e.cancelBubble = true;
+	    		e.stopPropagation();
+        	}
         }
 
         function removeMap() {
@@ -284,8 +286,10 @@
 	       	shared_maps_div.appendChild(tile);
 
 	       	var e = window.event;
-	    	e.cancelBubble = true;
-	    	e.stopPropagation();
+	       	if (e) {
+		    	e.cancelBubble = true;
+		    	e.stopPropagation();
+	       	}
 
 	       	var child = tile.childNodes[1];
 	       	child.className = "button";

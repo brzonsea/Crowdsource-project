@@ -15,7 +15,7 @@ div.popup {
 	top: 50%;
 	left: 50%;
 	width: 90vh;
-	height: 60vh;
+	/*height: 60vh;*/
 	margin-left: -45vh;
 	margin-top: -30vh;
 	background-color: white;
@@ -24,7 +24,8 @@ div.popup {
 	text-align: center;
 	display: none;
 	border-radius: 8px;
-	font-family: "Comic Sans MS";
+	font-family: "Comic Sans MS", 'Ubuntu', sans-serif;
+	padding: 4vh 2vh;
 }
 
 .area {

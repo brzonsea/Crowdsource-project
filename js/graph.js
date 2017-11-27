@@ -25,6 +25,10 @@ var user = {
 	name: getValue('username')
 }
 
+function gotoMapList() {
+	window.location = 'Map_list.html?username=' + user.name;
+}
+
 function toRenderedPosition(pos) {
 	return {
 		x: pos.x * cy.zoom() + cy.pan().x,
@@ -526,6 +530,7 @@ mapsref.once('value', function(maps) {
 
 function feedback() {
 	//var pop_up = document.getElementById('pop_up');
+	document.getElementById('help_popup').style.display = 'None';
 	document.getElementById('popup').style.display = 'block';
 }
 
@@ -545,6 +550,7 @@ function submit_feedback() {
 
 function close_feedback() {
 	document.getElementById('popup').style.display = "None";
+	document.getElementById('help_popup').style.display = 'None';
 }
 
 function fitmap() {
@@ -575,9 +581,11 @@ function deletemap() {
 }
 
 function help() {
+	document.getElementById('popup').style.display = "None";
 	document.getElementById('help_popup').style.display = 'block';
 }
 
 function close_help() {
+	document.getElementById('popup').style.display = "None";
 	document.getElementById('help_popup').style.display = 'None';
 }

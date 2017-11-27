@@ -563,7 +563,7 @@ function deletemap() {
 		accounts.forEach(function(account) {
 			account.forEach(function(map) {
 				if (map.val().name == cy.mapName) {
-					database.ref("accounts/" + account.key + "/" + map.key).remove();
+					database.ref("accounts/" + account.key + "/maps" + map.key).remove();
 				}
 			});
 		});

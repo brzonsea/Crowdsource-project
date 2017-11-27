@@ -198,6 +198,7 @@ function addNode() {
 		group: "nodes",
 		data: {
 			label: "New Node",
+			summary: "Summary...",
 			childNode: []
 		}
 	});
@@ -286,16 +287,10 @@ function addRelationship(evt) {
 			source: evt.cy.relationshipSource,
 			target: evt.target.id(),
 			isEdge: false,
-			summary: '',
+			summary: 'Description...',
 			detailsVisible: false,
 		},
-		style: {
-			'curve-style': 'bezier', //needed so arrows are drawn
-			'source-arrow-shape': 'triangle',
-			'source-arrow-color': 'grey',
-			'target-arrow-shape': 'triangle',
-			'target-arrow-color': 'grey',
-		}
+		style: relationshipStyle,
 	});
 	document.getElementById('relationshipButton').style = null;
 	element.on('click', nodeOnClick);
@@ -401,6 +396,15 @@ function saveMap(evt) {
 	}); // end transaction
 } // end saveMap
 
+var relationshipStyle = {
+	'curve-style': 'bezier', //needed so arrows are drawn
+	'source-arrow-shape': 'triangle',
+	'source-arrow-color': '#00519e',
+	'target-arrow-shape': 'triangle',
+	'target-arrow-color': '#00519e',
+	'line-color': '#00519e'
+};
+
 var cy = cytoscape({
 	container: document.getElementById('structure-map'), // container to render in
 
@@ -476,11 +480,7 @@ mapsref.once('value', function(maps) {
 		if (edge.data("isEdge") != null && edge.data("isEdge") == false) {
 			edge.on("click", nodeOnClick);
 			edge.on('doubleClick', nodesOnDoubleClick);
-			edge.style("curve-style", "bezier");
-			edge.style("source-arrow-shape", 'triangle');
-			edge.style("source-arrow-color", 'grey');
-			edge.style("target-arrow-shape", 'triangle');
-			edge.style("target-arrow-color", 'grey');
+			edge.style(relationshipStyle);
 		}
 	}
 

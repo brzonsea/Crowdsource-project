@@ -192,9 +192,7 @@
 
 	<div class='container'>
 		<header>
-			<a href="course-overview.html">
-				<img src="logo_0.1.png" alt = "Logo" width="150" style="margin: 0.25em">
-			</a>
+				<img src="logo_0.1.png" onclick="reload()" alt = "Logo" width="150" style="margin: 0.25em">
 			<!-- <input id="image" type="image" src="https://raw.githubusercontent.com/brzonsea/Crowdsource-project/master/logo_0.1.png" width = "140" height = "35" margin-left = "10"> -->
 		</header>
 	</div>
@@ -230,6 +228,9 @@
 <script type="text/javascript" src="js/cytoscape.js"></script>
 <script type="text/javascript" src="js/parseUrlParams.js"></script>
 <script type="text/javascript">
+	function reload() {
+		window.location.reload(false);
+	}
 	// window.onload = function() {
 		// Initialize Firebase
 		var config = {

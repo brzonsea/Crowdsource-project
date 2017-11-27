@@ -22,7 +22,7 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 var user = {
-	name: 'testname'
+	name: getValue('username')
 }
 
 function toRenderedPosition(pos) {
@@ -215,6 +215,7 @@ function addNode() {
 			target: cy.activeNode.id()
 		}
 	});
+	console.log(edge);
 	// apply layout to move new node to appropriate position
 	var layout = cy.layout({
 		name: 'cose'
@@ -444,7 +445,7 @@ var cy = cytoscape({
 
 });
 
-cy.mapName = 'Andreas_and_the_Chocolate_Factory';
+cy.mapName = getValue('mapName');
 cy.activeNode = null;
 /**
  * State variable, signalling if the user is currently defining a relationship

@@ -244,9 +244,7 @@
 		firebase.initializeApp(config);
 		var database = firebase.database();
 
-		// var username = getValue("username");
-		var username = "testname";
-		var mymapref = database.ref("accounts/" + username);
+		var username = getValue('username');
 
 		var loadMap = function() {
 			window.location = 'map-drawing-page.html?mapName=' + this.name + '&username=' + username;
@@ -356,7 +354,6 @@
 			displayMapTiles('shared_maps', shared_maps);
 		}
 
-		//var username = getValue("username");
 		var mymapref = database.ref("accounts/" + username + "/maps");
 
 		mymapref.once("value", function(maps) {

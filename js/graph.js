@@ -271,6 +271,15 @@ var descriptionTimeout = null;
 descriptionInput.oninput = startDescriptionTimeout;
 
 function addRelationship(evt) {
+	var edges = cy.edges();
+	for (var i = edges.length - 1; i >= 0; i--) {
+		console.log(edges[i]);
+		if (edges[i].data('source') == evt.cy.relationshipSource && edges[i].data('target') == evt.target.id() || edges[i].data('target') == evt.cy.relationshipSource && edges[i].data('source') == evt.target.id()) {
+			evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
+			document.getElementById('relationshipButton').style = null;
+			return;
+		}
+	}
 	var element = evt.cy.add({
 		group: 'edges',
 		data: {
@@ -537,8 +546,7 @@ function deletemap() {
 				}
 			});
 		}).then(function() {
-            window.location = "./Map_list.html?username=" + user.name;
+			window.location = "./Map_list.html?username=" + user.name;
 		});
 	});
 }
-

@@ -126,9 +126,9 @@ div.course {
 	border-radius: 6px;
 }
 .sidebar_header{
-	font-size: 95%;
+	font-size: 100%;
 	padding:7px;
-	font-family: "Comic Sans MS";
+	font-family: "Comic Sans MS", 'Ubuntu', sans-serif;
 }
 .sidebar_title{
 	width:95%;

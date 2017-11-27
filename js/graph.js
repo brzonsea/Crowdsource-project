@@ -6,8 +6,6 @@ var setSidebarVisible = function(setVisible, nodeInput) {
 	document.getElementById('sidebarRelInput').style.display = edgeStyle;
 }
 
-setSidebarVisible(false, false);
-
 // Initialize Firebase
 var config = {
 	apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",

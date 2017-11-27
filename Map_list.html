@@ -147,7 +147,7 @@
 		top: 50%;
 		left: 50%;
 		width: 45vmax;
-		height: 30vmax;
+		height: 15vmax;
 		margin-left: -22.5vmax;
 		margin-top: -15vmax;
 		background-color: white;
@@ -160,6 +160,14 @@
 	input[type='text'] {
 		width: 80%;
 		height: 35px;
+	}
+
+	#createButton {
+		position: relative;
+	}
+
+	#discardButton {
+		position: relative;
 	}
 
 </style>
@@ -186,11 +194,20 @@
 	<p>My Maps</p>
 	<div id="my_maps"></div>
 
-	<div class="course" id='addMapDiv' style="text-align: center;font-size: 7vh;line-height: 22.5vh;">+</div>
+	<div class="course" id='addMapDiv' onclick="onCreateNewMap()" style="text-align: center;font-size: 7vh;line-height: 22.5vh;">
+		+
+	</div>
 	<div class='popup' id='addMapPopup'>
 		<h1>Create a new map</h1>
-		<br>
-		<input type="text" id="newMapName"></textarea>
+		<input type="text" id="newMapName" style="clear: both;"></textarea>
+		<div>
+			<button id="createButton" onclick="onCreateButton()">
+				Create
+			</button>
+			<button id="discardButton" onclick="onDiscardButton()"> 
+				Discard
+			</button>
+		</div>
 	</div>
 
 	<p style="clear:both">Shared Maps</p>
@@ -200,9 +217,10 @@
 </body>
 
 <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+<script type="text/javascript" src="js/cytoscape.js"></script>
 <script type="text/javascript" src="js/parseUrlParams.js"></script>
 <script type="text/javascript">
-	window.onload = function() {
+	// window.onload = function() {
 		// Initialize Firebase
 		var config = {
 			apiKey: "AIzaSyCtsjLF75Sz-rqZapJHoj7WkfIrkI3bAmE",
@@ -225,63 +243,72 @@
 		}
 
 		function addMap() {
-        	var path = "accounts/" + this.username;
-        	var mapref = database.ref(path);
-        	mapref.push({name: this.mapname});
-        	var tile = document.getElementById(this.mapname);
-        	var shared_maps_div = document.getElementById("shared_maps");
-        	var my_maps_div = document.getElementById("my_maps");
-        	shared_maps_div.removeChild(tile);
-        	my_maps_div.appendChild(tile);
+			var path = "accounts/" + this.username;
+			var mapref = database.ref(path);
+			mapref.push({
+				name: this.mapname
+			});
+			var tile = document.getElementById(this.mapname);
+			var shared_maps_div = document.getElementById("shared_maps");
+			var my_maps_div = document.getElementById("my_maps");
+			shared_maps_div.removeChild(tile);
+			my_maps_div.appendChild(tile);
 
-        	var child = tile.childNodes[1];
-	       	child.className = "red";
-	       	child.innerHTML = "Leave";
-	       	var nameContainer = {'mapname': tile.id, 'username': username};
+			var child = tile.childNodes[1];
+			child.className = "red";
+			child.innerHTML = "Leave";
+			var nameContainer = {
+				'mapname': tile.id,
+				'username': username
+			};
 			child.onclick = removeMap.bind(nameContainer);
 
-        	var e = window.event;
-    		e.cancelBubble = true;
-    		e.stopPropagation();
-        }
+			var e = window.event;
+			e.cancelBubble = true;
+			e.stopPropagation();
+		}
 
-        function removeMap() {
-        	var path = "accounts/" + this.username;
-        	var mapref = database.ref(path);
-        	var key;
-        	var mapname = this.mapname;
-        	var tile = document.getElementById(mapname);
-	        var shared_maps_div = document.getElementById("shared_maps");
-	       	var my_maps_div = document.getElementById("my_maps");
-	       	my_maps_div.removeChild(tile);
-	       	shared_maps_div.appendChild(tile);
+		function removeMap() {
+			var path = "accounts/" + this.username;
+			var mapref = database.ref(path);
+			var key;
+			var mapname = this.mapname;
+			var tile = document.getElementById(mapname);
+			var shared_maps_div = document.getElementById("shared_maps");
+			var my_maps_div = document.getElementById("my_maps");
+			my_maps_div.removeChild(tile);
+			shared_maps_div.appendChild(tile);
 
-	       	var e = window.event;
-	    	e.cancelBubble = true;
-	    	e.stopPropagation();
+			var e = window.event;
+			e.cancelBubble = true;
+			e.stopPropagation();
 
-	       	var child = tile.childNodes[1];
-	       	child.className = "button";
-	       	child.innerHTML = "Join";
-	       	var nameContainer = {'mapname': tile.id, 'username': username};
+			var child = tile.childNodes[1];
+			child.className = "button";
+			child.innerHTML = "Join";
+			var nameContainer = {
+				'mapname': tile.id,
+				'username': username
+			};
 			child.onclick = addMap.bind(nameContainer);
 
 
-        	mapref.once("value", function(maps) {
-        		maps.forEach(function(map) {
-        			if (map.val().name == mapname) {
-        				key = map.key;
-        			}
-        		});
-        	}).then(function() {
-        		path = path + "/" + key;
-        		mapref = database.ref(path);
-        		mapref.remove();
-	    	});
-        }
+			mapref.once("value", function(maps) {
+				maps.forEach(function(map) {
+					if (map.val().name == mapname) {
+						key = map.key;
+					}
+				});
+			}).then(function() {
+				path = path + "/" + key;
+				mapref = database.ref(path);
+				mapref.remove();
+			});
+		}
 
 		var my_maps = [];
 		var shared_maps = [];
+
 		function displayMapTiles(maptypediv, arraytype) {
 			var shared_maps_div = document.getElementById(maptypediv);
 			for (var i = 0; i < arraytype.length; i++) {
@@ -289,23 +316,31 @@
 				map_div.className = 'course';
 				map_div.id = arraytype[i];
 				map_div.innerHTML = arraytype[i].replace(/_/g, ' ');
-				var mapNameObj = {'name': arraytype[i]};
+				var mapNameObj = {
+					'name': arraytype[i]
+				};
 				map_div.onclick = loadMap.bind(mapNameObj);
 				shared_maps_div.appendChild(map_div);
 
-				if (maptypediv == "shared_maps"){
+				if (maptypediv == "shared_maps") {
 					var map_join = document.createElement('button');
 					map_join.className = 'button';
 					map_div.appendChild(map_join);
 					map_join.innerHTML = "Join";
-					var nameContainer = {'mapname': arraytype[i], 'username': username};
+					var nameContainer = {
+						'mapname': arraytype[i],
+						'username': username
+					};
 					map_join.onclick = addMap.bind(nameContainer);
 				} else {
 					var map_leave = document.createElement('button');
 					map_leave.className = 'red';
 					map_div.appendChild(map_leave);
 					map_leave.innerHTML = "Leave";
-					var nameContainer = {'mapname': arraytype[i], 'username': username};
+					var nameContainer = {
+						'mapname': arraytype[i],
+						'username': username
+					};
 					map_leave.onclick = removeMap.bind(nameContainer);
 				}
 			}
@@ -319,9 +354,8 @@
 			displayMapTiles('shared_maps', shared_maps);
 		}
 
-
 		//var username = getValue("username");
-		
+
 		var mymapref = database.ref("accounts/" + username);
 
 		mymapref.once("value", function(maps) {
@@ -340,14 +374,191 @@
 		}).then(shared);
 
 		var addMapDiv = document.getElementById('addMapDiv');
-			addMapDiv.onclick = function() {
-			document.getElementById('addMapPopup').style.display = 'block';
+		addMapDiv.onclick = function() {
+				document.getElementById('addMapPopup').style.display = 'block';
+			}
+			// Global variable to check if Popup is on
+		isPopupOn = false;
+		isExisted = true;
+
+		// Makes popup visible and vice versa if clicked on the add map div
+		function onCreateNewMap() {
+			if (!isPopupOn) {
+				document.getElementById("addMapPopup").style.display = 'initial';
+				isPopupOn = true;
+			}
 		}
-		
-		}	
-	// document.getElementById("Team_4").onclick = function() {
-	// 	window.location.href = "http://htmlpreview.github.com/?https://github.com/brzonsea/Crowdsource-project/blob/master/map-drawing-page.html";
-	// };
+
+		// Shuts popup down if discarded
+		function onDiscardButton() {
+			if (isPopupOn) {
+				document.getElementById("addMapPopup").style.display = 'none';
+				isPopupOn = false;
+			}
+		}
+
+		// Pushes a new map to DB and closes the popup
+		function onCreateButton() {
+			push_map_to_DB();
+		}
+
+		// This function pushes a new map with default structure to the database
+		function push_map_to_DB() {
+
+			var default_map = cytoscape({
+				elements: [ // list of graph elements to start with
+					{
+						data: {
+							id: 'a',
+							label: 'A',
+							summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
+							childNode: ['b']
+						}
+					}, {
+						data: {
+							id: 'b',
+							label: 'B',
+							summary: 'Quality control are methods to ensure high quality of crowd workers contributions.',
+							childNode: ['c']
+						}
+					}, {
+						data: {
+							id: 'c',
+							label: 'C',
+							childNode: ['d']
+						}
+					}, {
+						data: {
+							id: 'd',
+							label: 'D',
+							childNode: []
+						}
+					}, {
+						data: {
+							id: 'e',
+							label: 'E',
+							childNode: []
+						}
+					}, {
+						data: {
+							id: 'ab',
+							source: 'a',
+							target: 'b',
+							isEdge: true
+						}
+					}, {
+						data: {
+							id: 'ac',
+							source: 'a',
+							target: 'c',
+							isEdge: true
+						}
+					}, {
+						data: {
+							id: 'ad',
+							source: 'a',
+							target: 'd',
+							isEdge: true
+						}
+					}, {
+						data: {
+							id: 'bd',
+							source: 'b',
+							target: 'd',
+							isEdge: true
+						}
+					}, {
+						data: {
+							id: 'bc',
+							source: 'b',
+							target: 'c',
+							isEdge: true
+						}
+					}, {
+						data: {
+							id: 'ce',
+							source: 'c',
+							target: 'e',
+							isEdge: true
+						}
+					},
+				],
+				style: [ // the style-sheet for the graph
+					{
+						selector: 'node',
+						style: {
+							'background-color': 'white',
+							'label': 'data(label)',
+							'shape': 'ellipse',
+							'width': '10em',
+							'height': '5em',
+							'text-halign': 'center',
+							'text-valign': 'center',
+							'text-max-width': '10em',
+							'text-wrap': 'wrap',
+						}
+					}, {
+						selector: 'edge',
+						style: {
+							'width': 3,
+							'line-color': 'grey',
+						}
+					}
+				],
+				layout: {
+					name: 'cose',
+				},
+			});
+
+			var database = firebase.database();
+			var mapsref = database.ref("maps");
+			// mapName is extracted from the text area of the popup
+			default_map.mapName = document.getElementById("newMapName").value;
+
+			mapsref.once('value', function(maps) {
+				maps.forEach(function(map) {
+					if (map.val().name == default_map.mapName) {
+						isExisted = false;
+						alert("This name already exists");
+					}
+				});
+			}).then(function() {
+				console.log("Here!");
+				if (isExisted) {
+					var newMap = mapsref.push();
+					var pushId = newMap.key;
+					var newRef = database.ref("maps/" + pushId);
+
+					default_json = default_map.json();
+					for (obj in default_json) {
+						if (default_json[obj] == undefined) {
+							delete default_json[obj];
+						}
+					}
+					newRef.set({
+						"name": default_map.mapName,
+						"json": default_json
+					}); //elements().jsons());
+					onDiscardButton();
+					window.location.href = "map-drawing-page.html?mapName=" + document.getElementById("newMapName").value + '&username=' + username;
+				}
+				isExisted = true;
+			});
+			// var newMap = mapsref.push();
+			// var pushId = newMap.key;
+			// var newRef = database.ref("maps/" + pushId);
+
+			// default_json = default_map.json();
+			// for (obj in default_json) {
+			// 			if (default_json[obj] == undefined) {
+			// 				delete default_json[obj];
+			// 			}
+			// 		}
+			// newRef.set( {"name" : default_map.mapName , "json" : default_json});//elements().jsons());
+			// return false;
+		}
+	// }
+
 </script>
 </html>
 

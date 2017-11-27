@@ -1,9 +1,7 @@
-This is a Crowdsourcing Project Website
+# This is our platform for the course 'Crowdsourcing and Social Computing'
 
-Course list page : https://marvelapp-live.storage.googleapis.com/serve/2017/10/99279e14d32e4f809ec27de29fba61ee.png
+Drawing and editing maps happens in the `map-drawing-page.html` and `js/graph.js` files.
 
-Map list page : https://marvelapp-live.storage.googleapis.com/serve/2017/10/24ca3339d9c941dca7578eadf238ad1d.png
+Login and Sign up are done in the `login.html` and `signup.html` files.
 
-Map Editing page (My group) : https://marvelapp-live.storage.googleapis.com/serve/2017/10/0c4a9ea0e66e433c8c78dfe564ca801f.png
-
-Map viewing page (Other groups) : https://marvelapp-live.storage.googleapis.com/serve/2017/10/8ef214710a4c43f6903071a1febaa71c.png
+In `Map_list.html` the user can view his and other available maps.

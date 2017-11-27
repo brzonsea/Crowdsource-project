@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta charset="US-ASCII">
 <html>
 <style>
 body {
@@ -121,12 +122,6 @@ div {
         firebase.initializeApp(config);
         var database = firebase.database();
         var mapref = database.ref("accounts");
-        // function initApp(){
-        //   document.getElementById('login_button').addEventListener('click', login);
-        // }
-        window.onload = function() {
-           initApp();
-         }
         function login() {
             //console.log("Populating map2ref database...");
             // mapref.push({
@@ -153,7 +148,7 @@ div {
                     //alert(errorMessage);
                   }
                   console.log(error);
-                  document.getElementById('quickstart-sign-in').disabled = false;
+                  // document.getElementById('quickstart-sign-in').disabled = false;
                   // [END_EXCLUDE]
                 });
                 // [END authwithemail]

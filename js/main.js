@@ -22,7 +22,7 @@ function getValue(varname) {
 		return value;
 	}
 
-};
+}
 
 var userName = getValue('firstname');
 console.log(userName);

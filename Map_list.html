@@ -70,6 +70,7 @@
 	div.container {
 		width: 100%;
 		background: white;
+		/*border-radius: 4px;*/
 		/*border: 1px solid gray;*/
 	}
 
@@ -143,6 +144,8 @@
 	}
 
 	div.popup {
+		font-size: 85%;
+		font-family: "Comic Sans MS";
 		position: fixed;
 		top: 50%;
 		left: 50%;
@@ -155,11 +158,16 @@
 		border: 1px solid black;
 		text-align: center;
 		display: none;
+		border-radius: 6px;
 	}
 
 	input[type='text'] {
+		font-family: "Comic Sans MS";
+		font-size: 140%;
+
 		width: 80%;
 		height: 35px;
+		border-radius: 5px;
 	}
 
 	#createButton {
@@ -181,9 +189,6 @@
 		<header>
 			<a href="course-overview.html">
 				<img src="logo_0.1.png" alt = "Logo" width="150" style="margin: 0.25em">
-				<div class='p' id='login' style="float: right;">
-					<p>mikolez@kaist.ac.kr</p>
-				</div>
 			</a>
 			<!-- <input id="image" type="image" src="https://raw.githubusercontent.com/brzonsea/Crowdsource-project/master/logo_0.1.png" width = "140" height = "35" margin-left = "10"> -->
 		</header>
@@ -243,53 +248,45 @@
 		}
 
 		function addMap() {
-			var path = "accounts/" + this.username;
-			var mapref = database.ref(path);
-			mapref.push({
-				name: this.mapname
-			});
-			var tile = document.getElementById(this.mapname);
-			var shared_maps_div = document.getElementById("shared_maps");
-			var my_maps_div = document.getElementById("my_maps");
-			shared_maps_div.removeChild(tile);
-			my_maps_div.appendChild(tile);
+        	var path = "accounts/" + this.username + "/maps";
+        	var mapref = database.ref(path);
+        	mapref.push({name: this.mapname});
+        	var tile = document.getElementById(this.mapname);
+        	var shared_maps_div = document.getElementById("shared_maps");
+        	var my_maps_div = document.getElementById("my_maps");
+        	shared_maps_div.removeChild(tile);
+        	my_maps_div.appendChild(tile);
 
-			var child = tile.childNodes[1];
-			child.className = "red";
-			child.innerHTML = "Leave";
-			var nameContainer = {
-				'mapname': tile.id,
-				'username': username
-			};
+        	var child = tile.childNodes[1];
+	       	child.className = "red";
+	       	child.innerHTML = "Leave";
+	       	var nameContainer = {'mapname': tile.id, 'username': username};
 			child.onclick = removeMap.bind(nameContainer);
 
-			var e = window.event;
-			e.cancelBubble = true;
-			e.stopPropagation();
-		}
+        	var e = window.event;
+    		e.cancelBubble = true;
+    		e.stopPropagation();
+        }
 
-		function removeMap() {
-			var path = "accounts/" + this.username;
-			var mapref = database.ref(path);
-			var key;
-			var mapname = this.mapname;
-			var tile = document.getElementById(mapname);
-			var shared_maps_div = document.getElementById("shared_maps");
-			var my_maps_div = document.getElementById("my_maps");
-			my_maps_div.removeChild(tile);
-			shared_maps_div.appendChild(tile);
+        function removeMap() {
+        	var path = "accounts/" + this.username + "/maps";
+        	var mapref = database.ref(path);
+        	var key;
+        	var mapname = this.mapname;
+        	var tile = document.getElementById(mapname);
+	        var shared_maps_div = document.getElementById("shared_maps");
+	       	var my_maps_div = document.getElementById("my_maps");
+	       	my_maps_div.removeChild(tile);
+	       	shared_maps_div.appendChild(tile);
 
-			var e = window.event;
-			e.cancelBubble = true;
-			e.stopPropagation();
+	       	var e = window.event;
+	    	e.cancelBubble = true;
+	    	e.stopPropagation();
 
-			var child = tile.childNodes[1];
-			child.className = "button";
-			child.innerHTML = "Join";
-			var nameContainer = {
-				'mapname': tile.id,
-				'username': username
-			};
+	       	var child = tile.childNodes[1];
+	       	child.className = "button";
+	       	child.innerHTML = "Join";
+	       	var nameContainer = {'mapname': tile.id, 'username': username};
 			child.onclick = addMap.bind(nameContainer);
 
 
@@ -355,8 +352,7 @@
 		}
 
 		//var username = getValue("username");
-
-		var mymapref = database.ref("accounts/" + username);
+		var mymapref = database.ref("accounts/" + username + "/maps");
 
 		mymapref.once("value", function(maps) {
 			maps.forEach(function(map) {

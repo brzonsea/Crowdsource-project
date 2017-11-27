@@ -51,6 +51,7 @@ var nodeOnClick = function(event) {
 		clickedBefore = clickedNow;
 	}
 }
+
 var nodeOnSingleClick = function(evt) {
 	switch (evt.cy.definingRelationship) {
 		case 0:
@@ -547,4 +548,12 @@ function deletemap() {
 			window.location = "./Map_list.html?username=" + user.name;
 		});
 	});
+}
+
+function help() {
+	document.getElementById('help_popup').style.display = 'block';
+}
+
+function close_help() {
+	document.getElementById('help_popup').style.display = 'None';
 }

@@ -128,7 +128,7 @@ div {
             var Username = document.getElementById('id').value;
             var Password = document.getElementById('pw').value;
             firebase.auth().createUserWithEmailAndPassword(Username + "@x.yz", Password).then(function(user){
-              window.location = "./course-overview.html?username=" + Username;
+              window.location = "./Map_list.html?username=" + Username;
             }).catch(function(error) {
                 // Handle Errors here.
                 var errorCode = error.code;

@@ -561,9 +561,9 @@ function deletemap() {
 	var ref = database.ref();
 	ref.child("accounts").once("value", function(accounts) {
 		accounts.forEach(function(account) {
-			account.forEach(function(map) {
+			account.child("maps").forEach(function(map) {
 				if (map.val().name == cy.mapName) {
-					database.ref("accounts/" + account.key + "/maps" + map.key).remove();
+					database.ref("accounts/" + account.key + "/maps/" + map.key).remove();
 				}
 			});
 		});

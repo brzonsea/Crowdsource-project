@@ -483,24 +483,13 @@
 						"json": default_json
 					}); //elements().jsons());
 					onDiscardButton();
+					database.ref("accounts/" + username + "/maps").push({name: document.getElementById("newMapName").value});
 					window.location.href = "map-drawing-page.html?mapName=" + document.getElementById("newMapName").value + '&username=' + username;
 				}
 				isExisted = true;
 			});
-			// var newMap = mapsref.push();
-			// var pushId = newMap.key;
-			// var newRef = database.ref("maps/" + pushId);
 
-			// default_json = default_map.json();
-			// for (obj in default_json) {
-			// 			if (default_json[obj] == undefined) {
-			// 				delete default_json[obj];
-			// 			}
-			// 		}
-			// newRef.set( {"name" : default_map.mapName , "json" : default_json});//elements().jsons());
-			// return false;
 		}
-	// }
 
 </script>
 </html>

@@ -62,7 +62,13 @@ var nodeOnSingleClick = function(evt) {
 	switch (evt.cy.definingRelationship) {
 		case 0:
 			setSidebarVisible(true, true);
+			if (!(null == cy.activeNode)) {
+				if (cy.activeNode.isNode()) {
+					cy.activeNode.removeStyle();
+				}
+			}
 			cy.activeNode = evt.target;
+			evt.target.style('background-color', 'lightblue');
 			document.getElementById('titleInput').value = cy.activeNode.data('label');
 			document.getElementById('summaryInput').value = cy.activeNode.data('summary');
 			break;
@@ -392,6 +398,7 @@ function saveMap(evt) {
 	delete mapJSON["pan"];
 	for (var i = mapJSON.elements.nodes.length - 1; i >= 0; i--) {
 		delete mapJSON.elements.nodes[i].data.detailsVisible;
+		delete mapJSON.elements.nodes[i].style;
 	}
 	if (!(undefined == mapJSON.elements.edges)) {
 		for (var i = mapJSON.elements.edges.length - 1; i >= 0; i--) {
@@ -486,6 +493,9 @@ mapsref.once('value', function(maps) {
 	cy.on('click', function(evt) {
 		if (!evt.target.group) {
 			setSidebarVisible(false, false);
+			if (cy.activeNode.isNode()) {
+				cy.activeNode.removeStyle();
+			}
 			cy.activeNode = null;
 		}
 	});

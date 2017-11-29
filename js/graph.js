@@ -219,7 +219,6 @@ function addNode() {
 			target: element.id()
 		}
 	});
-	console.log(edge);
 	// apply layout to move new node to appropriate position
 	var layout = cy.layout({
 		name: 'cose',
@@ -511,7 +510,7 @@ mapsref.once('value', function(maps) {
 		console.log('Change in database happened');
 		if (!firstLoad) {
 			if (map.val().username != user.name) {
-				console.log('updating map');
+				console.log('Updating map');
 				cy.off('add remove free data');
 				cy.json(map.val().json);
 				cy.on('add remove free data', saveMap);

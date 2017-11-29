@@ -558,26 +558,28 @@ function fitmap() {
 }
 
 function deletemap() {
-	var ref = database.ref();
-	ref.child("accounts").once("value", function(accounts) {
-		accounts.forEach(function(account) {
-			account.child("maps").forEach(function(map) {
-				if (map.val().name == cy.mapName) {
-					database.ref("accounts/" + account.key + "/maps/" + map.key).remove();
-				}
-			});
-		});
-	}).then(function() {
-		ref.child("maps").once("value", function(maps) {
-			maps.forEach(function(map) {
-				if (map.val().name == cy.mapName) {
-					database.ref("maps/" + map.key).remove();
-				}
+	if (confirm("Do you really want to delete the entire map?") == true) {
+		var ref = database.ref();
+		ref.child("accounts").once("value", function(accounts) {
+			accounts.forEach(function(account) {
+				account.child("maps").forEach(function(map) {
+					if (map.val().name == cy.mapName) {
+						database.ref("accounts/" + account.key + "/maps/" + map.key).remove();
+					}
+				});
 			});
 		}).then(function() {
-			window.location = "./Map_list.html?username=" + user.name;
+			ref.child("maps").once("value", function(maps) {
+				maps.forEach(function(map) {
+					if (map.val().name == cy.mapName) {
+						database.ref("maps/" + map.key).remove();
+					}
+				});
+			}).then(function() {
+				window.location = "./Map_list.html?username=" + user.name;
+			});
 		});
-	});
+	}
 }
 
 function help() {

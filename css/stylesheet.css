@@ -3,7 +3,7 @@ body {
   height: 100%;
   margin: 0;
   position: relative;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: Ubuntu, Helvetica, sans-serif;
 }
 
 h1 {
@@ -23,7 +23,7 @@ div.popup {
 	text-align: center;
 	display: none;
 	border-radius: 8px;
-	font-family: "Comic Sans MS", 'Ubuntu', sans-serif;
+	font-family: Ubuntu, Helvetica, sans-serif;
 	padding: 4vh 2vh;
 }
 
@@ -45,7 +45,7 @@ div.feedback-popup {
 	width: 10vh;
 	height: 5vh;
 	font-size: 90%;
-    font-family: "Comic Sans MS";
+    font-family: Ubuntu, Helvetica, sans-serif;
     background-color: #45a049;
     color: white;
     border: none;
@@ -62,7 +62,7 @@ div.feedback-popup {
 .close {
 	width: 10vh;
 	height: 5vh;
-    font-family: "Comic Sans MS";
+    font-family: Ubuntu, Helvetica, sans-serif;
     background-color: #999999;
     color: white;
     border: none;
@@ -132,7 +132,7 @@ div.course {
 .sidebar_header{
 	font-size: 100%;
 	padding:7px;
-	font-family: "Comic Sans MS", 'Ubuntu', sans-serif;
+	font-family: Ubuntu, Helvetica, sans-serif;
 }
 .sidebar_title{
 	width:95%;
@@ -182,14 +182,14 @@ div.course {
 	background-color: #4CAF50;
     color: white;
     border-radius: 5px;
-    font-family: "Comic Sans MS";
+    font-family: Ubuntu, Helvetica, sans-serif;
     border:none;
     margin-bottom:3px;
     padding:2.5px;
 }
 
 .topbutton {
-	font-family: "Comic Sans MS";
+	font-family: Ubuntu, Helvetica, sans-serif;
 	top:0px;
 	height:57px;
 	padding-right: 2vh;

@@ -481,10 +481,10 @@ mapsref.once('value', function(maps) {
 		if (map.val().name == cy.mapName) {
 			cy.mapKey = map.key;
 			cy.json(map.val().json);
-			cy.fit([], 10);
-			if (cy.zoom() > 1) {
-			cy.zoom(1);
-			}
+			cy.fit();
+			// if (cy.zoom() > 1) {
+			// 	cy.zoom(1);
+			// }
 			console.log('Map initially loaded from DB.');
 		}
 	});

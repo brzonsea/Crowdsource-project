@@ -7,7 +7,7 @@ body {
 
 input[type=text], select {
     width: 25%;
-    font-family:Comic Sans MS;
+    font-family:Ubuntu, Helvetica, sans-serif;
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
@@ -25,7 +25,7 @@ input[type=button] {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-family:Comic Sans MS;
+    font-family:Ubuntu, Helvetica, sans-serif;
 }
 
 .center {
@@ -61,7 +61,7 @@ input[type=button] {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-family:Comic Sans MS;
+    font-family:Ubuntu, Helvetica, sans-serif;
 }
 
 
@@ -88,7 +88,7 @@ div {
 <br>
 
 <div class="center">
-    <p style="font-size:200%;font-family:Comic Sans MS;"> Sign up </p>
+    <p style="font-size:200%;font-family:Ubuntu, Helvetica, sans-serif;"> Sign up </p>
     <input type="text" id="id" name="username" placeholder="Username">
     <br>
     <input type="text" id="pw" name="password" placeholder="Password">
@@ -128,7 +128,7 @@ div {
             var Username = document.getElementById('id').value;
             var Password = document.getElementById('pw').value;
             firebase.auth().createUserWithEmailAndPassword(Username + "@x.yz", Password).then(function(user){
-              window.location = "./course-overview.html?username=" + Username;
+              window.location = "./Map_list.html?username=" + Username;
             }).catch(function(error) {
                 // Handle Errors here.
                 var errorCode = error.code;

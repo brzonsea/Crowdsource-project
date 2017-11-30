@@ -22,7 +22,11 @@ firebase.initializeApp(config);
 var database = firebase.database();
 
 var user = {
-	name: 'testname'
+	name: getValue('username')
+}
+
+function gotoMapList() {
+	window.location = 'Map_list.html?username=' + user.name;
 }
 
 function toRenderedPosition(pos) {
@@ -53,11 +57,18 @@ var nodeOnClick = function(event) {
 		clickedBefore = clickedNow;
 	}
 }
+
 var nodeOnSingleClick = function(evt) {
 	switch (evt.cy.definingRelationship) {
 		case 0:
 			setSidebarVisible(true, true);
+			if (!(null == cy.activeNode)) {
+				if (cy.activeNode.isNode()) {
+					cy.activeNode.removeStyle();
+				}
+			}
 			cy.activeNode = evt.target;
+			evt.target.style('background-color', 'lightblue');
 			document.getElementById('titleInput').value = cy.activeNode.data('label');
 			document.getElementById('summaryInput').value = cy.activeNode.data('summary');
 			break;
@@ -198,6 +209,7 @@ function addNode() {
 		group: "nodes",
 		data: {
 			label: "New Node",
+			summary: "Summary...",
 			childNode: []
 		}
 	});
@@ -209,13 +221,14 @@ function addNode() {
 	var edge = cy.add({
 		group: 'edges',
 		data: {
-			source: element.id(),
-			target: cy.activeNode.id()
+			source: cy.activeNode.id(),
+			target: element.id()
 		}
 	});
 	// apply layout to move new node to appropriate position
 	var layout = cy.layout({
-		name: 'cose'
+		name: 'cose',
+		fit: false,
 	});
 	layout.run();
 	// unlock all nodes so the user can move them
@@ -271,22 +284,25 @@ var descriptionTimeout = null;
 descriptionInput.oninput = startDescriptionTimeout;
 
 function addRelationship(evt) {
+	var edges = cy.edges();
+	for (var i = edges.length - 1; i >= 0; i--) {
+		console.log(edges[i]);
+		if (edges[i].data('source') == evt.cy.relationshipSource && edges[i].data('target') == evt.target.id() || edges[i].data('target') == evt.cy.relationshipSource && edges[i].data('source') == evt.target.id()) {
+			evt.cy.getElementById(evt.cy.relationshipSource).removeStyle();
+			document.getElementById('relationshipButton').style = null;
+			return;
+		}
+	}
 	var element = evt.cy.add({
 		group: 'edges',
 		data: {
 			source: evt.cy.relationshipSource,
 			target: evt.target.id(),
 			isEdge: false,
-			summary: '',
+			summary: 'Description...',
 			detailsVisible: false,
 		},
-		style: {
-			'curve-style': 'bezier', //needed so arrows are drawn
-			'source-arrow-shape': 'triangle',
-			'source-arrow-color': 'grey',
-			'target-arrow-shape': 'triangle',
-			'target-arrow-color': 'grey',
-		}
+		style: relationshipStyle,
 	});
 	document.getElementById('relationshipButton').style = null;
 	element.on('click', nodeOnClick);
@@ -296,7 +312,7 @@ function addRelationship(evt) {
 }
 
 function deleteNode() {
-	if (confirm("This will delete the current node and all its child nodes!") == true) {
+	if (confirm("This will delete the current node and all of its child nodes!") == true) {
 		var nodesToDelete = [];
 		var targetNode = cy.activeNode;
 		nodesToDelete.push(targetNode);
@@ -319,7 +335,12 @@ function deleteNode() {
 		}
 
 		for (var i = nodesToDelete.length - 1; i >= 0; i--) {
-			cy.remove(cy.getElementById(nodesToDelete[i].id()));
+			var nodeToDelete = nodesToDelete[i];
+			if (!(nodeToDelete.data('rootNode') == true)) {
+				cy.remove(cy.getElementById(nodesToDelete[i].id()));
+			} else {
+				alert('You cannot delete the root node.');
+			}
 		}
 		setSidebarVisible(false, false);
 		cy.activeNode = null;
@@ -363,7 +384,7 @@ function deleteRelationship() {
 }
 
 function saveMap(evt) {
-	console.log('Save Map');
+	// console.log('Save Map');
 	var mapref = database.ref("maps/" + cy.mapKey);
 
 	var mapJSON = cy.json();
@@ -373,14 +394,16 @@ function saveMap(evt) {
 		}
 	}
 
-	console.log(mapJSON);
 	delete mapJSON["zoom"];
 	delete mapJSON["pan"];
 	for (var i = mapJSON.elements.nodes.length - 1; i >= 0; i--) {
 		delete mapJSON.elements.nodes[i].data.detailsVisible;
+		delete mapJSON.elements.nodes[i].style;
 	}
-	for (var i = mapJSON.elements.edges.length - 1; i >= 0; i--) {
-		delete mapJSON.elements.edges[i].data.detailsVisible;
+	if (!(undefined == mapJSON.elements.edges)) {
+		for (var i = mapJSON.elements.edges.length - 1; i >= 0; i--) {
+			delete mapJSON.elements.edges[i].data.detailsVisible;
+		}
 	}
 
 	mapref.transaction(function(currentData) {
@@ -391,6 +414,15 @@ function saveMap(evt) {
 		}
 	}); // end transaction
 } // end saveMap
+
+var relationshipStyle = {
+	'curve-style': 'bezier', //needed so arrows are drawn
+	'source-arrow-shape': 'triangle',
+	'source-arrow-color': '#00519e',
+	'target-arrow-shape': 'triangle',
+	'target-arrow-color': '#00519e',
+	'line-color': '#00519e'
+};
 
 var cy = cytoscape({
 	container: document.getElementById('structure-map'), // container to render in
@@ -416,6 +448,9 @@ var cy = cytoscape({
 			style: {
 				'width': 3,
 				'line-color': 'grey',
+				'curve-style': 'bezier', //needed so arrows are drawn
+				'target-arrow-shape': 'triangle',
+				'target-arrow-color': 'grey',
 			}
 		}
 	],
@@ -426,7 +461,7 @@ var cy = cytoscape({
 
 });
 
-cy.mapName = 'Andreas_and_the_Chocolate_Factory';
+cy.mapName = getValue('mapName');
 cy.activeNode = null;
 /**
  * State variable, signalling if the user is currently defining a relationship
@@ -440,13 +475,17 @@ cy.relationshipSource = null;
 // listen to map changes
 var mapsref = database.ref("maps");
 
+
 mapsref.once('value', function(maps) {
 	maps.forEach(function(map) {
 		if (map.val().name == cy.mapName) {
 			cy.mapKey = map.key;
 			cy.json(map.val().json);
+			cy.fit([], 10);
+			if (cy.zoom() > 1) {
 			cy.zoom(1);
-			cy.fit();
+			}
+			console.log('Map initially loaded from DB.');
 		}
 	});
 }).then(function() {
@@ -454,6 +493,9 @@ mapsref.once('value', function(maps) {
 	cy.on('click', function(evt) {
 		if (!evt.target.group) {
 			setSidebarVisible(false, false);
+			if (cy.activeNode.isNode()) {
+				cy.activeNode.removeStyle();
+			}
 			cy.activeNode = null;
 		}
 	});
@@ -467,22 +509,25 @@ mapsref.once('value', function(maps) {
 		if (edge.data("isEdge") != null && edge.data("isEdge") == false) {
 			edge.on("click", nodeOnClick);
 			edge.on('doubleClick', nodesOnDoubleClick);
-			edge.style("curve-style", "bezier");
-			edge.style("source-arrow-shape", 'triangle');
-			edge.style("source-arrow-color", 'grey');
-			edge.style("target-arrow-shape", 'triangle');
-			edge.style("target-arrow-color", 'grey');
+			edge.style(relationshipStyle);
 		}
 	}
+
+	var firstLoad = true;
 
 	var mapref = mapsref.child(cy.mapKey);
 	mapref.on('value', function(map) {
 		console.log('Change in database happened');
-		if (map.val().username != user.name) {
-			console.log('updating map');
-			cy.off('add remove free data');
-			cy.json(map.val().json);
-			cy.on('add remove free data', saveMap);
+		if (!firstLoad) {
+			if (map.val().username != user.name) {
+				console.log('Updating map');
+				cy.off('add remove free data');
+				cy.json(map.val().json);
+				cy.on('add remove free data', saveMap);
+			}
+		} else {
+			// skip first load as we already load once in the beginning
+			firstLoad = false;
 		}
 	}); // end mapref.on
 
@@ -494,6 +539,7 @@ mapsref.once('value', function(maps) {
 
 function feedback() {
 	//var pop_up = document.getElementById('pop_up');
+	document.getElementById('help_popup').style.display = 'None';
 	document.getElementById('popup').style.display = 'block';
 }
 
@@ -513,6 +559,7 @@ function submit_feedback() {
 
 function close_feedback() {
 	document.getElementById('popup').style.display = "None";
+	document.getElementById('help_popup').style.display = 'None';
 }
 
 function fitmap() {
@@ -520,25 +567,36 @@ function fitmap() {
 }
 
 function deletemap() {
-	var ref = database.ref();
-	ref.child("accounts").once("value", function(accounts) {
-		accounts.forEach(function(account) {
-			account.forEach(function(map) {
-				if (map.val().name == cy.mapName) {
-					database.ref("accounts/" + account.key + "/" + map.key).remove();
-				}
-			});
-		});
-	}).then(function() {
-		ref.child("maps").once("value", function(maps) {
-			maps.forEach(function(map) {
-				if (map.val().name == cy.mapName) {
-					database.ref("maps/" + map.key).remove();
-				}
+	if (confirm("Do you really want to delete the entire map?") == true) {
+		var ref = database.ref();
+		ref.child("accounts").once("value", function(accounts) {
+			accounts.forEach(function(account) {
+				account.child("maps").forEach(function(map) {
+					if (map.val().name == cy.mapName) {
+						database.ref("accounts/" + account.key + "/maps/" + map.key).remove();
+					}
+				});
 			});
 		}).then(function() {
-            window.location = "./Map_list.html?username=" + user.name;
+			ref.child("maps").once("value", function(maps) {
+				maps.forEach(function(map) {
+					if (map.val().name == cy.mapName) {
+						database.ref("maps/" + map.key).remove();
+					}
+				});
+			}).then(function() {
+				window.location = "./Map_list.html?username=" + user.name;
+			});
 		});
-	});
+	}
 }
 
+function help() {
+	document.getElementById('popup').style.display = "None";
+	document.getElementById('help_popup').style.display = 'block';
+}
+
+function close_help() {
+	document.getElementById('popup').style.display = "None";
+	document.getElementById('help_popup').style.display = 'None';
+}

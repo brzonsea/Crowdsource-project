@@ -22,11 +22,4 @@ function getValue(varname) {
 		return value;
 	}
 
-}
-
-var userName = getValue('firstname');
-console.log(userName);
-
-function myfunction() {
-	console.log('Go to structure maps!');
-}
+};

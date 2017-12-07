@@ -261,6 +261,10 @@
 			window.location = 'map-drawing-page.html?mapName=' + this.name + '&username=' + username;
 		}
 
+		var viewMap = function() {
+			window.location = 'map-viewing-page.html?mapName=' + this.name + '&username=' + username;
+		}
+
 		function addMap() {
         	var path = "accounts/" + this.username + "/maps";
         	var mapref = database.ref(path);
@@ -334,10 +338,10 @@
 				var mapNameObj = {
 					'name': arraytype[i]
 				};
-				map_div.onclick = loadMap.bind(mapNameObj);
 				shared_maps_div.appendChild(map_div);
 
 				if (maptypediv == "shared_maps") {
+					map_div.onclick = viewMap.bind(mapNameObj);
 					var map_join = document.createElement('button');
 					map_join.className = 'button';
 					map_div.appendChild(map_join);
@@ -348,6 +352,7 @@
 					};
 					map_join.onclick = addMap.bind(nameContainer);
 				} else {
+					map_div.onclick = loadMap.bind(mapNameObj);
 					var map_leave = document.createElement('button');
 					map_leave.className = 'red';
 					map_div.appendChild(map_leave);

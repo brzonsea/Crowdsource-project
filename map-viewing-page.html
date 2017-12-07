@@ -2,9 +2,10 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.5/cytoscape.js"></script>
+	<script type="text/javascript" src="js/cytoscape.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/w3stylesheet.css">
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -13,67 +14,39 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'UA-110691255-1');
     </script>
 </head>
 <body>
 
-	<div class="mapbox_column">
-		<div class='title'>
-			<header>
-				<a href="course-overview.html">
-				 	<img src="logo_0.1.png" alt="Map it" style="width:150px">
-				</a>
-			</header>
-		</div>
-
-		<div id="content">
-			<div style="height: 2px;"></div>
-			<div>
-				<!-- <div class="w3-sidebar w3-bar-block w3-collapse" style="width:200px;right:0" id="mySidebar">
-				<button class="w3-bar-item w3-button w3-hide-large"
-				  onclick="w3_close()">Close &times;</button> 
-					
-
-					<h6 class="sidebar_header"> Node </h6>
-					<div> 
-						<form>
-							<input type="text" class="sidebar_box1">
-						</form>
-					</div>
-					<h6 class="sidebar_header"> Notes </h6>
-					<div>
-						<form>
-							<input type="text" class="sidebar_box2">
-						</form>
-					</div>
-					<h6 class="sidebar_header"> Comments </h6>
-					<div>
-						<form>
-							<input type="text" class="sidebar_box3">
-						</form> 
-					</div>
-
-				</div> -->
-			</div>
-			<!-- <div id='structure-map'></div> -->
-		</div>
-		<div id='structure-map'></div>
-
-
-		<button id="relationshipButton" onclick="defRelationship()">Define relationship</button>
+	<div class='popup feedback-popup' id='popup'>
+		<h1 style="font-family: Ubuntu, Helvetica, sans-serif;"">Please give us feedback</h1>
+		<br>
+		<textarea class = "area" type="text" id="feedback_text" style="width:80%;height:60%;border-radius: 2vh;padding-left: 3vh;padding-top: 2vh;padding-right: 3vh;"></textarea>
+		<button class = "submit" type="button" id="submit_button" onclick="submit_feedback()"> Submit </button>
+		<button class = "close" type="button" id="close_button" onclick="close_feedback()"> Close </button>
 	</div>
 
-<!-- 	<script>
-	function w3_open() {
-	  document.getElementById("mySidebar").style.display = "block";
-	}
-	function w3_close() {
-	  document.getElementById("mySidebar").style.display = "none";
-	}
-	</script> -->
+	<div class="mapbox_column">
+		<div class='title'>
+			<header style="border-radius: 4px;">
 
-	<script type="text/javascript" src="js/graph.js"></script>
+			 	<img src="logo_0.1.png" onclick="gotoMapList()" alt="Map it" style="width:150px;margin:8px;cursor: pointer;">
+
+				<button class="topbutton" id="feedback_button" onclick="feedback()">
+						Feedback
+				</button>
+
+				<button class="topbutton" id="fit_Map_button" onclick="fitmap()">
+						Fit Map
+				</button>
+				
+			</header>
+		</div>
+		<div style="right:0;" id='structure-map'></div>
+	</div>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+	<script type="text/javascript" src="js/parseUrlParams.js"></script>
+	<script type="text/javascript" src="js/graph_view.js"></script>
 </body>
 </html>

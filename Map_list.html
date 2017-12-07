@@ -274,7 +274,11 @@
         	var my_maps_div = document.getElementById("my_maps");
         	shared_maps_div.removeChild(tile);
         	my_maps_div.appendChild(tile);
-
+			var mapNameObj = {
+				'name': this.mapname,
+			};
+			tile.onclick = loadMap.bind(mapNameObj);
+			
         	var child = tile.childNodes[1];
 	       	child.className = "red";
 	       	child.innerHTML = "Leave";
@@ -298,6 +302,10 @@
 	       	var my_maps_div = document.getElementById("my_maps");
 	       	my_maps_div.removeChild(tile);
 	       	shared_maps_div.appendChild(tile);
+			var mapNameObj = {
+				'name': this.mapname,
+			};
+			tile.onclick = viewMap.bind(mapNameObj);
 
 	       	var e = window.event;
 	       	if (e) {

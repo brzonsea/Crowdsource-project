@@ -458,7 +458,7 @@ var cy = cytoscape({
 	layout: {
 		name: 'cose',
 	},
-
+	wheelSensitivity: 0.8,
 });
 
 cy.mapName = getValue('mapName');

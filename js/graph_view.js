@@ -232,7 +232,7 @@ mapsref.once('value', function(maps) {
 
 function feedback() {
 	//var pop_up = document.getElementById('pop_up');
-	document.getElementById('help_popup').style.display = 'None';
+	//document.getElementById('help_popup').style.display = 'None';
 	document.getElementById('popup').style.display = 'block';
 }
 
@@ -252,7 +252,7 @@ function submit_feedback() {
 
 function close_feedback() {
 	document.getElementById('popup').style.display = "None";
-	document.getElementById('help_popup').style.display = 'None';
+	//document.getElementById('help_popup').style.display = 'None';
 }
 
 function fitmap() {
